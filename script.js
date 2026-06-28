@@ -1,0 +1,3878 @@
+/* ============================================
+   Joy Thai Shop - JavaScript Logic
+   ============================================ */
+
+// ── Default Product Data ──
+const DEFAULT_PRODUCTS = [
+  {
+    id: 1,
+    inStock: true,
+    name: {
+      th: 'มาม่าต้มยำกุ้ง รสเด็ด',
+      de: 'MAMA Tom Yum Garnelen Nudeln',
+      en: 'MAMA Tom Yum Shrimp Noodles'
+    },
+    weight: '90g',
+    priceThb: 35,
+    priceEur: 0.92,
+    category: 'noodle',
+    image: 'images/product_food1.png',
+    emoji: '🍜',
+    badge: 'hot',
+    badgeText: {
+      th: 'ขายดี',
+      de: 'Bestseller',
+      en: 'Bestseller'
+    },
+    rating: 4.8,
+    reviews: 1234,
+    desc: {
+      th: 'รสต้มยำกุ้งเข้มข้น หอมกลมกล่อม อิ่มท้องทุกคำ',
+      de: 'Authentischer thailändischer Tom-Yum-Garnelengeschmack, würzig und lecker.',
+      en: 'Authentic Thai Tom Yum shrimp flavor, spicy and delicious in every bite.'
+    }
+  },
+  {
+    id: 2,
+    inStock: true,
+    name: {
+      th: 'โมจิไอศกรีม รวมรส',
+      de: 'Mochi Eiscreme Sortiert',
+      en: 'Mochi Ice Cream Assorted'
+    },
+    weight: '240g',
+    priceThb: 280,
+    priceEur: 7.37,
+    category: 'snack',
+    image: 'images/product_food2.png',
+    emoji: '🍡',
+    badge: 'new',
+    badgeText: {
+      th: 'ใหม่',
+      de: 'Neu',
+      en: 'New'
+    },
+    rating: 4.9,
+    reviews: 856,
+    desc: {
+      th: 'โมจิญี่ปุ่นแท้ รวม 6 รส ห่อครีมนุ่ม ละมุนลิ้น',
+      de: 'Echtes japanisches Mochi mit 6 leckeren Eissorten.',
+      en: 'Authentic Japanese mochi with 6 delicious ice cream flavors.'
+    }
+  },
+  {
+    id: 3,
+    inStock: true,
+    name: {
+      th: 'พริกแกงเขียวหวานแม่พลอย',
+      de: 'Mae Ploy Grüne Currypaste',
+      en: 'Mae Ploy Green Curry Paste'
+    },
+    weight: '400g',
+    priceThb: 89,
+    priceEur: 2.34,
+    category: 'sauce',
+    image: 'images/product_food3.png',
+    emoji: '🫙',
+    badge: null,
+    rating: 4.7,
+    reviews: 567,
+    desc: {
+      th: 'พริกแกงสูตรโบราณ ส่วนผสมแท้ หอมสมุนไพรธรรมชาติ',
+      de: 'Traditionelle grüne Currypaste, reich an natürlichen Kräutern.',
+      en: 'Traditional green curry paste, rich in natural Thai herbs.'
+    }
+  },
+  {
+    id: 4,
+    inStock: true,
+    name: {
+      th: 'น้ำปลาแท้ทิพรส',
+      de: 'Tiparos Premium Fischsauce',
+      en: 'Tiparos Premium Fish Sauce'
+    },
+    weight: '700ml',
+    priceThb: 65,
+    priceEur: 1.71,
+    category: 'sauce',
+    image: 'images/product_food4.png',
+    emoji: '🍶',
+    badge: null,
+    rating: 4.6,
+    reviews: 432,
+    desc: {
+      th: 'น้ำปลาแท้คุณภาพเยี่ยม หมักจากปลาทะเลแท้ กลิ่นหอม',
+      de: 'Erstklassige thailändische Fischsauce, natürlich fermentiert.',
+      en: 'Premium quality Thai fish sauce, naturally fermented.'
+    }
+  },
+  {
+    id: 5,
+    inStock: true,
+    name: {
+      th: 'ราเมงเกาหลี รสเผ็ดจัด',
+      de: 'Scharfe Koreanische Ramen Nudeln',
+      en: 'Korean Spicy Ramen Noodles'
+    },
+    weight: '140g',
+    priceThb: 95,
+    priceEur: 2.50,
+    category: 'noodle',
+    image: 'images/product_food5.png',
+    emoji: '🍲',
+    badge: 'hot',
+    badgeText: {
+      th: 'ร้อนแรง',
+      de: 'Scharf',
+      en: 'Hot'
+    },
+    rating: 4.9,
+    reviews: 2103,
+    desc: {
+      th: 'ราเมงสไตล์เกาหลี เผ็ดจัด รสเข้มข้น ซุปเข้มถึงใจ',
+      de: 'Extrem scharfe Ramen-Nudeln nach koreanischer Art.',
+      en: 'Extremely spicy Korean-style ramen noodles.'
+    }
+  },
+  {
+    id: 6,
+    inStock: true,
+    name: {
+      th: 'กะทิสด ชาวเกาะ',
+      de: 'Chaokoh Kokosmilch',
+      en: 'Chaokoh Coconut Milk'
+    },
+    weight: '400ml',
+    priceThb: 55,
+    priceEur: 1.45,
+    category: 'ingredient',
+    image: 'images/product_food6.png',
+    emoji: '🥥',
+    badge: null,
+    rating: 4.8,
+    reviews: 789,
+    desc: {
+      th: 'กะทิสดจากมะพร้าวไทย ครีมเข้มข้น หอมหวานธรรมชาติ',
+      de: 'Reine thailändische Kokosmilch, perfekt zum Kochen und Backen.',
+      en: 'Pure Thai coconut milk, perfect for cooking and desserts.'
+    }
+  },
+  {
+    id: 7,
+    inStock: true,
+    name: {
+      th: 'ชาตรามือ ชาไทยสูตรต้นตำรับ',
+      de: 'ChaTraMue Traditioneller Thailändischer Tee',
+      en: 'ChaTraMue Traditional Thai Tee'
+    },
+    weight: '400g',
+    priceThb: 180,
+    priceEur: 4.74,
+    category: 'drink',
+    image: null,
+    emoji: '🍵',
+    badge: 'new',
+    badgeText: {
+      th: 'ใหม่',
+      de: 'Neu',
+      en: 'New'
+    },
+    rating: 4.9,
+    reviews: 945,
+    desc: {
+      th: 'ผงชาไทยสูตรดั้งเดิม หอมกรุ่น รสเข้มข้น สำหรับทำชาเย็น',
+      de: 'Original thailändisches Teepulver für Eistee und Milchtee.',
+      en: 'Original Thai tea powder for making authentic Thai iced tea.'
+    }
+  },
+  {
+    id: 8,
+    inStock: true,
+    name: {
+      th: 'ข้าวเกรียบกุ้ง ตราฮานามิ',
+      de: 'Hanami Krabbenchips',
+      en: 'Hanami Prawn Crackers'
+    },
+    weight: '110g',
+    priceThb: 45,
+    priceEur: 1.18,
+    category: 'snack',
+    image: null,
+    emoji: '🍿',
+    badge: null,
+    rating: 4.6,
+    reviews: 612,
+    desc: {
+      th: 'ข้าวเกรียบกุ้งทอดกรอบ รสชาติกลมกล่อม กรอบอร่อยเคี้ยวเพลิน',
+      de: 'Knusprige thailändische Krabbenchips mit tollem Geschmack.',
+      en: 'Crispy Thai prawn crackers with a delicious, savory taste.'
+    }
+  },
+  {
+    id: 9,
+    inStock: true,
+    name: {
+      th: 'เส้นเล็ก ตราสามเหรียญ',
+      de: 'Drei Münzen Reisnudeln',
+      en: 'Three Coins Rice Noodles'
+    },
+    weight: '500g',
+    priceThb: 40,
+    priceEur: 1.05,
+    category: 'noodle',
+    image: null,
+    emoji: '🍝',
+    badge: null,
+    rating: 4.7,
+    reviews: 389,
+    desc: {
+      th: 'เส้นก๋วยเตี๋ยวข้าวอย่างดี เหนียวนุ่ม ไม่ขาดง่าย เหมาะทำผัดไทย',
+      de: 'Hochwertige Reisnudeln, ideal für Pad Thai und Suppen.',
+      en: 'High-quality rice noodles, perfect for Pad Thai and noodle soups.'
+    }
+  },
+  {
+    id: 10,
+    inStock: true,
+    name: {
+      th: 'นมถั่วเหลือง ไวตามิ้ลค์',
+      de: 'Vitamilk Sojamilch',
+      en: 'Vitamilk Soy Milk'
+    },
+    weight: '300ml',
+    priceThb: 25,
+    priceEur: 0.66,
+    category: 'drink',
+    image: null,
+    emoji: '🥛',
+    badge: null,
+    rating: 4.7,
+    reviews: 1567,
+    desc: {
+      th: 'นมถั่วเหลืองสูตรดั้งเดิม โปรตีนสูง หวานมันกลมกล่อม',
+      de: 'Klassische thailändische Sojamilch, cremig und nahrhaft.',
+      en: 'Classic Thai soy milk, rich, creamy and high in protein.'
+    }
+  },
+  {
+    id: 11,
+    inStock: true,
+    name: {
+      th: 'ซอสพริกศรีราชา ตราเหรียญทอง',
+      de: 'Goldmedaille Sriracha Scharfe Sauce',
+      en: 'Gold Medal Sriracha Hot Sauce'
+    },
+    weight: '570g',
+    priceThb: 120,
+    priceEur: 3.16,
+    category: 'sauce',
+    image: null,
+    emoji: '🌶️',
+    badge: 'hot',
+    badgeText: {
+      th: 'ขายดีที่สุด',
+      de: 'Bestseller',
+      en: 'Top Seller'
+    },
+    rating: 4.9,
+    reviews: 3201,
+    desc: {
+      th: 'ซอสพริกศรีราชาแท้ รสชาติกลมกล่อม เผ็ดเปรี้ยวหวานลงตัว',
+      de: 'Authentische thailändische Sriracha-Sauce, perfekt scharf.',
+      en: 'Authentic Thai Sriracha sauce, perfect blend of heat and tang.'
+    }
+  },
+  {
+    id: 12,
+    inStock: true,
+    name: {
+      th: 'ข้าวหอมมะลิใหม่ ตราฉัตรทอง',
+      de: 'Royal Umbrella Premium Jasminreis',
+      en: 'Royal Umbrella Premium Jasmine Rice'
+    },
+    weight: '5kg',
+    priceThb: 380,
+    priceEur: 10.00,
+    category: 'ingredient',
+    image: null,
+    emoji: '🌾',
+    badge: 'new',
+    badgeText: {
+      th: 'พรีเมียม',
+      de: 'Premium',
+      en: 'Premium'
+    },
+    rating: 4.9,
+    reviews: 1892,
+    desc: {
+      th: 'ข้าวหอมมะลิแท้ 100% คุณภาพส่งออก นุ่มเหนียว หอมกรุ่นเมื่อหุง',
+      de: 'Premium thailändischer Jasminreis, duftend und weich.',
+      en: 'Premium 100% Thai jasmine rice, aromatic and soft when cooked.'
+    }
+  }
+];
+
+// ── Translation Dictionary ──
+const TRANSLATIONS = {
+  th: {
+    pageTitle: 'Joy Thai Shop | สินค้าไทย พร้อมส่งในเยอรมัน',
+    notifText: 'สินค้าจากไทย พร้อมส่งในเยอรมัน',
+    navHome: 'หน้าแรก',
+    navProducts: 'สินค้า',
+    navCategories: 'หมวดหมู่',
+    navContact: 'ติดต่อ',
+    navSale: '🔥 ลดราคาพิเศษ',
+    saleModalTitle: 'สินค้าลดราคาพิเศษ / Special Deals',
+    saleModalDesc: 'โปรโมชั่นลดราคาสุดพิเศษ สินค้าแท้ส่งตรงจากไทยถึงเยอรมนี',
+    searchPlaceholder: 'ค้นหาสินค้า...',
+    heroBadge: 'สินค้าไทย พร้อมส่งในเยอรมัน',
+    heroTitle1: 'สินค้าไทย',
+    heroTitle2: 'ส่งตรงถึงบ้านคุณ',
+    heroSub: 'สินค้าคุณภาพสูง อาหารไทย และอีกมากมาย<br>รับประกันความสดใหม่ ส่งรวดเร็วทั่วโลก',
+    heroShopBtn: 'เลือกซื้อสินค้า',
+    statProducts: 'สินค้า',
+    statAuthentic: 'ของแท้',
+    statRating: 'รีวิวลูกค้า',
+    floatCard1: 'ของแท้จากไทย',
+    floatCard2: 'ส่งไวในเยอรมนี',
+    catSectionTag: 'หมวดหมู่สินค้า',
+    catSectionTitle: 'เลือกตามประเภท',
+    catAll: 'ทั้งหมด',
+    catNoodle: 'บะหมี่ & เส้น',
+    catSauce: 'ซอส & เครื่องปรุง',
+    catSnack: 'ของว่าง & ขนม',
+    catDrink: 'เครื่องดื่ม',
+    catFruit: 'ผัก / ผลไม้',
+    catIngredient: 'วัตถุดิบ',
+    prodSectionTag: 'สินค้าของเรา',
+    prodSectionTitle: 'สินค้าแนะนำ',
+    prodSectionSub: 'คัดสรรสินค้าไทยคุณภาพดีที่สุดสำหรับคุณ',
+    promoTag: '🔥 โปรโมชั่นพิเศษ',
+    promoTitle: 'ลด 10% สำหรับสั่งซื้อครั้งแรก!',
+    promoSub: 'ใช้โค้ดส่วนลด <strong>JOYTHAINEW</strong> เมื่อชำระเงิน',
+    promoBtn: 'ช้อปเลย!',
+    contactSectionTag: 'ติดต่อเรา',
+    contactSectionTitle: 'พร้อมให้บริการตลอด 24 ชม.',
+    contactLine: 'LINE Official',
+    contactEmail: 'อีเมล',
+    contactPhone: 'โทรศัพท์',
+    contactFacebook: 'Facebook',
+    footerBrandText: 'ร้านค้าออนไลน์สินค้าอาหารไทยระดับพรีเมียม จัดส่งรวดเร็วทั่วประเทศเยอรมนี',
+    footerColProducts: 'สินค้า',
+    footerColService: 'การจัดการ',
+    recProductsTag: 'แนะนำ',
+    recProductsTitle: 'สินค้าแนะนำ',
+    adminTabBanners: '📢 สินค้าแนะนำ',
+    footerAdminLink: '🔐 ระบบหลังบ้าน (Backoffice)',
+    footerColPayment: 'ช่องทางชำระเงิน',
+    footerCopyright: '© 2026 Joy Thai Shop. สงวนลิขสิทธิ์ทุกประการ | All Rights Reserved',
+    footerPrivacy: 'นโยบายความเป็นส่วนตัว',
+    footerTerms: 'ข้อกำหนดการใช้งาน',
+    cartTitle: '🛒 ตะกร้าของฉัน',
+    cartEmptyText: 'ยังไม่มีสินค้าในตะกร้า',
+    cartShopBtn: 'เลือกซื้อสินค้า',
+    cartSubtotalLabel: 'ยอดรวม',
+    cartFeeLabel: 'บวกค่าส่ง/บริการ 7€ (259฿)',
+    cartServiceFeeLabel: 'ค่าส่ง/บริการ (Flat €7)',
+    cartShippingLabel: 'ค่าจัดส่ง',
+    cartTotalLabel: 'รวมทั้งหมด',
+    cartCheckoutBtn: 'ดำเนินการชำระเงิน →',
+    cartContinueBtn: 'เลือกซื้อต่อ',
+    cartFeeRequired: '⚠️ กรุณาติ๊กยอมรับค่าบริการก่อนดำเนินการต่อ',
+    stepAddress: 'ที่อยู่',
+    stepPayment: 'ชำระเงิน',
+    stepConfirm: 'ยืนยัน',
+    shippingTitle: '📍 ข้อมูลการจัดส่ง',
+    fieldFullName: 'ชื่อ - นามสกุล',
+    fieldEmail: 'อีเมล',
+    fieldPhone: 'เบอร์โทรศัพท์',
+    fieldAddress: 'ที่อยู่',
+    fieldCity: 'เมือง',
+    fieldPostcode: 'รหัสไปรษณีย์',
+    fieldCountry: 'ประเทศ',
+    shippingInfoInit: 'จัดส่งในเยอรมนี: ฟรีเมื่อซื้อครบ €50 หรือ €4.90 สำหรับต่ำกว่า €50',
+    btnNextPayment: 'ถัดไป: วิธีชำระเงิน →',
+    paymentTitle: '💳 วิธีชำระเงิน',
+    paymentSectionGlobal: '🌏 ช่องทางสากล (International)',
+    pmPaypalSub: 'ชำระผ่านระบบบัญชี PayPal',
+    pmCardTitle: 'บัตรเครดิต / เดบิต',
+    pmCardSub: 'Visa, Mastercard, AMEX',
+    pmApplePaySub: 'ชำระสะดวกผ่าน Apple Pay',
+    pmGooglePaySub: 'ชำระสะดวกผ่าน Google Pay',
+    paymentSectionThai: '🇹🇭 ช่องทางไทย (Thai Payments)',
+    pmPromptPaySub: 'สแกน QR จ่ายด้วยแอปธนาคารไทย',
+    pmTransferTitle: 'โอนเงินเข้าบัญชีธนาคาร',
+    pmTransferSub: 'บัญชีกสิกรไทยในประเทศไทย',
+    pmTrueMoneySub: 'ชำระผ่าน TrueMoney Wallet',
+    fieldCardNum: 'หมายเลขบัตร',
+    fieldCardExp: 'วันหมดอายุ',
+    fieldCardName: 'ชื่อบนบัตร',
+    qrPlaceholder: 'QR Code จะถูกสร้างเพื่อสแกนหลังยืนยันคำสั่งซื้อ',
+    bankNameLabel: 'ธนาคาร:',
+    bankAccountNameLabel: 'ชื่อบัญชี:',
+    bankAccountNumLabel: 'เลขที่บัญชี:',
+    bankNote: '* โอนเงินเรียบร้อยแล้ว กรุณาส่งสลิปหลักฐานมาทาง LINE: @joythaishop',
+    btnBack: '← ย้อนกลับ',
+    btnNextConfirm: 'ถัดไป: ตรวจสอบ →',
+    confirmTitle: '✅ ตรวจสอบคำสั่งซื้อ',
+    confirmSubtotalLabel: 'ยอดสินค้า',
+    confirmShippingLabel: 'ค่าจัดส่ง',
+    confirmTotalLabel: 'รวมทั้งหมด',
+    btnEdit: '← แก้ไข',
+    btnPlaceOrder: '🎉 ยืนยันคำสั่งซื้อ',
+    successTitle: 'สั่งซื้อสำเร็จ!',
+    successSub: 'ขอบคุณที่ช้อปกับเรา คุณจะได้รับอีเมลยืนยันเร็วๆ นี้',
+    successOrderLabel: 'หมายเลขคำสั่งซื้อ:',
+    successCloseBtn: 'กลับหน้าหลัก',
+    
+    // Auth translations
+    authTabLogin: 'เข้าสู่ระบบ',
+    authTabRegister: 'สมัครสมาชิก',
+    authLoginTitle: '🔓 เข้าสู่ระบบสมาชิก',
+    authRegisterTitle: '📝 สมัครสมาชิกใหม่',
+    authUsernameLabel: 'ชื่อผู้ใช้ / Username (ID) *',
+    authPasswordLabel: 'รหัสผ่าน / Password *',
+    authSubmitBtnLogin: 'เข้าสู่ระบบ',
+    authSubmitBtnRegister: 'สมัครสมาชิก',
+    dropdownWelcome: 'สวัสดี,',
+    dropdownMyOrders: '📋 คำสั่งซื้อของฉัน',
+    dropdownLogout: '🚪 ออกจากระบบ',
+    myOrdersHeader: '📋 ประวัติคำสั่งซื้อของฉัน',
+    myOrdersEmptyText: 'ยังไม่มีประวัติคำสั่งซื้อ',
+    filterInStock: '✅ เฉพาะสินค้าพร้อมส่ง',
+    filterPriceLabel: '💰 ราคา (฿)',
+    priceMinPlaceholder: 'จาก',
+    priceMaxPlaceholder: 'ไปยัง',
+    filterApplyBtn: '🔍 ค้นหา',
+    filterClearBtn: '✕ ล้างเงื่อนไข',
+    
+    // Statuses
+    statusPreparing: 'เตรียมจัดส่ง',
+    statusShipping: 'กำลังจัดส่ง',
+    statusDelivered: 'จัดส่งสำเร็จ',
+    
+    // Admin translations
+    adminLoginHeader: '🔐 เข้าสู่ระบบหลังบ้าน',
+    adminPassLabel: 'รหัสผ่านผู้ดูแลระบบ (Admin Password)',
+    adminLoginBtn: 'เข้าสู่ระบบ',
+    adminDashTitle: '🛠️ ระบบจัดการหลังบ้าน (Backoffice)',
+    adminAddProductBtn: '+ เพิ่มสินค้าใหม่',
+    adminTabProducts: '📦 จัดการสินค้า',
+    adminTabOrders: '📑 จัดการคำสั่งซื้อ',
+    thImage: 'รูปภาพ',
+    thName: 'ชื่อสินค้า (TH / DE / EN)',
+    thCategory: 'หมวดหมู่',
+    thWeight: 'น้ำหนัก',
+    thPrice: 'ราคา (฿ / €)',
+    thActions: 'จัดการ',
+    adminLogoutBtn: 'ออกจากระบบผู้ดูแล',
+    thOrderId: 'เลขที่สั่งซื้อ',
+    thOrderCustomer: 'ผู้ซื้อ',
+    thOrderDetails: 'รายการสินค้า',
+    thOrderAddress: 'ที่อยู่จัดส่ง',
+    thOrderTotal: 'ยอดรวม',
+    thOrderStatus: 'สถานะการส่ง',
+    thTrackingNumber: 'เลขพัสดุ',
+    stockCount: 'ในสต็อก: {num} ชิ้น',
+    outOfStock: 'สินค้าหมด',
+    shippingTaxDisclaimer: 'รวมภาษีแล้ว ค่าจัดส่ง คำนวณเมื่อชำระเงิน',
+    sortFeatured: 'แนะนำ',
+    sortRelevant: 'เกี่ยวข้องมากที่สุด',
+    sortBestseller: 'ขายดี',
+    sortAlphaAsc: 'เรียงตามตัวอักษร A-Z',
+    sortAlphaDesc: 'เรียงตามตัวอักษร Z-A',
+    sortPriceAsc: 'ราคา จากต่ำไปสูง',
+    sortPriceDesc: 'ราคา จากสูงไปต่ำ',
+    sortDateAsc: 'วันที่ จากเก่าไปใหม่',
+    sortDateDesc: 'วันที่ จากใหม่ไปเก่า'
+  },
+  de: {
+    pageTitle: 'Joy Thai Shop | Thailändische Produkte in Deutschland',
+    notifText: 'Thailändische Produkte, versandbereit in Deutschland',
+    navHome: 'Startseite',
+    navProducts: 'Produkte',
+    navCategories: 'Kategorien',
+    navContact: 'Kontakt',
+    navSale: '🔥 Angebote',
+    saleModalTitle: 'Sonderangebote / Special Deals',
+    saleModalDesc: 'Exklusive Rabatte auf thailändische Produkte direkt nach Deutschland.',
+    searchPlaceholder: 'Produkte suchen...',
+    heroBadge: 'Thailändische Produkte, versandbereit in Deutschland',
+    heroTitle1: 'Thailändische Produkte',
+    heroTitle2: 'Direkt zu Ihnen nach Hause',
+    heroSub: 'Hochwertige thailändische Produkte und vieles mehr.<br>Garantiert frisch mit schnellem Versand weltweit.',
+    heroShopBtn: 'Jetzt einkaufen',
+    statProducts: 'Produkte',
+    statAuthentic: 'Authentisch',
+    statRating: 'Kundenbewertungen',
+    floatCard1: '100% Original aus Thailand',
+    floatCard2: 'Schneller DE-Versand',
+    catSectionTag: 'Unsere Produktbereiche',
+    catSectionTitle: 'Nach Kategorie wählen',
+    catAll: 'Alle',
+    catNoodle: 'Nudeln & Nudelsuppen',
+    catSauce: 'Saucen & Gewürze',
+    catSnack: 'Snacks & Süßigkeiten',
+    catDrink: 'Getränke',
+    catFruit: 'Obst & Früchte',
+    catIngredient: 'Zutaten',
+    prodSectionTag: 'Unsere Produkte',
+    prodSectionTitle: 'Empfohlene Produkte',
+    prodSectionSub: 'Ausgewählte thailändische Produkte von bester Qualität.',
+    promoTag: '🔥 Sonderangebot',
+    promoTitle: '10% Rabatt auf Ihre erste Bestellung!',
+    promoSub: 'Nutzen Sie den Rabattcode <strong>JOYTHAINEW</strong> beim Bezahlen',
+    promoBtn: 'Jetzt shoppen!',
+    contactSectionTag: 'Kontaktieren Sie uns',
+    contactSectionTitle: 'Rund um die Uhr für Sie da',
+    contactLine: 'LINE Official',
+    contactEmail: 'E-Mail',
+    contactPhone: 'Telefon',
+    contactFacebook: 'Facebook',
+    footerBrandText: 'Premium-Online-Shop für thailändische Lebensmittel mit schnellem Versand in ganz Deutschland.',
+    footerColProducts: 'Produkte',
+    footerColService: 'Verwaltung',
+    recProductsTag: 'Empfohlen',
+    recProductsTitle: 'Empfohlene Produkte',
+    adminTabBanners: '📢 Empfehlungen',
+    footerAdminLink: '🔐 Backoffice (Admin)',
+    footerColPayment: 'Zahlungsmethoden',
+    footerCopyright: '© 2026 Joy Thai Shop. Alle Rechte vorbehalten.',
+    footerPrivacy: 'Datenschutzbestimmungen',
+    footerTerms: 'Nutzungsbedingungen',
+    cartTitle: '🛒 Mein Warenkorb',
+    cartEmptyText: 'Ihr Warenkorb ist noch leer',
+    cartShopBtn: 'Produkte ansehen',
+    cartSubtotalLabel: 'Zwischensumme',
+    cartFeeLabel: 'Service/Versand +7€ (259฿) hinzufügen',
+    cartServiceFeeLabel: 'Service/Versand (Flat €7)',
+    cartShippingLabel: 'Versandkosten',
+    cartTotalLabel: 'Gesamtsumme',
+    cartCheckoutBtn: 'Zur Kasse gehen →',
+    cartContinueBtn: 'Weiter einkaufen',
+    cartFeeRequired: '⚠️ Bitte akzeptieren Sie die Servicegebühr, um fortzufahren',
+    stepAddress: 'Adresse',
+    stepPayment: 'Zahlung',
+    stepConfirm: 'Bestätigen',
+    shippingTitle: '📍 Lieferadresse',
+    fieldFullName: 'Vollständiger Name',
+    fieldEmail: 'E-Mail-Adresse',
+    fieldPhone: 'Telefonnummer',
+    fieldAddress: 'Straße und Hausnummer',
+    fieldCity: 'Stadt',
+    fieldPostcode: 'Postleitzahl',
+    fieldCountry: 'Land',
+    shippingInfoInit: 'Versand in DE: Kostenlos ab €50 oder €4.90 für Bestellungen unter €50',
+    btnNextPayment: 'Weiter zur Zahlung →',
+    paymentTitle: '💳 Zahlungsmethode',
+    paymentSectionGlobal: '🌏 International',
+    pmPaypalSub: 'Bezahlen mit Ihrem PayPal-Konto',
+    pmCardTitle: 'Kredit- / Debitkarte',
+    pmCardSub: 'Visa, Mastercard, AMEX',
+    pmApplePaySub: 'Schnell bezahlen mit Apple Pay',
+    pmGooglePaySub: 'Schnell bezahlen mit Google Pay',
+    paymentSectionThai: '🇹🇭 Thailändische Zahlungsmethoden',
+    pmPromptPaySub: 'Scannen Sie den QR-Code mit einer thailändischen Bank-App',
+    pmTransferTitle: 'Banküberweisung (Thailand)',
+    pmTransferSub: 'Überweisung auf ein KBank-Konto in Thailand',
+    pmTrueMoneySub: 'Zahlung mit TrueMoney Wallet',
+    fieldCardNum: 'Kartennummer',
+    fieldCardExp: 'Ablaufdatum',
+    fieldCardName: 'Karteninhaber',
+    qrPlaceholder: 'Der QR-Code wird nach der Bestätigung der Bestellung generiert',
+    bankNameLabel: 'Bank:',
+    bankAccountNameLabel: 'Kontoinhaber:',
+    bankAccountNumLabel: 'Kontonummer:',
+    bankNote: '* Bitte senden Sie den Überweisungsbeleg per LINE an: @joythaishop',
+    btnBack: '← Zurück',
+    btnNextConfirm: 'Weiter zur Übersicht →',
+    confirmTitle: '✅ Bestellung überprüfen',
+    confirmSubtotalLabel: 'Artikelwert',
+    confirmShippingLabel: 'Versandkosten',
+    confirmTotalLabel: 'Gesamtsumme',
+    btnEdit: '← Bearbeiten',
+    btnPlaceOrder: '🎉 Bestellung abschicken',
+    successTitle: 'Erfolgreich bestellt!',
+    successSub: 'Vielen Dank für Ihren Einkauf! Sie erhalten in Kürze eine Bestätigungs-E-Mail.',
+    successOrderLabel: 'Bestellnummer:',
+    successCloseBtn: 'Zur Startseite',
+    
+    // Auth
+    authTabLogin: 'Einloggen',
+    authTabRegister: 'Registrieren',
+    authLoginTitle: '🔓 Mitglieds-Login',
+    authRegisterTitle: '📝 Neues Konto erstellen',
+    authUsernameLabel: 'Benutzername (ID) *',
+    authPasswordLabel: 'Passwort *',
+    authSubmitBtnLogin: 'Einloggen',
+    authSubmitBtnRegister: 'Konto erstellen',
+    dropdownWelcome: 'Hallo,',
+    dropdownMyOrders: '📋 Meine Bestellungen',
+    dropdownLogout: '🚪 Abmelden',
+    myOrdersHeader: '📋 Meine Bestellungen',
+    myOrdersEmptyText: 'Keine Bestellungen vorhanden',
+    filterInStock: '✅ Nur auf Lager',
+    filterPriceLabel: '💰 Preis (฿)',
+    priceMinPlaceholder: 'Von',
+    priceMaxPlaceholder: 'Bis',
+    filterApplyBtn: '🔍 Suchen',
+    filterClearBtn: '✕ Zurücksetzen',
+    
+    // Statuses
+    statusPreparing: 'In Vorbereitung',
+    statusShipping: 'Auf dem Weg',
+    statusDelivered: 'Geliefert',
+    
+    // Admin
+    adminLoginHeader: '🔐 Backoffice Login',
+    adminPassLabel: 'Administrator-Passwort',
+    adminLoginBtn: 'Einloggen',
+    adminDashTitle: '🛠️ Backoffice-Dashboard',
+    adminAddProductBtn: '+ Neues Produkt',
+    adminTabProducts: '📦 Produkte verwalten',
+    adminTabOrders: '📑 Bestellungen verwalten',
+    thImage: 'Bild',
+    thName: 'Produktname (TH / DE / EN)',
+    thCategory: 'Kategorie',
+    thWeight: 'Gewicht',
+    thPrice: 'Preis (฿ / €)',
+    thActions: 'Aktion',
+    adminLogoutBtn: 'Abmelden',
+    thOrderId: 'Bestell-ID',
+    thOrderCustomer: 'Kunde',
+    thOrderDetails: 'Artikel',
+    thOrderAddress: 'Lieferadresse',
+    thOrderTotal: 'Gesamt',
+    thOrderStatus: 'Lieferstatus',
+    thTrackingNumber: 'Sendungsnummer',
+    stockCount: 'Auf Lager: {num} Stk.',
+    outOfStock: 'Ausverkauft',
+    shippingTaxDisclaimer: 'Inkl. MwSt. Versandkosten werden bei der Kasse berechnet',
+    sortFeatured: 'Empfohlen',
+    sortRelevant: 'Bedeutendste',
+    sortBestseller: 'Bestseller',
+    sortAlphaAsc: 'Alphabetisch A-Z',
+    sortAlphaDesc: 'Alphabetisch Z-A',
+    sortPriceAsc: 'Preis: Niedrig bis Hoch',
+    sortPriceDesc: 'Preis: Hoch bis Niedrig',
+    sortDateAsc: 'Datum: Alt bis Neu',
+    sortDateDesc: 'Datum: Neu bis Alt'
+  },
+  en: {
+    pageTitle: 'Joy Thai Shop | Premium Thai Products in Germany',
+    notifText: 'Thai products, ready to ship in Germany',
+    navHome: 'Home',
+    navProducts: 'Products',
+    navCategories: 'Categories',
+    navContact: 'Contact',
+    navSale: '🔥 Special Deals',
+    saleModalTitle: 'Special Deals & Offers',
+    saleModalDesc: 'Exclusive discounts on authentic Thai products delivered to Germany.',
+    searchPlaceholder: 'Search products...',
+    heroBadge: 'Thai Products, Ready to Ship in Germany',
+    heroTitle1: 'Thai Products',
+    heroTitle2: 'Delivered to Your Door',
+    heroSub: 'High-quality Thai products and much more.<br>Guaranteed freshness with fast shipping worldwide.',
+    heroShopBtn: 'Shop Now',
+    statProducts: 'Products',
+    statAuthentic: 'Authentic',
+    statRating: 'Customer Reviews',
+    floatCard1: '100% Thai Authentic',
+    floatCard2: 'Fast Germany Shipping',
+    catSectionTag: 'Product Categories',
+    catSectionTitle: 'Shop by Category',
+    catAll: 'All',
+    catNoodle: 'Noodles & Vermicelli',
+    catSauce: 'Saucen & Seasonings',
+    catSnack: 'Snacks & Sweets',
+    catDrink: 'Drinks',
+    catFruit: 'Fruits',
+    catIngredient: 'Ingredients',
+    prodSectionTag: 'Our Products',
+    prodSectionTitle: 'Featured Products',
+    prodSectionSub: 'We select the finest Thai products of premium quality for you.',
+    promoTag: '🔥 Special Promo',
+    promoTitle: 'Get 10% off your first order!',
+    promoSub: 'Use coupon code <strong>JOYTHAINEW</strong> at checkout',
+    promoBtn: 'Shop Now!',
+    contactSectionTag: 'Contact Us',
+    contactSectionTitle: 'Available 24/7 for you',
+    contactLine: 'LINE Official',
+    contactEmail: 'Email',
+    contactPhone: 'Phone',
+    contactFacebook: 'Facebook',
+    footerBrandText: 'Online store offering premium Thai groceries with fast shipping across Germany.',
+    footerColProducts: 'Products',
+    footerColService: 'Management',
+    recProductsTag: 'Featured',
+    recProductsTitle: 'Recommended Products',
+    adminTabBanners: '📢 Recommendations',
+    footerAdminLink: '🔐 Backoffice (Admin)',
+    footerColPayment: 'Payment Methods',
+    footerCopyright: '© 2026 Joy Thai Shop. All Rights Reserved.',
+    footerPrivacy: 'Privacy Policy',
+    footerTerms: 'Terms of Service',
+    cartTitle: '🛒 My Cart',
+    cartEmptyText: 'Your cart is empty',
+    cartShopBtn: 'Browse Products',
+    cartSubtotalLabel: 'Subtotal',
+    cartFeeLabel: 'Add Service/Shipping +7€ (259฿)',
+    cartServiceFeeLabel: 'Service/Shipping (Flat €7)',
+    cartShippingLabel: 'Shipping',
+    cartTotalLabel: 'Total',
+    cartCheckoutBtn: 'Proceed to Checkout →',
+    cartContinueBtn: 'Continue Shopping',
+    cartFeeRequired: '⚠️ Please accept the service fee to continue',
+    stepAddress: 'Address',
+    stepPayment: 'Payment',
+    stepConfirm: 'Confirm',
+    shippingTitle: '📍 Shipping Address',
+    fieldFullName: 'Full Name',
+    fieldEmail: 'Email Address',
+    fieldPhone: 'Phone Number',
+    fieldAddress: 'Street and House Number',
+    fieldCity: 'City',
+    fieldPostcode: 'Postcode',
+    fieldCountry: 'Country',
+    shippingInfoInit: 'Shipping in DE: Free over €50, or €4.90 for orders below €50',
+    btnNextPayment: 'Next: Payment Method →',
+    paymentTitle: '💳 Payment Method',
+    paymentSectionGlobal: '🌏 International',
+    pmPaypalSub: 'Pay securely using your PayPal account',
+    pmCardTitle: 'Credit / Debit Card',
+    pmCardSub: 'Visa, Mastercard, AMEX',
+    pmApplePaySub: 'Pay conveniently with Apple Pay',
+    pmGooglePaySub: 'Pay conveniently with Google Pay',
+    paymentSectionThai: '🇹🇭 Thai Payments',
+    pmPromptPaySub: 'Scan QR using any Thai mobile banking app',
+    pmTransferTitle: 'Bank Transfer (Thailand)',
+    pmTransferSub: 'Transfer to KBank account in Thailand',
+    pmTrueMoneySub: 'Pay with TrueMoney Wallet',
+    fieldCardNum: 'Card Number',
+    fieldCardExp: 'Expiration Date',
+    fieldCardName: 'Cardholder Name',
+    qrPlaceholder: 'QR Code will be generated after order confirmation',
+    bankNameLabel: 'Bank:',
+    bankAccountNameLabel: 'Account Name:',
+    bankAccountNumLabel: 'Account Number:',
+    bankNote: '* Please send your transfer slip via LINE to: @joythaishop',
+    btnBack: '← Go Back',
+    btnNextConfirm: 'Next: Review Order →',
+    confirmTitle: '✅ Review Your Order',
+    confirmSubtotalLabel: 'Items Subtotal',
+    confirmShippingLabel: 'Shipping Fee',
+    confirmTotalLabel: 'Order Total',
+    btnEdit: '← Edit Details',
+    btnPlaceOrder: '🎉 Place Order',
+    successTitle: 'Order Placed!',
+    successSub: 'Thank you for shopping with us! You will receive a confirmation email shortly.',
+    successOrderLabel: 'Order Reference:',
+    successCloseBtn: 'Back to Home',
+    
+    // Auth
+    authTabLogin: 'Log In',
+    authTabRegister: 'Register',
+    authLoginTitle: '🔓 Member Login',
+    authRegisterTitle: '📝 Create New Account',
+    authUsernameLabel: 'Username (ID) *',
+    authPasswordLabel: 'Password *',
+    authSubmitBtnLogin: 'Log In',
+    authSubmitBtnRegister: 'Create Account',
+    dropdownWelcome: 'Hello,',
+    dropdownMyOrders: '📋 My Orders',
+    dropdownLogout: '🚪 Log Out',
+    myOrdersHeader: '📋 My Orders',
+    myOrdersEmptyText: 'No order history',
+    filterInStock: '✅ In Stock Only',
+    filterPriceLabel: '💰 Price (฿)',
+    priceMinPlaceholder: 'From',
+    priceMaxPlaceholder: 'To',
+    filterApplyBtn: '🔍 Search',
+    filterClearBtn: '✕ Clear',
+    
+    // Statuses
+    statusPreparing: 'Preparing',
+    statusShipping: 'Shipping',
+    statusDelivered: 'Delivered',
+    
+    // Admin
+    adminLoginHeader: '🔐 Backoffice Login',
+    adminPassLabel: 'Administrator Password',
+    adminLoginBtn: 'Log In',
+    adminDashTitle: '🛠️ Backoffice Dashboard',
+    adminAddProductBtn: '+ Add Product',
+    adminTabProducts: '📦 Manage Products',
+    adminTabOrders: '📑 Manage Orders',
+    thImage: 'Image',
+    thName: 'Product Name (TH / DE / EN)',
+    thCategory: 'Category',
+    thWeight: 'Weight',
+    thPrice: 'Price (฿ / €)',
+    thActions: 'Actions',
+    adminLogoutBtn: 'Log Out',
+    thOrderId: 'Order ID',
+    thOrderCustomer: 'Customer',
+    thOrderDetails: 'Items',
+    thOrderAddress: 'Shipping Address',
+    thOrderTotal: 'Total',
+    thOrderStatus: 'Delivery Status',
+    thTrackingNumber: 'Tracking Number',
+    stockCount: 'In Stock: {num} items',
+    outOfStock: 'Out of Stock',
+    shippingTaxDisclaimer: 'Incl. VAT. Shipping calculated at checkout',
+    sortFeatured: 'Featured',
+    sortRelevant: 'Most Relevant',
+    sortBestseller: 'Bestseller',
+    sortAlphaAsc: 'Alphabetical A-Z',
+    sortAlphaDesc: 'Alphabetical Z-A',
+    sortPriceAsc: 'Price: Low to High',
+    sortPriceDesc: 'Price: High to Low',
+    sortDateAsc: 'Date: Old to New',
+    sortDateDesc: 'Date: New to Old'
+  }
+};
+
+// ── State Management ──
+let currentLang = localStorage.getItem('joythai_lang') || 'de';
+
+// Products State (persisted)
+let activeProducts = JSON.parse(localStorage.getItem('joythai_products'));
+if (!activeProducts || !Array.isArray(activeProducts) || activeProducts.length === 0) {
+  activeProducts = DEFAULT_PRODUCTS.map(p => ({ ...p, stock: p.stock !== undefined ? p.stock : 12, inStock: (p.stock !== undefined ? p.stock : 12) > 0 }));
+  localStorage.setItem('joythai_products', JSON.stringify(activeProducts));
+} else {
+  // Migrate: ensure all products have stock & inStock fields
+  let migrated = false;
+  activeProducts = activeProducts.map(p => {
+    let updated = { ...p };
+    if (p.stock === undefined) {
+      updated.stock = p.inStock === false ? 0 : 12;
+      migrated = true;
+    }
+    if (updated.inStock !== (updated.stock > 0)) {
+      updated.inStock = updated.stock > 0;
+      migrated = true;
+    }
+    return updated;
+  });
+  if (migrated) localStorage.setItem('joythai_products', JSON.stringify(activeProducts));
+}
+
+// Users State (persisted)
+let users = JSON.parse(localStorage.getItem('joythai_users') || '[]');
+
+// Active Session
+let currentUser = localStorage.getItem('joythai_currentUser') || null;
+
+// Orders State (persisted)
+let orders = JSON.parse(localStorage.getItem('joythai_orders') || '[]');
+
+let cart = JSON.parse(localStorage.getItem('joythai_cart') || '[]');
+let wishlist = JSON.parse(localStorage.getItem('joythai_wishlist') || '[]');
+let currentFilter = 'all';
+let searchQuery = '';
+let filterInStockOnly = false;
+let filterPriceMin = null;
+let filterPriceMax = null;
+let currentSort = 'featured';
+let shippingCostEur = 0;
+let shippingCostThb = 0;
+let currentStep = 1;
+let selectedPayMethod = 'paypal';
+let uploadedPaymentSlipBase64 = '';
+
+let applyServiceFee = localStorage.getItem('joythai_apply_service_fee') !== 'false';
+
+function updateCheckoutBtnState() {
+  const btn = document.getElementById('cartCheckoutBtn');
+  const warn = document.getElementById('cartFeeWarning');
+  if (!btn) return;
+  if (!applyServiceFee) {
+    btn.disabled = true;
+    btn.style.opacity = '0.45';
+    btn.style.cursor = 'not-allowed';
+    if (warn) warn.style.display = 'block';
+  } else {
+    btn.disabled = false;
+    btn.style.opacity = '';
+    btn.style.cursor = '';
+    if (warn) warn.style.display = 'none';
+  }
+}
+
+function toggleCartFee(checked) {
+  applyServiceFee = checked;
+  localStorage.setItem('joythai_apply_service_fee', checked ? 'true' : 'false');
+  
+  // Sync checkbox state in other views (like checkout if we add it there)
+  const cb = document.getElementById('cartFeeCheckbox');
+  if (cb) cb.checked = checked;
+  
+  updateCheckoutBtnState();
+  renderCart();
+  if (document.getElementById('checkoutOverlay').classList.contains('open') && currentStep === 3) {
+    renderOrderSummary();
+  }
+}
+
+let activeAuthTab = 'login';
+let currentAdminTab = 'products';
+
+// ── Exchange Rate Constants ──
+const EUR_TO_THB = 37.0;
+
+// ── Service Fee per Item ──
+const SERVICE_FEE_EUR = 7;          // €7 per item per qty
+const SERVICE_FEE_THB = 7 * 37;    // ฿259 per item per qty
+
+function migratePrices() {
+  // v5 migration kept here only for reference – no longer applied.
+  // v6 migration below reverses the v5 price inflation.
+}
+
+function migratePricesV6() {
+  const done = localStorage.getItem('joythai_prices_migrated_v6');
+  if (done) return;
+
+  if (localStorage.getItem('joythai_products')) {
+    try {
+      let prods = JSON.parse(localStorage.getItem('joythai_products'));
+      if (prods && Array.isArray(prods)) {
+        const p1 = prods.find(p => p.id === 1);
+        const needsRevert = p1 && p1.priceThb > 200;
+        
+        if (needsRevert) {
+          prods = prods.map(p => {
+            let updated = { ...p };
+            updated.priceEur = Math.max(0, (Number(p.priceEur) || 0) - 7);
+            updated.priceThb = Math.max(0, (Number(p.priceThb) || 0) - 266);
+            if (p.originalPriceEur != null) updated.originalPriceEur = Math.max(0, (Number(p.originalPriceEur) || 0) - 7);
+            if (p.originalPriceThb != null) updated.originalPriceThb = Math.max(0, (Number(p.originalPriceThb) || 0) - 266);
+            return updated;
+          });
+          localStorage.setItem('joythai_products', JSON.stringify(prods));
+          activeProducts = prods;
+        }
+      }
+    } catch(e) {}
+  }
+  
+  try {
+    let localCart = JSON.parse(localStorage.getItem('joythai_cart') || '[]');
+    if (localCart && Array.isArray(localCart) && localCart.length > 0) {
+      localCart = localCart.map(item => {
+        let updated = { ...item };
+        const def = DEFAULT_PRODUCTS.find(p => p.id === item.id);
+        if (def && item.priceThb > def.priceThb) {
+          updated.priceEur = Math.max(0, (Number(item.priceEur) || 0) - 7);
+          updated.priceThb = Math.max(0, (Number(item.priceThb) || 0) - 266);
+        }
+        return updated;
+      });
+      localStorage.setItem('joythai_cart', JSON.stringify(localCart));
+      cart = localCart;
+    }
+  } catch(e) {}
+
+  localStorage.setItem('joythai_prices_migrated_v6', 'true');
+}
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', () => {
+  migratePrices();
+  migratePricesV6();
+  setLanguage(currentLang);
+  renderProducts();
+  updateCartBadge();
+  updateWishlistBadge();
+  initScrollReveal();
+  initScrollHeader();
+  updateShippingCost();
+  updateHeaderUser();
+  updateHeroStats();
+  initRecommendedBanners();
+  
+  // Close dropdown on outside click
+  window.addEventListener('click', (e) => {
+    if (!e.target.closest('.lang-selector')) {
+      document.getElementById('langDropdown').classList.remove('open');
+    }
+    if (!e.target.closest('.user-profile-wrap')) {
+      document.getElementById('profileDropdown').classList.remove('open');
+    }
+    if (!e.target.closest('.filter-sort-selector')) {
+      const drop = document.getElementById('sortDropdown');
+      if (drop) drop.classList.remove('open');
+      const selector = document.getElementById('sortSelector');
+      if (selector) selector.classList.remove('open');
+    }
+  });
+});
+
+// ── Language Toggle & Translation Engine ──
+function toggleLangDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('langDropdown').classList.toggle('open');
+}
+
+function changeLanguage(lang) {
+  setLanguage(lang);
+  document.getElementById('langDropdown').classList.remove('open');
+  renderProducts();
+  if (document.getElementById('cartDrawer').classList.contains('open')) {
+    renderCart();
+  }
+  if (document.getElementById('checkoutOverlay').classList.contains('open') && currentStep === 3) {
+    renderOrderSummary();
+  }
+}
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('joythai_lang', lang);
+  
+  // Update flag icon
+  const flags = { th: '🇹🇭', de: '🇩🇪', en: '🇺🇸' };
+  document.getElementById('activeLangFlag').textContent = flags[lang] || '🇹🇭';
+  
+  // Translate static text elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
+      el.innerHTML = TRANSLATIONS[lang][key];
+    }
+  });
+  
+  // Translate placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
+      el.setAttribute('placeholder', TRANSLATIONS[lang][key]);
+    }
+  });
+
+  // Translate document title
+  if (TRANSLATIONS[lang] && TRANSLATIONS[lang].pageTitle) {
+    document.title = TRANSLATIONS[lang].pageTitle;
+  }
+}
+
+
+
+// ── Scroll Header ──
+function initScrollHeader() {
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 50);
+  });
+}
+
+// ── Scroll Reveal ──
+function initScrollReveal() {
+  const els = document.querySelectorAll('.section-header, .cat-card, .product-card, .contact-item');
+  els.forEach(el => el.classList.add('reveal'));
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+
+// ── Get Translation field ──
+function getVal(field) {
+  if (!field) return '';
+  if (typeof field === 'object') {
+    return field[currentLang] || field['en'] || field['th'] || '';
+  }
+  return field;
+}
+
+// ── Get Bestselling Product IDs (Top 3 with at least 1 unit sold) ──
+function getBestsellerIds() {
+  const counts = {};
+  orders.forEach(order => {
+    if (order.items) {
+      order.items.forEach(item => {
+        counts[item.id] = (counts[item.id] || 0) + (item.qty || 0);
+      });
+    }
+  });
+  const sorted = Object.keys(counts)
+    .filter(id => counts[id] > 0)
+    .sort((a, b) => counts[b] - counts[a]);
+  return sorted.slice(0, 3).map(id => parseInt(id));
+}
+
+// ── Filter Functions ──
+function toggleInStockFilter() {
+  filterInStockOnly = document.getElementById('filterInStock').checked;
+  renderProducts(currentFilter, searchQuery);
+}
+
+function applyPriceFilter() {
+  const minEl = document.getElementById('priceMin');
+  const maxEl = document.getElementById('priceMax');
+  filterPriceMin = minEl.value !== '' ? parseFloat(minEl.value) : null;
+  filterPriceMax = maxEl.value !== '' ? parseFloat(maxEl.value) : null;
+  renderProducts(currentFilter, searchQuery);
+}
+
+function clearFilters() {
+  filterInStockOnly = false;
+  filterPriceMin = null;
+  filterPriceMax = null;
+  currentSort = 'featured';
+  document.getElementById('filterInStock').checked = false;
+  document.getElementById('priceMin').value = '';
+  document.getElementById('priceMax').value = '';
+  
+  // Reset sort UI active option
+  document.querySelectorAll('#sortDropdown .sort-option').forEach(btn => {
+    if (btn.getAttribute('data-sort') === 'featured') {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+  
+  const currentSortLabel = document.getElementById('currentSortLabel');
+  if (currentSortLabel) {
+    currentSortLabel.setAttribute('data-i18n', 'sortFeatured');
+    if (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang]['sortFeatured']) {
+      currentSortLabel.innerHTML = TRANSLATIONS[currentLang]['sortFeatured'];
+    }
+  }
+
+  renderProducts(currentFilter, searchQuery);
+}
+
+// ── Sorting Selector Functions ──
+function toggleSortDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('sortDropdown').classList.toggle('open');
+  document.getElementById('sortSelector').classList.toggle('open');
+}
+
+function selectSortOption(option) {
+  currentSort = option;
+  
+  // Update active class in dropdown options
+  document.querySelectorAll('#sortDropdown .sort-option').forEach(btn => {
+    if (btn.getAttribute('data-sort') === option) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+  
+  // Update button label to match active option
+  const labelMap = {
+    'featured': 'sortFeatured',
+    'relevant': 'sortRelevant',
+    'bestseller': 'sortBestseller',
+    'alpha-asc': 'sortAlphaAsc',
+    'alpha-desc': 'sortAlphaDesc',
+    'price-asc': 'sortPriceAsc',
+    'price-desc': 'sortPriceDesc',
+    'date-asc': 'sortDateAsc',
+    'date-desc': 'sortDateDesc'
+  };
+  
+  const currentSortLabel = document.getElementById('currentSortLabel');
+  if (currentSortLabel) {
+    currentSortLabel.setAttribute('data-i18n', labelMap[option]);
+    const key = labelMap[option];
+    if (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) {
+      currentSortLabel.innerHTML = TRANSLATIONS[currentLang][key];
+    }
+  }
+  
+  // Close dropdown
+  document.getElementById('sortDropdown').classList.remove('open');
+  document.getElementById('sortSelector').classList.remove('open');
+  
+  // Re-render products
+  renderProducts(currentFilter, searchQuery);
+}
+
+// ── Render Products ──
+function renderProducts(filter = 'all', query = '') {
+  const grid = document.getElementById('productsGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  
+  const bestsellerIds = getBestsellerIds();
+  
+  let filtered = activeProducts.filter(p => {
+    const matchCat = filter === 'all' || p.category === filter;
+    const nameStr = (getVal(p.name) + ' ' + (p.name.th || '') + ' ' + (p.name.de || '') + ' ' + (p.name.en || '')).toLowerCase();
+    const matchQ = !query || nameStr.includes(query.toLowerCase());
+    const matchInStock = !filterInStockOnly || p.inStock === true;
+    const matchPriceMin = filterPriceMin === null || p.priceThb >= filterPriceMin;
+    const matchPriceMax = filterPriceMax === null || p.priceThb <= filterPriceMax;
+    return matchCat && matchQ && matchInStock && matchPriceMin && matchPriceMax;
+  });
+  
+  // Apply sorting
+  if (currentSort === 'featured') {
+    filtered.sort((a, b) => Number(a.id || 0) - Number(b.id || 0));
+  } else if (currentSort === 'relevant') {
+    if (query) {
+      filtered.sort((a, b) => {
+        const nameA = String(getVal(a.name) || '').trim().toLowerCase();
+        const nameB = String(getVal(b.name) || '').trim().toLowerCase();
+        const q = query.toLowerCase();
+        const indexA = nameA.indexOf(q);
+        const indexB = nameB.indexOf(q);
+        if (indexA !== -1 && indexB !== -1) {
+          if (indexA !== indexB) return indexA - indexB;
+          return nameA.localeCompare(nameB, currentLang || 'de', { sensitivity: 'base' });
+        }
+        if (indexA !== -1) return -1;
+        if (indexB !== -1) return 1;
+        return 0;
+      });
+    } else {
+      filtered.sort((a, b) => Number(a.id || 0) - Number(b.id || 0));
+    }
+  } else if (currentSort === 'bestseller') {
+    const counts = {};
+    orders.forEach(order => {
+      if (order.items) {
+        order.items.forEach(item => {
+          counts[item.id] = (counts[item.id] || 0) + (item.qty || 0);
+        });
+      }
+    });
+    // Sort descending by sales count (with virtual count boost for static 'hot' badge)
+    filtered.sort((a, b) => {
+      let countA = counts[a.id] || 0;
+      let countB = counts[b.id] || 0;
+      
+      // Boost static bestseller badge products
+      if (a.badge === 'hot') countA += 1000;
+      if (b.badge === 'hot') countB += 1000;
+      
+      if (countB !== countA) return countB - countA;
+      
+      // Fallback: sort by rating descending
+      const ratingA = a.rating || 0;
+      const ratingB = b.rating || 0;
+      if (ratingB !== ratingA) return ratingB - ratingA;
+      
+      return Number(a.id || 0) - Number(b.id || 0); // secondary fallback
+    });
+  } else if (currentSort === 'alpha-asc') {
+    filtered.sort((a, b) => {
+      const nameA = String(getVal(a.name) || '').trim().toLowerCase();
+      const nameB = String(getVal(b.name) || '').trim().toLowerCase();
+      return nameA.localeCompare(nameB, currentLang || 'de', { sensitivity: 'base' });
+    });
+  } else if (currentSort === 'alpha-desc') {
+    filtered.sort((a, b) => {
+      const nameA = String(getVal(a.name) || '').trim().toLowerCase();
+      const nameB = String(getVal(b.name) || '').trim().toLowerCase();
+      return nameB.localeCompare(nameA, currentLang || 'de', { sensitivity: 'base' });
+    });
+  } else if (currentSort === 'price-asc') {
+    filtered.sort((a, b) => {
+      const valA = Number(currentLang === 'th' ? a.priceThb : a.priceEur) || 0;
+      const valB = Number(currentLang === 'th' ? b.priceThb : b.priceEur) || 0;
+      return valA - valB;
+    });
+  } else if (currentSort === 'price-desc') {
+    filtered.sort((a, b) => {
+      const valA = Number(currentLang === 'th' ? a.priceThb : a.priceEur) || 0;
+      const valB = Number(currentLang === 'th' ? b.priceThb : b.priceEur) || 0;
+      return valB - valA;
+    });
+  } else if (currentSort === 'date-asc') {
+    filtered.sort((a, b) => Number(a.id || 0) - Number(b.id || 0));
+  } else if (currentSort === 'date-desc') {
+    filtered.sort((a, b) => Number(b.id || 0) - Number(a.id || 0));
+  }
+  
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text3)">
+      <div style="font-size:48px;margin-bottom:16px">🔍</div>
+      <p>${currentLang === 'de' ? 'Keine Produkte gefunden' : currentLang === 'en' ? 'No products found' : 'ไม่พบสินค้าที่ค้นหา'}</p>
+    </div>`;
+    return;
+  }
+  
+  const categoriesOrder = ['noodle', 'sauce', 'snack', 'drink', 'fruit', 'ingredient'];
+  const catImages = {
+    noodle: 'images/cat_noodle.png',
+    sauce: 'images/cat_sauce.png',
+    snack: 'images/cat_snack.png',
+    drink: 'images/cat_drink.png',
+    fruit: 'images/cat_fruit.png',
+    ingredient: 'images/cat_ingredient.png'
+  };
+  let delayIndex = 0;
+  
+  if (filter === 'all' || query) {
+    categoriesOrder.forEach(cat => {
+      const catProducts = filtered.filter(p => p.category === cat);
+      if (catProducts.length > 0) {
+        const header = document.createElement('div');
+        header.className = 'product-category-group-header';
+        const imgUrl = catImages[cat] || 'images/cat_all.png';
+        header.innerHTML = `<img src="${imgUrl}" alt="${cat}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1.5px solid var(--border2); display:block; flex-shrink:0;"> ${getCatName(cat)}`;
+        grid.appendChild(header);
+        
+        catProducts.forEach(p => {
+          const card = createProductCardHTML(p, delayIndex++, bestsellerIds);
+          grid.appendChild(card);
+        });
+      }
+    });
+  } else {
+    const catProducts = filtered;
+    if (catProducts.length > 0) {
+      const header = document.createElement('div');
+      header.className = 'product-category-group-header';
+      const imgUrl = catImages[filter] || 'images/cat_all.png';
+      header.innerHTML = `<img src="${imgUrl}" alt="${filter}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1.5px solid var(--border2); display:block; flex-shrink:0;"> ${getCatName(filter)}`;
+      grid.appendChild(header);
+      
+      catProducts.forEach(p => {
+        const card = createProductCardHTML(p, delayIndex++, bestsellerIds);
+        grid.appendChild(card);
+      });
+    }
+  }
+  
+  // Trigger reveal for new cards
+  setTimeout(() => {
+    document.querySelectorAll('.product-card.reveal').forEach(el => el.classList.add('visible'));
+  }, 100);
+}
+
+function createProductCardHTML(p, i, bestsellerIds) {
+  const card = document.createElement('div');
+  card.className = 'product-card reveal';
+  card.style.animationDelay = `${i * 0.05}s`;
+  card.style.cursor = 'pointer';
+  card.onclick = (e) => {
+    if (e.target.closest('.add-to-cart') || e.target.closest('.product-wishlist')) return;
+    openProductDetail(p.id);
+  };
+  
+  const localizedBtnText = currentLang === 'de' ? 'In den Korb' : currentLang === 'en' ? 'Add to Cart' : 'ใส่ตะกร้า';
+  
+  const isOutOfStock = p.stock === 0 || p.stock === undefined;
+  const stockText = isOutOfStock
+    ? TRANSLATIONS[currentLang].outOfStock
+    : TRANSLATIONS[currentLang].stockCount.replace('{num}', p.stock);
+  const stockColor = isOutOfStock ? '#ef4444' : '#2b9348';
+  const disabledAttr = isOutOfStock ? 'disabled' : '';
+  
+  const isBestseller = bestsellerIds.includes(Number(p.id));
+  let badgeHtml = '';
+  if (p.badge) {
+    badgeHtml = `<div class="product-badge ${p.badge}">${getVal(p.badgeText) || p.badge}</div>`;
+  } else if (isBestseller) {
+    const bestText = currentLang === 'de' ? '🔥 Bestseller' : currentLang === 'en' ? '🔥 Bestseller' : '🔥 ขายดี';
+    badgeHtml = `<div class="product-badge hot">${bestText}</div>`;
+  }
+  
+  card.innerHTML = `
+    <div class="product-img-wrap">
+      ${p.image
+        ? `<img src="${p.image}" alt="${getVal(p.name)}" onerror="this.parentElement.innerHTML='<div style=font-size:64px;padding:40px>${p.emoji || '🌶️'}</div>'">`
+        : `<div style="font-size:64px;padding:40px;">${p.emoji || '🌶️'}</div>`
+      }
+      ${badgeHtml}
+      <button class="product-wishlist" data-id="${p.id}" onclick="toggleWishlist(this, ${p.id})" aria-label="Save">${wishlist.includes(Number(p.id)) ? '❤️' : '🤍'}</button>
+      ${!isOutOfStock ? '<div class="instock-badge">✅ พร้อมส่ง</div>' : '<div class="outstock-badge">⏳ รอสินค้า</div>'}
+    </div>
+    <div class="product-info">
+      <div class="product-category">${getCatName(p.category)}</div>
+      <div class="product-name">${getVal(p.name)}</div>
+      <div class="product-weight">${p.weight || 'N/A'}</div>
+      <div class="product-stock-display" style="font-size:12.5px; font-weight:700; margin-top:4px; color:${stockColor};">${stockText}</div>
+      <div class="product-desc">${getVal(p.desc)}</div>
+      <div class="product-footer">
+        <div class="product-price">
+          <span class="price-main">
+            ฿${p.priceThb ? p.priceThb.toLocaleString() : 0}
+            ${p.onSale && p.originalPriceThb ? `<span style="text-decoration:line-through; font-size:13px; opacity:0.6; font-weight:normal; margin-left:6px; color:var(--text3);">฿${p.originalPriceThb.toLocaleString()}</span>` : ''}
+          </span>
+          <span class="price-sec">
+            €${p.priceEur ? p.priceEur.toFixed(2) : '0.00'}
+            ${p.onSale && p.originalPriceEur ? `<span style="text-decoration:line-through; font-size:11px; opacity:0.6; font-weight:normal; margin-left:4px; color:var(--text3);">€${p.originalPriceEur.toFixed(2)}</span>` : ''}
+          </span>
+        </div>
+        <button class="add-to-cart" id="addCart${p.id}" onclick="addToCart('${p.id}')" ${disabledAttr}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          ${localizedBtnText}
+        </button>
+      </div>
+    </div>`;
+  return card;
+}
+
+function getCatName(cat) {
+  const map = {
+    noodle: { th: 'บะหมี่ & เส้น', de: 'Nudeln & Vermicelli', en: 'Noodles & Vermicelli' },
+    sauce: { th: 'ซอส & เครื่องปรุง', de: 'Saucen & Gewürze', en: 'Saucen & Seasonings' },
+    snack: { th: 'ของว่าง & ขนม', de: 'Snacks & Süßigkeiten', en: 'Snacks & Sweets' },
+    drink: { th: 'เครื่องดื่ม', de: 'Getränke', en: 'Drinks' },
+    fruit: { th: 'ผัก / ผลไม้', de: 'Gemüse & Obst', en: 'Vegetables & Fruits' },
+    ingredient: { th: 'วัตถุดิบ', de: 'Zutaten', en: 'Ingredients' }
+  };
+  return map[cat] ? map[cat][currentLang] || map[cat]['en'] : cat;
+}
+
+function toggleWishlist(btn, productId) {
+  if (window.event) window.event.stopPropagation();
+  productId = Number(productId);
+  const index = wishlist.indexOf(productId);
+  let added = false;
+  if (index === -1) {
+    wishlist.push(productId);
+    added = true;
+    showToast(currentLang === 'de' ? 'Zu Wunschliste hinzugefügt!' : currentLang === 'en' ? 'Added to wishlist!' : 'เพิ่มในรายการโปรดแล้ว!', 'success');
+  } else {
+    wishlist.splice(index, 1);
+    showToast(currentLang === 'de' ? 'Aus Wunschliste entfernt.' : currentLang === 'en' ? 'Removed from wishlist.' : 'นำออกจากรายการโปรดแล้ว!', 'info');
+  }
+  localStorage.setItem('joythai_wishlist', JSON.stringify(wishlist));
+  
+  updateWishlistBadge();
+  
+  // Update all matching buttons in DOM
+  document.querySelectorAll(`.product-wishlist[data-id="${productId}"]`).forEach(b => {
+    b.textContent = added ? '❤️' : '🤍';
+    b.style.transform = 'scale(1.3)';
+    setTimeout(() => b.style.transform = '', 300);
+  });
+  
+  if (btn && btn.tagName === 'BUTTON') {
+    btn.textContent = added ? '❤️' : '🤍';
+    btn.style.transform = 'scale(1.3)';
+    setTimeout(() => btn.style.transform = '', 300);
+  }
+  
+  renderWishlist();
+}
+
+function openWishlist() {
+  document.getElementById('wishlistOverlay').classList.add('open');
+  document.getElementById('wishlistDrawer').classList.add('open');
+  renderWishlist();
+}
+
+function closeWishlist() {
+  document.getElementById('wishlistOverlay').classList.remove('open');
+  document.getElementById('wishlistDrawer').classList.remove('open');
+}
+
+function updateWishlistBadge() {
+  const total = wishlist.length;
+  const badge = document.getElementById('wishlistBadge');
+  if (badge) {
+    badge.textContent = total;
+    badge.style.display = total === 0 ? 'none' : 'flex';
+  }
+}
+
+function renderWishlist() {
+  const body = document.getElementById('wishlistItems');
+  const empty = document.getElementById('wishlistEmpty');
+  const footer = document.getElementById('wishlistFooter');
+  if (!body || !empty || !footer) return;
+  body.innerHTML = '';
+  
+  if (wishlist.length === 0) {
+    empty.style.display = 'block';
+    footer.style.display = 'none';
+    return;
+  }
+  
+  empty.style.display = 'none';
+  footer.style.display = 'block';
+  
+  wishlist.forEach(productId => {
+    const p = activeProducts.find(x => String(x.id) === String(productId));
+    if (!p) return;
+    
+    const el = document.createElement('div');
+    el.className = 'wishlist-item';
+    
+    const isOutOfStock = p.stock === 0 || p.stock === undefined;
+    const disabledAttr = isOutOfStock ? 'disabled' : '';
+    const addedText = currentLang === 'de' ? 'In den Korb' : currentLang === 'en' ? 'Add' : 'ใส่ตะกร้า';
+    
+    el.innerHTML = `
+      <div class="wishlist-item-img">
+        ${p.image
+          ? `<img src="${p.image}" alt="${getVal(p.name)}" onerror="this.parentElement.innerHTML='${p.emoji || '🌶️'}'">`
+          : p.emoji || '🌶️'}
+      </div>
+      <div class="wishlist-item-info" style="cursor:pointer;" onclick="closeWishlist(); openProductDetail(${p.id});">
+        <div class="wishlist-item-name">${getVal(p.name)} (${p.weight || 'N/A'})</div>
+        <div class="wishlist-item-price" style="font-size:12.5px;">
+          ฿${p.priceThb ? p.priceThb.toLocaleString() : 0} / €${p.priceEur ? p.priceEur.toFixed(2) : '0.00'}
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="add-to-cart btn btn-primary btn-sm" onclick="addToCart('${p.id}')" ${disabledAttr} style="padding:6px 10px; font-size:12px; height:auto;">
+          ${addedText}
+        </button>
+        <button class="wishlist-item-remove" onclick="toggleWishlist(null, ${p.id})">🗑</button>
+      </div>`;
+    body.appendChild(el);
+  });
+}
+
+function addAllWishlistToCart() {
+  let addedCount = 0;
+  wishlist.forEach(productId => {
+    const p = activeProducts.find(x => String(x.id) === String(productId));
+    if (p && p.stock > 0) {
+      const existing = cart.find(i => String(i.id) === String(p.id));
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          id: p.id,
+          name: p.name,
+          weight: p.weight,
+          priceThb: p.priceThb,
+          priceEur: p.priceEur,
+          image: p.image,
+          emoji: p.emoji,
+          qty: 1
+        });
+      }
+      addedCount++;
+    }
+  });
+  if (addedCount > 0) {
+    saveCart();
+    updateCartBadge();
+    showToast(currentLang === 'de' ? `✅ ${addedCount} Artikel zum Warenkorb hinzugefügt!` : currentLang === 'en' ? `✅ ${addedCount} items added to cart!` : `✅ เพิ่มสินค้า ${addedCount} รายการลงตะกร้าแล้ว!`, 'success');
+    closeWishlist();
+    openCart();
+  } else {
+    showToast(currentLang === 'de' ? '❌ Keine Artikel auf Lager zum Hinzufügen' : currentLang === 'en' ? '❌ No items in stock to add' : '❌ ไม่มีสินค้าพร้อมส่งในรายการโปรด', 'error');
+  }
+}
+
+// ── Filter by Category ──
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderProducts(currentFilter, searchQuery);
+}
+
+// ── Search ──
+function filterProducts(q) {
+  searchQuery = q;
+  renderProducts(currentFilter, searchQuery);
+  // Show/hide clear button
+  const clearBtn = document.getElementById('searchClearBtn');
+  if (clearBtn) clearBtn.style.display = q ? 'flex' : 'none';
+}
+
+// Scroll to first matching product after search
+function scrollToFirstProduct() {
+  if (!searchQuery) return;
+  const firstCard = document.querySelector('#productsGrid .product-card');
+  if (!firstCard) return;
+  // Scroll to the products section
+  const productsSection = document.getElementById('products');
+  if (productsSection) {
+    productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  // Add highlight animation after scroll settles
+  setTimeout(() => {
+    firstCard.classList.remove('search-highlight');
+    void firstCard.offsetWidth; // reflow
+    firstCard.classList.add('search-highlight');
+    setTimeout(() => firstCard.classList.remove('search-highlight'), 1500);
+  }, 500);
+}
+
+// ── Clear Search ──
+function clearSearch() {
+  searchQuery = '';
+  const input = document.getElementById('searchInput');
+  if (input) input.value = '';
+  const clearBtn = document.getElementById('searchClearBtn');
+  if (clearBtn) clearBtn.style.display = 'none';
+  renderProducts(currentFilter, searchQuery);
+  if (input) input.focus();
+}
+
+// ── Toggle Search (legacy - no-op now search is always visible) ──
+function toggleSearch() {
+  // search bar is now always visible in header - do nothing
+}
+
+// ── Menu Toggle ──
+function toggleMenu() {
+  document.getElementById('mainNav').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('active');
+}
+function closeMenu() {
+  document.getElementById('mainNav').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('active');
+}
+
+// ── User Authentication ──
+function openAuthModal() {
+  document.getElementById('authUsername').value = '';
+  document.getElementById('authPassword').value = '';
+  switchAuthTab('login');
+  document.getElementById('authOverlay').classList.add('open');
+}
+
+function closeAuthModal() {
+  document.getElementById('authOverlay').classList.remove('open');
+}
+
+function closeAuthOutside(e) {
+  if (e.target === document.getElementById('authOverlay')) closeAuthModal();
+}
+
+function switchAuthTab(tab) {
+  activeAuthTab = tab;
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+  
+  const titleEl = document.getElementById('authTitle');
+  const btnEl = document.getElementById('authSubmitBtn');
+  
+  if (tab === 'login') {
+    titleEl.textContent = TRANSLATIONS[currentLang].authLoginTitle;
+    btnEl.textContent = TRANSLATIONS[currentLang].authSubmitBtnLogin;
+  } else {
+    titleEl.textContent = TRANSLATIONS[currentLang].authRegisterTitle;
+    btnEl.textContent = TRANSLATIONS[currentLang].authSubmitBtnRegister;
+  }
+}
+
+function handleAuthSubmit() {
+  const username = document.getElementById('authUsername').value.trim();
+  const pass = document.getElementById('authPassword').value;
+  
+  if (!username || !pass) {
+    const errorMsg = currentLang === 'de' ? 'Bitte füllen Sie alle Felder aus' : currentLang === 'en' ? 'Please fill out all fields' : 'กรุณากรอกข้อมูลให้ครบถ้วน';
+    showToast(errorMsg, 'error');
+    return;
+  }
+  
+  if (activeAuthTab === 'register') {
+    // Register Logic
+    const exist = users.some(u => u.username.toLowerCase() === username.toLowerCase());
+    if (exist) {
+      const errorMsg = currentLang === 'de' ? 'Dieser Name ist bereits vergeben' : currentLang === 'en' ? 'Username already taken' : 'ชื่อผู้ใช้นี้ถูกใช้งานแล้ว';
+      showToast(errorMsg, 'error');
+      return;
+    }
+    
+    users.push({ username, password: pass });
+    localStorage.setItem('joythai_users', JSON.stringify(users));
+    
+    // Auto log in
+    currentUser = username;
+    localStorage.setItem('joythai_currentUser', username);
+    
+    const successMsg = currentLang === 'de' ? 'Konto erfolgreich erstellt!' : currentLang === 'en' ? 'Account successfully created!' : 'สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!';
+    showToast(successMsg, 'success');
+    closeAuthModal();
+    updateHeaderUser();
+  } else {
+    // Login Logic
+    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === pass);
+    if (!user) {
+      const errorMsg = currentLang === 'de' ? 'Falscher Name oder Passwort' : currentLang === 'en' ? 'Incorrect username or password' : 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
+      showToast(errorMsg, 'error');
+      return;
+    }
+    
+    currentUser = user.username;
+    localStorage.setItem('joythai_currentUser', user.username);
+    
+    const successMsg = currentLang === 'de' ? `Willkommen zurück, ${user.username}!` : currentLang === 'en' ? `Welcome back, ${user.username}!` : `ยินดีต้อนรับกลับมา, คุณ ${user.username}!`;
+    showToast(successMsg, 'success');
+    closeAuthModal();
+    updateHeaderUser();
+  }
+}
+
+function handleLogout() {
+  currentUser = null;
+  localStorage.removeItem('joythai_currentUser');
+  updateHeaderUser();
+  document.getElementById('profileDropdown').classList.remove('open');
+  
+  const msg = currentLang === 'de' ? 'Abgemeldet' : currentLang === 'en' ? 'Logged out' : 'ออกจากระบบสมาชิกแล้ว';
+  showToast(msg, 'info');
+}
+
+function updateHeaderUser() {
+  const toggleBtn = document.getElementById('loginToggleBtn');
+  const profileWrap = document.getElementById('userProfileWrap');
+  const dropdownUser = document.getElementById('dropdownUsername');
+  const avatarChar = document.getElementById('userAvatarChar');
+  
+  if (currentUser) {
+    toggleBtn.style.display = 'none';
+    profileWrap.style.display = 'block';
+    dropdownUser.textContent = currentUser;
+    avatarChar.textContent = currentUser.charAt(0).toUpperCase();
+  } else {
+    toggleBtn.style.display = 'block';
+    profileWrap.style.display = 'none';
+  }
+}
+
+function updateHeroStats() {
+  const statProductsEl = document.getElementById('statProductsNum');
+  if (statProductsEl && activeProducts) {
+    statProductsEl.textContent = activeProducts.length;
+  }
+}
+
+
+function toggleProfileDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('profileDropdown').classList.toggle('open');
+}
+
+// ── Customer My Orders View ──
+function openMyOrders() {
+  document.getElementById('profileDropdown').classList.remove('open');
+  document.getElementById('myOrdersOverlay').classList.add('open');
+  renderMyOrders();
+}
+
+function closeMyOrders() {
+  document.getElementById('myOrdersOverlay').classList.remove('open');
+}
+
+function closeMyOrdersOutside(e) {
+  if (e.target === document.getElementById('myOrdersOverlay')) closeMyOrders();
+}
+
+function renderMyOrders() {
+  const container = document.getElementById('myOrdersBody');
+  if (!container) return;
+  container.innerHTML = '';
+  
+  // Filter customer's orders
+  const myOrders = orders.filter(o => o.username === currentUser);
+  
+  if (myOrders.length === 0) {
+    container.innerHTML = `
+      <div class="my-orders-empty">
+        <div class="my-orders-empty-icon">📦</div>
+        <p>${TRANSLATIONS[currentLang].myOrdersEmptyText}</p>
+      </div>
+    `;
+    return;
+  }
+  
+  // Sort latest first
+  const sorted = [...myOrders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  
+  sorted.forEach(o => {
+    const card = document.createElement('div');
+    card.className = 'order-history-card';
+    
+    // Set Shopee style status names and colors
+    let statusText = '';
+    let statusClass = '';
+    if (o.status === 'pending') {
+      statusText = { th: 'รออนุมัติ', de: 'Wartet auf Genehmigung', en: 'Pending Approval' }[currentLang] || 'Pending Approval';
+      statusClass = 'status-pending';
+    } else if (o.status === 'preparing') {
+      statusText = TRANSLATIONS[currentLang].statusPreparing;
+      statusClass = 'status-preparing';
+    } else if (o.status === 'shipping') {
+      statusText = TRANSLATIONS[currentLang].statusShipping;
+      statusClass = 'status-shipping';
+    } else {
+      statusText = TRANSLATIONS[currentLang].statusDelivered;
+      statusClass = 'status-delivered';
+    }
+    
+    const dateStr = new Date(o.createdAt).toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'de-DE', {
+      year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+    
+    const itemsHtml = o.items.map(i => `
+      <div class="oh-item">
+        <span class="oh-item-name">${getVal(i.name)} x${i.qty}</span>
+        <span class="oh-item-price">฿${(i.priceThb * i.qty).toLocaleString()} / €${(i.priceEur * i.qty).toFixed(2)}</span>
+      </div>
+    `).join('');
+    
+    // Calculate line progress width
+    let progressWidth = '0%';
+    let step1Class = 'timeline-step active'; // first step is active on pending
+    let step2Class = 'timeline-step';
+    let step3Class = 'timeline-step';
+    let step4Class = 'timeline-step';
+
+    if (o.status === 'preparing') {
+      step1Class = 'timeline-step done';
+      step2Class = 'timeline-step active';
+      progressWidth = '33%';
+    } else if (o.status === 'shipping') {
+      step1Class = 'timeline-step done';
+      step2Class = 'timeline-step done';
+      step3Class = 'timeline-step active';
+      progressWidth = '66%';
+    } else if (o.status === 'delivered') {
+      step1Class = 'timeline-step done';
+      step2Class = 'timeline-step done';
+      step3Class = 'timeline-step done';
+      step4Class = 'timeline-step done';
+      progressWidth = '100%';
+    }
+
+    const labelPlaced = { th: 'รออนุมัติ', de: 'Wartet auf Genehmigung', en: 'Pending Approval' }[currentLang] || 'Pending Approval';
+    const labelPreparing = { th: 'เตรียมจัดส่ง', de: 'In Vorbereitung', en: 'Preparing' }[currentLang] || 'Preparing';
+    const labelShipping = { th: 'กำลังจัดส่ง', de: 'Versandt', en: 'Shipped' }[currentLang] || 'Shipped';
+    const labelDelivered = { th: 'จัดส่งสำเร็จ', de: 'Geliefert', en: 'Delivered' }[currentLang] || 'Delivered';
+
+    const svgCheck = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+    const svgBox = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><polygon points="12 22.08 12 12 3 6.92 3 17.08 12 22.08"></polygon><polygon points="12 12 21 6.92 21 17.08 12 22.08"></polygon><polygon points="12 2 3 6.92 12 12 21 6.92 12 2"></polygon><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>`;
+    const svgTruck = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>`;
+    const svgGift = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>`;
+    const svgClock = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`;
+
+    const timelineHtml = `
+      <div class="tracking-timeline">
+        <div class="timeline-line">
+          <div class="timeline-line-progress" style="width: ${progressWidth}"></div>
+        </div>
+        <div class="${step1Class}">
+          <div class="timeline-node">${o.status === 'pending' ? svgClock : svgCheck}</div>
+          <div class="timeline-label">${labelPlaced}</div>
+        </div>
+        <div class="${step2Class}">
+          <div class="timeline-node">${o.status === 'preparing' ? svgBox : (o.status === 'pending' ? '2' : svgCheck)}</div>
+          <div class="timeline-label">${labelPreparing}</div>
+        </div>
+        <div class="${step3Class}">
+          <div class="timeline-node">${o.status === 'shipping' ? svgTruck : (o.status === 'delivered' ? svgCheck : '3')}</div>
+          <div class="timeline-label">${labelShipping}</div>
+        </div>
+        <div class="${step4Class}">
+          <div class="timeline-node">${o.status === 'delivered' ? svgGift : '4'}</div>
+          <div class="timeline-label">${labelDelivered}</div>
+        </div>
+      </div>
+    `;
+
+    const addrData = o.address || {};
+    const addrLines = formatAddressHTML(addrData);
+    const labelShippingAddress = { th: 'ที่อยู่สำหรับการจัดส่ง', de: 'Lieferadresse', en: 'Shipping Address' }[currentLang] || 'Shipping Address';
+    
+    const addressHtml = `
+      <div class="oh-shipping-address" style="margin: 12px 0; padding: 12px 14px; background: var(--surface); border: 1px solid var(--border2); border-radius: 10px; font-size: 13px; line-height: 1.5; color: var(--text2);">
+        <div style="display:flex; align-items:center; gap:6px; font-weight:700; color:var(--text); margin-bottom:6px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <span>${labelShippingAddress}</span>
+        </div>
+        <div style="font-weight:600; color:var(--text);">${addrData.fullName || 'N/A'} (${addrData.phone || 'N/A'})</div>
+        <div style="margin-top: 4px; color:var(--text3); font-size: 12px;">${addrLines}</div>
+      </div>
+    `;
+
+    card.innerHTML = `
+      <div class="oh-header">
+        <div>
+          <span class="oh-id">${o.id}</span>
+          <span class="oh-date">${dateStr}</span>
+        </div>
+        <span class="status-badge ${statusClass}">${statusText}</span>
+      </div>
+      ${timelineHtml}
+      ${addressHtml}
+      <div class="oh-items">
+        ${itemsHtml}
+      </div>
+      ${o.trackingNumber ? `
+        <div style="margin:10px 0; padding:10px 14px; background:rgba(6,214,160,0.07); border:1px solid rgba(6,214,160,0.2); border-radius:10px; font-size:13px;">
+          📦 ${currentLang === 'de' ? 'Sendungsnummer' : currentLang === 'en' ? 'Tracking Number' : 'เลขติดตามพัสดุ'}:
+          <strong style="color:var(--accent); margin-left:6px;">${o.trackingNumber}</strong>
+        </div>` : ''}
+      <div class="oh-footer" style="flex-wrap: wrap; gap: 8px 12px; display: flex; justify-content: space-between;">
+        ${o.serviceFeeEur ? `
+        <div style="width: 100%; display: flex; justify-content: space-between; font-size: 12px; color: var(--text3); border-bottom: 1px dashed var(--border); padding-bottom: 4px; margin-bottom: 2px;">
+          <span>${currentLang === 'de' ? 'Servicegebühr: ' : currentLang === 'en' ? 'Service Fee: ' : 'ค่าบริการ: '}</span>
+          <strong>฿${o.serviceFeeThb} / €${o.serviceFeeEur.toFixed(2)}</strong>
+        </div>` : ''}
+        <div>
+          ${currentLang === 'de' ? 'Gesamt: ' : currentLang === 'en' ? 'Total: ' : 'ยอดรวม: '}
+          <span class="oh-total-price">฿${o.totalThb.toLocaleString()} / €${o.totalEur.toFixed(2)}</span>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ── Cart Operations ──
+function addToCart(id) {
+  const product = activeProducts.find(p => p.id == id);
+  if (!product) return;
+  const existing = cart.find(i => i.id == id);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      weight: product.weight,
+      priceThb: product.priceThb,
+      priceEur: product.priceEur,
+      image: product.image,
+      emoji: product.emoji,
+      qty: 1
+    });
+  }
+  saveCart();
+  updateCartBadge();
+  const alertText = currentLang === 'de'
+    ? `✅ "${getVal(product.name)}" zum Warenkorb hinzugefügt!`
+    : currentLang === 'en'
+      ? `✅ "${getVal(product.name)}" added to cart!`
+      : `✅ เพิ่ม "${getVal(product.name)}" ลงตะกร้าแล้ว!`;
+  
+  showToast(alertText, 'success');
+  
+  // Animate badge
+  const badge = document.getElementById('cartBadge');
+  badge.classList.remove('bump');
+  void badge.offsetWidth;
+  badge.classList.add('bump');
+}
+
+function saveCart() {
+  localStorage.setItem('joythai_cart', JSON.stringify(cart));
+}
+
+function updateCartBadge() {
+  const total = cart.reduce((s, i) => s + i.qty, 0);
+  const badge = document.getElementById('cartBadge');
+  badge.textContent = total;
+  badge.style.display = total === 0 ? 'none' : 'flex';
+}
+
+function openCart() {
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartDrawer').classList.add('open');
+  renderCart();
+}
+function closeCart() {
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartDrawer').classList.remove('open');
+}
+
+function renderCart() {
+  const body = document.getElementById('cartItems');
+  const empty = document.getElementById('cartEmpty');
+  const footer = document.getElementById('cartFooter');
+  body.innerHTML = '';
+  if (cart.length === 0) {
+    empty.style.display = 'block';
+    footer.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  footer.style.display = 'block';
+  
+  // Sync checkbox state
+  const cb = document.getElementById('cartFeeCheckbox');
+  if (cb) cb.checked = applyServiceFee;
+
+  cart.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'cart-item';
+    
+    // Fee calculation per item
+    const baseThb = item.priceThb * item.qty;
+    const baseEur = item.priceEur * item.qty;
+    
+    el.innerHTML = `
+      <div class="cart-item-img">
+        ${item.image
+          ? `<img src="${item.image}" alt="${getVal(item.name)}" onerror="this.parentElement.innerHTML='${item.emoji || '🌶️'}'">`
+          : item.emoji || '🌶️'}
+      </div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${getVal(item.name)} (${item.weight || 'N/A'})</div>
+        <div class="cart-item-price">
+          ฿${baseThb.toLocaleString()} / €${baseEur.toFixed(2)}
+        </div>
+        <div class="cart-item-controls">
+          <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+          <span class="qty-val">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+        </div>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart(${item.id})">🗑</button>`;
+    body.appendChild(el);
+  });
+  updateCartTotals();
+  updateCheckoutBtnState();
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(i => String(i.id) === String(id));
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) removeFromCart(id);
+  else { saveCart(); updateCartBadge(); renderCart(); }
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(i => String(i.id) !== String(id));
+  saveCart(); updateCartBadge(); renderCart();
+  const alertText = currentLang === 'de'
+    ? '🗑 Artikel aus dem Warenkorb entfernt'
+    : currentLang === 'en'
+      ? '🗑 Item removed from cart'
+      : '🗑 ลบสินค้าออกจากตะกร้าแล้ว';
+  showToast(alertText, 'info');
+}
+
+function getCartSubtotalThb() {
+  return cart.reduce((s, i) => s + i.priceThb * i.qty, 0);
+}
+
+function getCartSubtotalEur() {
+  return cart.reduce((s, i) => s + i.priceEur * i.qty, 0);
+}
+
+function getCartServiceFeeThb() {
+  if (!applyServiceFee || cart.length === 0) return 0;
+  return SERVICE_FEE_THB;
+}
+
+function getCartServiceFeeEur() {
+  if (!applyServiceFee || cart.length === 0) return 0;
+  return SERVICE_FEE_EUR;
+}
+
+function updateCartTotals() {
+  const subtotalThb = getCartSubtotalThb();
+  const subtotalEur = getCartSubtotalEur();
+  const serviceFeeThb = getCartServiceFeeThb();
+  const serviceFeeEur = getCartServiceFeeEur();
+  updateShippingCost();
+  
+  document.getElementById('cartSubtotal').textContent = `฿${subtotalThb.toLocaleString()} / €${subtotalEur.toFixed(2)}`;
+
+  // Show service fee line if element exists
+  const feeEl = document.getElementById('cartServiceFee');
+  const feeRow = document.getElementById('cartServiceFeeRow');
+  if (feeEl) {
+    feeEl.textContent = `฿${serviceFeeThb.toLocaleString()} / €${serviceFeeEur.toFixed(2)}`;
+  }
+  if (feeRow) {
+    feeRow.style.display = applyServiceFee ? 'flex' : 'none';
+  }
+  
+  const totalThb = subtotalThb + serviceFeeThb + shippingCostThb;
+  const totalEur = subtotalEur + serviceFeeEur + shippingCostEur;
+  document.getElementById('cartTotal').textContent = `฿${totalThb.toLocaleString()} / €${totalEur.toFixed(2)}`;
+}
+
+// ── Checkout Operations ──
+function openCheckout() {
+  // REQUIRE LOGIN TO CHECKOUT
+  if (!currentUser) {
+    const loginFirstText = currentLang === 'de' 
+      ? 'Bitte loggen Sie sich zuerst ein, um zur Kasse zu gehen' 
+      : currentLang === 'en' 
+        ? 'Please log in first to proceed to checkout' 
+        : 'กรุณาเข้าสู่ระบบสมาชิกก่อนดำเนินการชำระเงิน';
+    showToast(loginFirstText, 'info');
+    openAuthModal();
+    return;
+  }
+  
+  if (cart.length === 0) {
+    const errorText = currentLang === 'de' ? 'Ihr Warenkorb ist leer' : currentLang === 'en' ? 'Your cart is empty' : 'ยังไม่มีสินค้าในตะกร้า';
+    showToast(errorText, 'error');
+    return;
+  }
+  closeCart();
+  goToStep(1);
+  onCountryChange();
+  document.getElementById('checkoutOverlay').classList.add('open');
+}
+
+function closeCheckout() {
+  document.getElementById('checkoutOverlay').classList.remove('open');
+}
+
+function closeCheckoutOutside(e) {
+  if (e.target === document.getElementById('checkoutOverlay')) closeCheckout();
+}
+
+function goToStep(n) {
+  [1, 2, 3].forEach(i => {
+    document.getElementById(`checkoutStep${i}`).style.display = i === n ? 'block' : 'none';
+    const ind = document.getElementById(`step${i}Ind`);
+    ind.classList.remove('active', 'done');
+    if (i === n) ind.classList.add('active');
+    else if (i < n) ind.classList.add('done');
+  });
+  currentStep = n;
+  
+  if (n === 2) {
+    // Germany Bank details
+    document.getElementById('displayDeBankName').textContent = paymentSettings.deBankName || 'N/A';
+    document.getElementById('displayDeAccountName').textContent = paymentSettings.deAccountName || 'N/A';
+    document.getElementById('displayDeIban').textContent = paymentSettings.deIban || 'N/A';
+    
+    // Thai QR Details
+    const displayQrImg = document.getElementById('displayThQrImage');
+    const displayQrPlaceholder = document.getElementById('displayThQrPlaceholder');
+    if (paymentSettings.qrImage) {
+      displayQrImg.src = paymentSettings.qrImage;
+      displayQrImg.style.display = 'block';
+      displayQrPlaceholder.style.display = 'none';
+    } else {
+      displayQrImg.style.display = 'none';
+      displayQrPlaceholder.style.display = 'block';
+    }
+    
+    // Default values
+    selectedPayMethod = 'de_bank';
+    const radioDe = document.querySelector('input[name="payMethod"][value="de_bank"]');
+    if (radioDe) radioDe.checked = true;
+    document.getElementById('deBankBox').style.display = 'block';
+    document.getElementById('thQrBox').style.display = 'none';
+  }
+  
+  if (n === 3) renderOrderSummary();
+}
+
+function goToStep1() { goToStep(1); }
+
+// ── Switch Address Form by Country ──
+function onCountryChange() {
+  const country = document.getElementById('country').value;
+  const list = ['DE', 'TH', 'AT', 'CH', 'FR', 'NL', 'GB', 'US'];
+  list.forEach(c => {
+    const el = document.getElementById('addrForm' + c);
+    if (el) el.style.display = (country === c) ? 'block' : 'none';
+  });
+  const otherEl = document.getElementById('addrFormOTHER');
+  if (otherEl) {
+    otherEl.style.display = list.includes(country) ? 'none' : 'block';
+  }
+  updateShippingCost();
+}
+
+function getAddressData() {
+  const country = document.getElementById('country').value;
+  const countryEl = document.getElementById('country');
+  const countryText = countryEl.options[countryEl.selectedIndex].text;
+  const fullName = document.getElementById('fullName').value.trim();
+  const email    = document.getElementById('email').value.trim();
+  const phone    = document.getElementById('phone').value.trim();
+
+  if (country === 'DE') {
+    const street     = (document.getElementById('de_street')?.value || '').trim();
+    const extra      = (document.getElementById('de_extra')?.value || '').trim();
+    const plz        = (document.getElementById('de_plz')?.value || '').trim();
+    const city       = (document.getElementById('de_city')?.value || '').trim();
+    const blEl       = document.getElementById('de_bundesland');
+    const bundesland = blEl ? (blEl.options[blEl.selectedIndex]?.text || '') : '';
+    const addressLine = extra ? `${street}, ${extra}` : street;
+    return { fullName, email, phone, address: addressLine, city, postcode: plz, country, countryText,
+             extra: { street, extra, plz, bundesland } };
+  } else if (country === 'TH') {
+    const house       = (document.getElementById('th_house')?.value || '').trim();
+    const soi         = (document.getElementById('th_soi')?.value || '').trim();
+    const road        = (document.getElementById('th_road')?.value || '').trim();
+    const subdistrict = (document.getElementById('th_subdistrict')?.value || '').trim();
+    const district    = (document.getElementById('th_district')?.value || '').trim();
+    const provEl      = document.getElementById('th_province');
+    const province    = provEl ? (provEl.value || '') : '';
+    const zip         = (document.getElementById('th_zip')?.value || '').trim();
+    const addressLine = [house, soi ? 'ซอย'+soi : '', road ? 'ถนน'+road : ''].filter(Boolean).join(' ');
+    return { fullName, email, phone, address: addressLine, city: district, postcode: zip, country, countryText,
+             extra: { house, soi, road, subdistrict, district, province, zip } };
+  } else if (country === 'AT') {
+    const street     = (document.getElementById('at_street')?.value || '').trim();
+    const extra      = (document.getElementById('at_extra')?.value || '').trim();
+    const plz        = (document.getElementById('at_plz')?.value || '').trim();
+    const city       = (document.getElementById('at_city')?.value || '').trim();
+    const blEl       = document.getElementById('at_bundesland');
+    const bundesland = blEl ? (blEl.options[blEl.selectedIndex]?.text || '') : '';
+    const addressLine = extra ? `${street}, ${extra}` : street;
+    return { fullName, email, phone, address: addressLine, city, postcode: plz, country, countryText,
+             extra: { street, extra, plz, bundesland } };
+  } else if (country === 'CH') {
+    const street     = (document.getElementById('ch_street')?.value || '').trim();
+    const extra      = (document.getElementById('ch_extra')?.value || '').trim();
+    const plz        = (document.getElementById('ch_plz')?.value || '').trim();
+    const city       = (document.getElementById('ch_city')?.value || '').trim();
+    const ktEl       = document.getElementById('ch_kanton');
+    const kanton     = ktEl ? (ktEl.options[ktEl.selectedIndex]?.text || '') : '';
+    const addressLine = extra ? `${street}, ${extra}` : street;
+    return { fullName, email, phone, address: addressLine, city, postcode: plz, country, countryText,
+             extra: { street, extra, plz, kanton } };
+  } else if (country === 'FR') {
+    const street = (document.getElementById('fr_street')?.value || '').trim();
+    const extra  = (document.getElementById('fr_extra')?.value || '').trim();
+    const zip    = (document.getElementById('fr_zip')?.value || '').trim();
+    const city   = (document.getElementById('fr_city')?.value || '').trim();
+    const addressLine = extra ? `${street}, ${extra}` : street;
+    return { fullName, email, phone, address: addressLine, city, postcode: zip, country, countryText,
+             extra: { street, extra, zip, city } };
+  } else if (country === 'NL') {
+    const street = (document.getElementById('nl_street')?.value || '').trim();
+    const extra  = (document.getElementById('nl_extra')?.value || '').trim();
+    const zip    = (document.getElementById('nl_zip')?.value || '').trim();
+    const city   = (document.getElementById('nl_city')?.value || '').trim();
+    const addressLine = extra ? `${street}, ${extra}` : street;
+    return { fullName, email, phone, address: addressLine, city, postcode: zip, country, countryText,
+             extra: { street, extra, zip, city } };
+  } else if (country === 'GB') {
+    const line1    = (document.getElementById('gb_line1')?.value || '').trim();
+    const line2    = (document.getElementById('gb_line2')?.value || '').trim();
+    const city     = (document.getElementById('gb_city')?.value || '').trim();
+    const postcode = (document.getElementById('gb_postcode')?.value || '').trim();
+    const addressLine = line2 ? `${line1}, ${line2}` : line1;
+    return { fullName, email, phone, address: addressLine, city, postcode, country, countryText,
+             extra: { line1, line2, city, postcode } };
+  } else if (country === 'US') {
+    const line1    = (document.getElementById('us_line1')?.value || '').trim();
+    const line2    = (document.getElementById('us_line2')?.value || '').trim();
+    const city     = (document.getElementById('us_city')?.value || '').trim();
+    const stEl     = document.getElementById('us_state');
+    const state    = stEl ? (stEl.value || '') : '';
+    const zip      = (document.getElementById('us_zip')?.value || '').trim();
+    const addressLine = line2 ? `${line1}, ${line2}` : line1;
+    return { fullName, email, phone, address: addressLine, city, postcode: zip, country, countryText,
+             extra: { line1, line2, city, state, zip } };
+  } else {
+    const address  = (document.getElementById('address')?.value || '').trim();
+    const city     = (document.getElementById('city')?.value || '').trim();
+    const postcode = (document.getElementById('postcode')?.value || '').trim();
+    return { fullName, email, phone, address, city, postcode, country, countryText };
+  }
+}
+
+function goToStep2() {
+  const country  = document.getElementById('country').value;
+  const fullName = document.getElementById('fullName').value.trim();
+  const email    = document.getElementById('email').value.trim();
+  const phone    = document.getElementById('phone').value.trim();
+  const errorText = currentLang === 'de' ? 'Bitte füllen Sie alle Pflichtfelder aus' :
+                    currentLang === 'en' ? 'Please fill out all required fields' :
+                    'กรุณากรอกข้อมูลให้ครบถ้วน';
+
+  // Validate common fields
+  if (!fullName || !email || !phone) {
+    showToast(errorText, 'error');
+    if (!fullName) document.getElementById('fullName').focus();
+    else if (!email) document.getElementById('email').focus();
+    else document.getElementById('phone').focus();
+    return;
+  }
+
+  // Validate country-specific fields
+  if (country === 'DE') {
+    const street = (document.getElementById('de_street')?.value || '').trim();
+    const plz    = (document.getElementById('de_plz')?.value || '').trim();
+    const city   = (document.getElementById('de_city')?.value || '').trim();
+    if (!street || !plz || !city) { showToast(errorText, 'error'); return; }
+  } else if (country === 'TH') {
+    const house  = (document.getElementById('th_house')?.value || '').trim();
+    const sub    = (document.getElementById('th_subdistrict')?.value || '').trim();
+    const dist   = (document.getElementById('th_district')?.value || '').trim();
+    const prov   = document.getElementById('th_province')?.value || '';
+    const zip    = (document.getElementById('th_zip')?.value || '').trim();
+    if (!house || !sub || !dist || !prov || !zip) { showToast(errorText, 'error'); return; }
+  } else if (country === 'AT') {
+    const street = (document.getElementById('at_street')?.value || '').trim();
+    const plz    = (document.getElementById('at_plz')?.value || '').trim();
+    const city   = (document.getElementById('at_city')?.value || '').trim();
+    if (!street || !plz || !city) { showToast(errorText, 'error'); return; }
+  } else if (country === 'CH') {
+    const street = (document.getElementById('ch_street')?.value || '').trim();
+    const plz    = (document.getElementById('ch_plz')?.value || '').trim();
+    const city   = (document.getElementById('ch_city')?.value || '').trim();
+    if (!street || !plz || !city) { showToast(errorText, 'error'); return; }
+  } else if (country === 'FR') {
+    const street = (document.getElementById('fr_street')?.value || '').trim();
+    const zip    = (document.getElementById('fr_zip')?.value || '').trim();
+    const city   = (document.getElementById('fr_city')?.value || '').trim();
+    if (!street || !zip || !city) { showToast(errorText, 'error'); return; }
+  } else if (country === 'NL') {
+    const street = (document.getElementById('nl_street')?.value || '').trim();
+    const zip    = (document.getElementById('nl_zip')?.value || '').trim();
+    const city   = (document.getElementById('nl_city')?.value || '').trim();
+    if (!street || !zip || !city) { showToast(errorText, 'error'); return; }
+  } else if (country === 'GB') {
+    const line1 = (document.getElementById('gb_line1')?.value || '').trim();
+    const city  = (document.getElementById('gb_city')?.value || '').trim();
+    const post  = (document.getElementById('gb_postcode')?.value || '').trim();
+    if (!line1 || !city || !post) { showToast(errorText, 'error'); return; }
+  } else if (country === 'US') {
+    const line1 = (document.getElementById('us_line1')?.value || '').trim();
+    const city  = (document.getElementById('us_city')?.value || '').trim();
+    const state = document.getElementById('us_state')?.value || '';
+    const zip   = (document.getElementById('us_zip')?.value || '').trim();
+    if (!line1 || !city || !state || !zip) { showToast(errorText, 'error'); return; }
+  } else {
+    const address  = (document.getElementById('address')?.value || '').trim();
+    const city     = (document.getElementById('city')?.value || '').trim();
+    const postcode = (document.getElementById('postcode')?.value || '').trim();
+    if (!address || !city || !postcode) { showToast(errorText, 'error'); return; }
+  }
+
+  goToStep(2);
+}
+function goToStep3() {
+  if (!uploadedPaymentSlipBase64) {
+    const errorText = currentLang === 'de' ? 'Bitte laden Sie einen Zahlungsbeleg hoch' :
+                      currentLang === 'en' ? 'Please upload a payment slip' :
+                      'กรุณาอัพโหลดหลักฐานการชำระเงินก่อนดำเนินการต่อ';
+    showToast(errorText, 'error');
+    return;
+  }
+  goToStep(3);
+}
+
+function handlePaymentSlipUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    uploadedPaymentSlipBase64 = e.target.result;
+    const preview = document.getElementById('paymentSlipPreview');
+    const placeholder = document.getElementById('paymentSlipPlaceholder');
+    if (preview) {
+      preview.src = uploadedPaymentSlipBase64;
+      preview.style.display = 'block';
+    }
+    if (placeholder) {
+      placeholder.style.display = 'none';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function formatAddressHTML(addrData) {
+  if (!addrData) return '';
+  const country = addrData.country || '';
+  
+  if (addrData.extra) {
+    const extra = addrData.extra;
+    if (country === 'DE') {
+      return [
+        extra.street,
+        extra.extra,
+        `${extra.plz} ${extra.bundesland ? extra.bundesland + ' – ' : ''}${addrData.city}`,
+        addrData.countryText || addrData.country
+      ].filter(Boolean).join('<br>');
+    } else if (country === 'TH') {
+      return [
+        extra.house,
+        [extra.soi ? 'ซอย ' + extra.soi : '', extra.road ? 'ถนน ' + extra.road : ''].filter(Boolean).join(' '),
+        `แขวง/ตำบล ${extra.subdistrict}  เขต/อำเภอ ${extra.district}`,
+        `จังหวัด${extra.province}  ${extra.zip}`,
+        addrData.countryText || addrData.country
+      ].filter(Boolean).join('<br>');
+    } else if (country === 'AT') {
+      return [
+        extra.street,
+        extra.extra,
+        `${extra.plz} ${extra.bundesland ? extra.bundesland + ' – ' : ''}${addrData.city}`,
+        addrData.countryText || addrData.country
+      ].filter(Boolean).join('<br>');
+    } else if (country === 'CH') {
+      return [
+        extra.street,
+        extra.extra,
+        `${extra.plz} ${extra.kanton ? extra.kanton + ' – ' : ''}${addrData.city}`,
+        addrData.countryText || addrData.country
+      ].filter(Boolean).join('<br>');
+    } else if (country === 'FR') {
+      return [
+        extra.street,
+        extra.extra,
+        `${extra.zip} ${addrData.city}`,
+        addrData.countryText || addrData.country
+      ].filter(Boolean).join('<br>');
+    } else if (country === 'NL') {
+      return [
+        extra.street,
+        extra.extra,
+        `${extra.zip} ${addrData.city}`,
+        addrData.countryText || addrData.country
+      ].filter(Boolean).join('<br>');
+    } else if (country === 'GB') {
+      return [
+        extra.line1,
+        extra.line2,
+        addrData.city,
+        extra.postcode,
+        addrData.countryText || addrData.country
+      ].filter(Boolean).join('<br>');
+    } else if (country === 'US') {
+      return [
+        extra.line1,
+        extra.line2,
+        `${addrData.city}, ${extra.state} ${extra.zip}`,
+        addrData.countryText || addrData.country
+      ].filter(Boolean).join('<br>');
+    }
+  }
+  
+  const address = addrData.address || '';
+  const city = addrData.city || '';
+  const postcode = addrData.postcode || '';
+  const countryText = addrData.countryText || addrData.country || '';
+  return [address, [city, postcode].filter(Boolean).join(' '), countryText].filter(Boolean).join('<br>');
+}
+
+function selectPayMethod(input) {
+  selectedPayMethod = input.value;
+  document.getElementById('deBankBox').style.display = input.value === 'de_bank' ? 'block' : 'none';
+  document.getElementById('thQrBox').style.display = input.value === 'th_qr' ? 'block' : 'none';
+}
+
+function updateShippingCost() {
+  shippingCostEur = 0;
+  shippingCostThb = 0;
+  
+  const infoEl = document.getElementById('shippingInfoText');
+  if (infoEl) infoEl.textContent = '';
+  
+  const cartShippingEl = document.getElementById('cartShipping');
+  if (cartShippingEl) {
+    cartShippingEl.textContent = currentLang === 'de' ? 'Kostenlos! 🎉' : currentLang === 'en' ? 'Free! 🎉' : 'ฟรี! 🎉';
+  }
+}
+
+function renderOrderSummary() {
+  const container = document.getElementById('orderSummaryItems');
+  if (!container) return;
+  container.innerHTML = '';
+  
+  cart.forEach(item => {
+    const baseThb = item.priceThb * item.qty;
+    const baseEur = item.priceEur * item.qty;
+
+    const el = document.createElement('div');
+    el.className = 'order-summary-item';
+    el.innerHTML = `
+      <div class="order-summary-item-img">
+        ${item.image
+          ? `<img src="${item.image}" alt="${getVal(item.name)}" onerror="this.parentElement.innerHTML='${item.emoji || '🌶️'}'">`
+          : item.emoji || '🌶️'}
+      </div>
+      <div class="order-summary-item-info">
+        <div class="order-summary-item-name">${getVal(item.name)} (${item.weight || 'N/A'})</div>
+        <div class="order-summary-item-qty">x${item.qty}</div>
+      </div>
+      <div class="order-summary-item-price">
+        ฿${baseThb.toLocaleString()} / €${baseEur.toFixed(2)}
+      </div>`;
+    container.appendChild(el);
+  });
+  
+  const subtotalThb = getCartSubtotalThb();
+  const subtotalEur = getCartSubtotalEur();
+  const serviceFeeThb = getCartServiceFeeThb();
+  const serviceFeeEur = getCartServiceFeeEur();
+  const totalThb = subtotalThb + serviceFeeThb + shippingCostThb;
+  const totalEur = subtotalEur + serviceFeeEur + shippingCostEur;
+  
+  document.getElementById('confirmSubtotal').textContent = `฿${subtotalThb.toLocaleString()} / €${subtotalEur.toFixed(2)}`;
+  
+  const confirmFeeEl = document.getElementById('confirmServiceFee');
+  const confirmFeeRow = document.getElementById('confirmServiceFeeRow');
+  if (confirmFeeEl) {
+    confirmFeeEl.textContent = `฿${serviceFeeThb.toLocaleString()} / €${serviceFeeEur.toFixed(2)}`;
+  }
+  if (confirmFeeRow) {
+    confirmFeeRow.style.display = applyServiceFee ? 'flex' : 'none';
+  }
+
+  document.getElementById('confirmShipping').textContent = shippingCostEur === 0
+    ? (currentLang === 'de' ? 'Kostenlos' : currentLang === 'en' ? 'Free' : 'ฟรี')
+    : `฿${shippingCostThb.toLocaleString()} / €${shippingCostEur.toFixed(2)}`;
+  document.getElementById('confirmTotal').textContent = `฿${totalThb.toLocaleString()} / €${totalEur.toFixed(2)}`;
+  
+  // Deliver Info
+  const addrData = getAddressData();
+  const country = document.getElementById('country').value;
+
+  const addrLines = formatAddressHTML(addrData);
+
+  const confirmAddressEl = document.getElementById('confirmAddress');
+  confirmAddressEl.innerHTML = `
+    <strong>📍 ${currentLang === 'de' ? 'Lieferadresse' : currentLang === 'en' ? 'Shipping Address' : 'ที่อยู่จัดส่ง'}</strong><br>
+    ${addrData.fullName}<br>${addrData.phone}<br>${addrLines}`;
+  
+  const payNames = {
+    de_bank: currentLang === 'de' ? '🏦 Banküberweisung (Deutschland)' : currentLang === 'en' ? '🏦 Bank Transfer (Germany)' : '🏦 โอนผ่านธนาคารเยอรมนี',
+    th_qr: currentLang === 'de' ? '📱 PromptPay QR Code (Thailand)' : currentLang === 'en' ? '📱 PromptPay QR Code (Thailand)' : '📱 PromptPay QR Code (ไทย)'
+  };
+  
+  const confirmPaymentEl = document.getElementById('confirmPayment');
+  confirmPaymentEl.innerHTML = `
+    <strong>💳 ${currentLang === 'de' ? 'Zahlungsmethode' : currentLang === 'en' ? 'Payment Method' : 'วิธีชำระเงิน'}</strong><br>
+    ${payNames[selectedPayMethod] || selectedPayMethod}`;
+}
+
+function placeOrder() {
+  const randNum = String(Math.floor(Math.random() * 90000) + 10000);
+  const orderId = 'JOY-' + randNum;
+  
+  const serviceFeeThb = getCartServiceFeeThb();
+  const serviceFeeEur = getCartServiceFeeEur();
+  
+  // Create Order Object (Shopee style order tracking)
+  const newOrder = {
+    id: orderId,
+    username: currentUser || 'Guest',
+    items: [...cart],
+    subtotalThb: getCartSubtotalThb(),
+    subtotalEur: getCartSubtotalEur(),
+    serviceFeeThb: serviceFeeThb,
+    serviceFeeEur: serviceFeeEur,
+    shippingThb: shippingCostThb,
+    shippingEur: shippingCostEur,
+    totalThb: getCartSubtotalThb() + serviceFeeThb + shippingCostThb,
+    totalEur: getCartSubtotalEur() + serviceFeeEur + shippingCostEur,
+    address: getAddressData(),
+    paymentMethod: selectedPayMethod,
+    paymentSlip: uploadedPaymentSlipBase64,
+    status: 'pending', // Default status: รออนุมัติ (pending)
+    createdAt: new Date().toISOString()
+  };
+  
+  // Deduct stock for each purchased item
+  newOrder.items.forEach(item => {
+    const prod = activeProducts.find(p => p.id == item.id);
+    if (prod) {
+      prod.stock = Math.max(0, (prod.stock || 0) - item.qty);
+      prod.inStock = prod.stock > 0;
+    }
+  });
+  localStorage.setItem('joythai_products', JSON.stringify(activeProducts));
+
+  // Save order to state and localStorage
+  orders.push(newOrder);
+  localStorage.setItem('joythai_orders', JSON.stringify(orders));
+  
+  document.getElementById('orderId').textContent = orderId;
+  closeCheckout();
+  
+  // Reset payment slip state
+  uploadedPaymentSlipBase64 = '';
+  const fileInput = document.getElementById('paymentSlipFile');
+  if (fileInput) fileInput.value = '';
+  const preview = document.getElementById('paymentSlipPreview');
+  if (preview) {
+    preview.src = '';
+    preview.style.display = 'none';
+  }
+  const placeholder = document.getElementById('paymentSlipPlaceholder');
+  if (placeholder) {
+    placeholder.style.display = 'block';
+  }
+
+  cart = [];
+  saveCart();
+  updateCartBadge();
+  document.getElementById('successOverlay').classList.add('open');
+}
+
+function closeSuccess() {
+  document.getElementById('successOverlay').classList.remove('open');
+  renderProducts(currentFilter, searchQuery);
+}
+
+// ── Card Formatting ──
+function formatCard(input) {
+  let v = input.value.replace(/\D/g, '').slice(0, 16);
+  input.value = v.replace(/(\d{4})(?=\d)/g, '$1 ');
+}
+function formatExp(input) {
+  let v = input.value.replace(/\D/g, '').slice(0, 4);
+  if (v.length >= 3) v = v.slice(0, 2) + ' / ' + v.slice(2);
+  input.value = v;
+}
+
+function openAdminLogin(e) {
+  if (e) e.preventDefault();
+  closeMenu();
+  document.getElementById('adminPassword').value = '';
+  document.getElementById('adminLoginOverlay').classList.add('open');
+}
+
+function closeAdminLogin() {
+  document.getElementById('adminLoginOverlay').classList.remove('open');
+}
+
+function closeAdminLoginOutside(e) {
+  if (e.target === document.getElementById('adminLoginOverlay')) closeAdminLogin();
+}
+
+function loginAdmin() {
+  const pass = document.getElementById('adminPassword').value;
+  if (pass === 'admin123') {
+    closeAdminLogin();
+    document.getElementById('adminDashboardOverlay').classList.add('open');
+    switchAdminTab('products');
+    showToast('🔐 เข้าสู่ระบบผู้ดูแลสำเร็จ | Admin Logged In', 'success');
+  } else {
+    showToast('❌ รหัสผ่านไม่ถูกต้อง | Invalid Password', 'error');
+  }
+}
+
+function closeAdminDashboard() {
+  document.getElementById('adminDashboardOverlay').classList.remove('open');
+}
+
+function logoutAdmin() {
+  closeAdminDashboard();
+  showToast('🔒 ออกจากระบบผู้ดูแลแล้ว | Admin Logged Out', 'info');
+}
+
+// Settings global state
+let paymentSettings = JSON.parse(localStorage.getItem('joythai_payment_settings')) || {
+  qrImage: '',
+  deBankName: 'Kasi-Bank Berlin',
+  deAccountName: 'Joy Thai Shop GmbH',
+  deIban: 'DE89 3704 0044 0532 0130 00'
+};
+let uploadedQrBase64 = paymentSettings.qrImage || '';
+let recommendedBanners = [];
+let uploadedBannerImageBase64 = '';
+
+// Tab Switching
+function switchAdminTab(tab) {
+  currentAdminTab = tab;
+  document.getElementById('adminTabProducts').classList.toggle('active', tab === 'products');
+  document.getElementById('adminTabOrders').classList.toggle('active', tab === 'orders');
+  document.getElementById('adminTabSettings').classList.toggle('active', tab === 'settings');
+  document.getElementById('adminTabBanners').classList.toggle('active', tab === 'banners');
+  document.getElementById('adminTabAnalytics').classList.toggle('active', tab === 'analytics');
+  
+  document.getElementById('adminContentProducts').style.display = tab === 'products' ? 'flex' : 'none';
+  document.getElementById('adminContentOrders').style.display = tab === 'orders' ? 'flex' : 'none';
+  document.getElementById('adminContentSettings').style.display = tab === 'settings' ? 'flex' : 'none';
+  document.getElementById('adminContentBanners').style.display = tab === 'banners' ? 'flex' : 'none';
+  document.getElementById('adminContentAnalytics').style.display = tab === 'analytics' ? 'flex' : 'none';
+  
+  if (tab === 'products') {
+    renderAdminProducts();
+  } else if (tab === 'orders') {
+    renderAdminOrders();
+  } else if (tab === 'settings') {
+    loadAdminSettings();
+  } else if (tab === 'banners') {
+    populateBannerProductSelect();
+    renderAdminBanners();
+  } else if (tab === 'analytics') {
+    renderAdminAnalytics();
+  }
+}
+
+function loadAdminSettings() {
+  document.getElementById('settingsBankName').value = paymentSettings.deBankName || '';
+  document.getElementById('settingsAccountName').value = paymentSettings.deAccountName || '';
+  document.getElementById('settingsIban').value = paymentSettings.deIban || '';
+  
+  const preview = document.getElementById('settingsQrPreview');
+  const placeholder = document.getElementById('settingsQrPlaceholder');
+  if (paymentSettings.qrImage) {
+    preview.src = paymentSettings.qrImage;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    preview.style.display = 'none';
+    placeholder.style.display = 'block';
+  }
+  uploadedQrBase64 = paymentSettings.qrImage || '';
+}
+
+if (typeof handleQrUpload === 'undefined') {
+  window.handleQrUpload = function(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      uploadedQrBase64 = e.target.result;
+      const preview = document.getElementById('settingsQrPreview');
+      const placeholder = document.getElementById('settingsQrPlaceholder');
+      preview.src = uploadedQrBase64;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function saveAdminSettings() {
+  paymentSettings.deBankName = document.getElementById('settingsBankName').value.trim();
+  paymentSettings.deAccountName = document.getElementById('settingsAccountName').value.trim();
+  paymentSettings.deIban = document.getElementById('settingsIban').value.trim();
+  paymentSettings.qrImage = uploadedQrBase64;
+  
+  localStorage.setItem('joythai_payment_settings', JSON.stringify(paymentSettings));
+  showToast('⚙️ บันทึกการตั้งค่าระบบชำระเงินแล้ว | Settings Saved', 'success');
+}
+
+function renderAdminProducts() {
+  const tbody = document.getElementById('adminProductTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  
+  const bestsellerIds = getBestsellerIds();
+  
+  activeProducts.forEach(p => {
+    const tr = document.createElement('tr');
+    const isBestseller = bestsellerIds.includes(Number(p.id));
+    const bestsellerBadge = isBestseller ? '<span class="admin-badge" style="background:#ef4444; color:white; border:none; margin-left:6px;">🔥 ขายดี</span>' : '';
+    const saleBadge = p.onSale ? `<span class="admin-badge" style="background:#f59e0b; color:white; border:none; margin-left:6px;">🏷️ ลดราคา (${p.discountPercent}%)</span>` : '';
+    
+    tr.innerHTML = `
+      <td>
+        <div class="admin-table-img">
+          ${p.image
+            ? `<img src="${p.image}" alt="${p.name.en}" onerror="this.parentElement.innerHTML='${p.emoji || '🌶️'}'">`
+            : p.emoji || '🌶️'}
+        </div>
+      </td>
+      <td>
+        <div class="admin-prod-info">
+          <strong class="admin-prod-title">
+            ${p.name.th}
+            ${p.stock > 0 ? `<span class="admin-badge instock">พร้อมส่ง (${p.stock})</span>` : `<span class="admin-badge outstock">⛔ หมดสต็อก</span>`}
+            ${bestsellerBadge}
+            ${saleBadge}
+          </strong>
+          <span class="admin-prod-subs">DE: ${p.name.de}</span>
+          <span class="admin-prod-subs">EN: ${p.name.en}</span>
+        </div>
+      </td>
+      <td>${getCatName(p.category)}</td>
+      <td><strong>${p.weight || 'N/A'}</strong></td>
+      <td>
+        <strong>฿${p.priceThb}</strong> / 
+        <strong style="color:var(--accent)">€${p.priceEur.toFixed(2)}</strong>
+      </td>
+      <td>
+        <div class="admin-actions">
+          <button class="btn-edit" style="background:rgba(43, 147, 72, 0.12); color: #2b9348; border-color: rgba(43, 147, 72, 0.25);" onclick="quickRestock('${p.id}')">📦 เติมสต็อก</button>
+          <button class="btn-edit" onclick="editProduct('${p.id}')">✏️ แก้ไข</button>
+          <button class="btn-delete" onclick="deleteProduct('${p.id}')">🗑️ ลบ</button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function quickRestock(id) {
+  const p = activeProducts.find(prod => String(prod.id) === String(id));
+  if (!p) return;
+  
+  const currentStock = p.stock !== undefined ? p.stock : 0;
+  const promptMsg = currentLang === 'de'
+    ? `Lagerbestand für "${getVal(p.name)}" hinzufügen\nAktuell: ${currentStock} Artikel\nAnzahl zum Hinzufügen eingeben:`
+    : currentLang === 'en'
+      ? `Add stock for "${getVal(p.name)}"\nCurrent: ${currentStock} items\nEnter quantity to add:`
+      : `เติมสต็อกสำหรับ "${getVal(p.name)}"\nจำนวนปัจจุบัน: ${currentStock} ชิ้น\nระบุจำนวนที่จะเติม (ชิ้น):`;
+      
+  const input = prompt(promptMsg, "10");
+  if (input === null) return; // cancel
+  
+  const qty = parseInt(input.trim());
+  if (isNaN(qty) || qty < 0) {
+    const errMsg = currentLang === 'de' ? '❌ Ungültige Menge' : currentLang === 'en' ? '❌ Invalid quantity' : '❌ กรุณาระบุจำนวนที่ถูกต้อง';
+    showToast(errMsg, 'error');
+    return;
+  }
+  
+  p.stock = currentStock + qty;
+  p.inStock = p.stock > 0;
+  
+  localStorage.setItem('joythai_products', JSON.stringify(activeProducts));
+  
+  const successMsg = currentLang === 'de'
+    ? `📦 Lagerbestand für "${getVal(p.name)}" aktualisiert! Neuer Bestand: ${p.stock}`
+    : currentLang === 'en'
+      ? `📦 Stock updated for "${getVal(p.name)}"! New stock: ${p.stock}`
+      : `📦 เติมสต็อก "${getVal(p.name)}" สำเร็จ! จำนวนปัจจุบัน: ${p.stock} ชิ้น`;
+      
+  showToast(successMsg, 'success');
+  renderAdminProducts();
+  renderProducts(currentFilter, searchQuery);
+  updateHeroStats();
+}
+
+// Render Admin Orders
+function renderAdminOrders() {
+  const container = document.getElementById('adminOrderCardsContainer');
+  if (!container) return;
+  container.innerHTML = '';
+  
+  if (orders.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding:60px 20px; color:var(--text3); background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius); width:100%;">
+        <div style="font-size:48px; margin-bottom:16px;">📑</div>
+        <p>${currentLang === 'de' ? 'Keine Bestellungen vorhanden' : currentLang === 'en' ? 'No orders available' : 'ยังไม่มีข้อมูลคำสั่งซื้อ'}</p>
+      </div>
+    `;
+    return;
+  }
+  
+  // Sort latest first
+  const sorted = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  
+  sorted.forEach(o => {
+    const card = document.createElement('div');
+    card.className = 'admin-order-card';
+    
+    // Status text and class
+    let statusText = '';
+    let statusClass = '';
+    if (o.status === 'pending') {
+      statusText = { th: 'รออนุมัติ', de: 'Wartet auf Genehmigung', en: 'Pending Approval' }[currentLang] || 'Pending Approval';
+      statusClass = 'status-pending';
+    } else if (o.status === 'preparing') {
+      statusText = TRANSLATIONS[currentLang].statusPreparing;
+      statusClass = 'status-preparing';
+    } else if (o.status === 'shipping') {
+      statusText = TRANSLATIONS[currentLang].statusShipping;
+      statusClass = 'status-shipping';
+    } else {
+      statusText = TRANSLATIONS[currentLang].statusDelivered;
+      statusClass = 'status-delivered';
+    }
+    
+    const dateStr = new Date(o.createdAt).toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'de-DE', {
+      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+    
+    // Items List HTML
+    const itemsHtml = o.items.map(i => `
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--border); font-size:13px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:36px; height:36px; background:var(--bg3); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; overflow:hidden;">
+            ${i.image ? `<img src="${i.image}" alt="" style="width:100%; height:100%; object-fit:cover;">` : i.emoji || '🌶️'}
+          </div>
+          <div>
+            <span style="font-weight:600; color:var(--text);">${getVal(i.name)}</span>
+            <span style="font-size:11px; color:var(--text3); display:block;">${i.weight || 'N/A'}</span>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <strong style="color:var(--text);">x${i.qty}</strong><br>
+          <span style="font-size:11px; color:var(--text3);">฿${(i.priceThb * i.qty).toLocaleString()} / €${(i.priceEur * i.qty).toFixed(2)}</span>
+        </div>
+      </div>
+    `).join('');
+    
+    // Address HTML
+    const addrData = o.address || {};
+    const addrLines = formatAddressHTML(addrData);
+    const addrHtml = `
+      <div style="display:flex; flex-direction:column; gap:4px; font-size:12.5px; line-height:1.5; color:var(--text2); background:var(--bg2); border-radius:10px; padding:12px 14px; border:1px solid var(--border);">
+        <div style="font-weight:700; color:var(--text); display:flex; align-items:center; gap:6px;">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <span>ที่อยู่จัดส่ง / Shipping Address</span>
+        </div>
+        <div style="font-weight:600; color:var(--text); margin-top:4px;">${addrData.fullName || 'N/A'} (${addrData.phone || 'N/A'})</div>
+        <div style="color:var(--text3); font-size:11.5px; margin-top:2px;">${addrLines}</div>
+      </div>
+    `;
+    
+    // Payment Method Text
+    const payNames = {
+      de_bank: currentLang === 'de' ? '🏦 Banküberweisung' : currentLang === 'en' ? '🏦 Bank Transfer' : '🏦 โอนผ่านธนาคารเยอรมนี',
+      th_qr: currentLang === 'de' ? '📱 PromptPay QR Code' : currentLang === 'en' ? '📱 PromptPay QR Code' : '📱 PromptPay QR Code (ไทย)'
+    };
+    const paymentMethodText = payNames[o.paymentMethod] || o.paymentMethod;
+    
+    card.innerHTML = `
+      <!-- Card Header -->
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--border2); padding-bottom:12px; flex-wrap:wrap; gap:8px;">
+        <div>
+          <strong style="color:var(--primary-dark); font-size:16px;">${o.id}</strong>
+          <span style="font-size:12px; color:var(--text3); margin-left:8px;">⏱️ ${dateStr}</span>
+          <span style="font-size:12px; color:var(--text2); margin-left:8px; font-weight:600;">👤 ลูกค้า: ${o.username}</span>
+        </div>
+        <span class="status-badge ${statusClass}" style="margin:0; padding:6px 12px; font-size:12px; font-weight:700; border-radius:30px;">${statusText}</span>
+      </div>
+      
+      <!-- Card Content Grid -->
+      <div class="admin-order-grid">
+        <!-- Left: Items list -->
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <h4 style="margin:0; font-size:13px; font-weight:700; color:var(--text3); text-transform:uppercase;">🛒 รายการสินค้า (Items)</h4>
+          <div style="display:flex; flex-direction:column; gap:2px; max-height:220px; overflow-y:auto; padding-right:4px;">
+            ${itemsHtml}
+          </div>
+        </div>
+        
+        <!-- Right: Delivery Address & Payment Method -->
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          ${addrHtml}
+          <div style="font-size:12px; color:var(--text2); display:flex; align-items:center; gap:6px;">
+            <strong>💳 ชำระเงิน:</strong> ${paymentMethodText}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Card Footer -->
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border2); padding-top:12px; flex-wrap:wrap; gap:12px;">
+        <!-- Left: Slip and Revenue -->
+        <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+          <div>
+            <span style="font-size:12px; color:var(--text3); display:block;">ยอดรวมคำสั่งซื้อ (Total)</span>
+            <strong style="font-size:17px; color:var(--text);">฿${o.totalThb.toLocaleString()}</strong>
+            <span style="color:var(--accent); font-weight:700; font-size:14px; margin-left:6px;">/ €${o.totalEur.toFixed(2)}</span>
+            ${o.serviceFeeEur ? `<span style="font-size:11px; color:var(--text3); margin-left:4px;">(บริการ ฿${o.serviceFeeThb} / €${o.serviceFeeEur})</span>` : ''}
+          </div>
+          <div>
+            ${o.paymentSlip ? 
+              `<a href="${o.paymentSlip}" target="_blank" style="display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:6px 12px; background:var(--bg3); border:1px solid var(--border2); border-radius:8px; font-weight:600; color:var(--accent); cursor:pointer; text-decoration:none; transition:all var(--transition);">
+                📷 ดูสลิปโอนเงิน
+               </a>` : 
+              `<span style="font-size:12px; color:#ef4444; font-weight:600; display:inline-flex; align-items:center; gap:4px;">⚠️ ไม่มีสลิปแนบ</span>`
+            }
+          </div>
+        </div>
+        
+        <!-- Right: Status actions and delete -->
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <!-- Tracking input -->
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <input
+              type="text"
+              class="form-input"
+              style="font-size:12px; padding:6px 10px; min-width:130px; border-radius:8px;"
+              placeholder="${currentLang === 'de' ? 'Trackingnummer...' : currentLang === 'en' ? 'Tracking no...' : 'ระบุเลขพัสดุ...'}"
+              value="${o.trackingNumber || ''}"
+              onchange="updateTrackingNumber('${o.id}', this.value)"
+            >
+          </div>
+          
+          <!-- Status select -->
+          <select class="status-select" onchange="updateOrderStatus('${o.id}', this.value)" style="padding:6px 12px; font-size:12px; border-radius:8px; border:1px solid var(--border2); background:var(--surface); font-weight:600; cursor:pointer;">
+            <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>${{th: 'รออนุมัติ / Pending', de: 'Wartet auf Genehmigung', en: 'Pending Approval'}[currentLang] || 'Pending'}</option>
+            <option value="preparing" ${o.status === 'preparing' ? 'selected' : ''}>${TRANSLATIONS[currentLang].statusPreparing}</option>
+            <option value="shipping" ${o.status === 'shipping' ? 'selected' : ''}>${TRANSLATIONS[currentLang].statusShipping}</option>
+            <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>${TRANSLATIONS[currentLang].statusDelivered}</option>
+          </select>
+          
+          <!-- Delete button -->
+          <button class="btn-delete" onclick="deleteOrder('${o.id}')" style="padding:6px 12px; font-size:12px; border-radius:8px; display:inline-flex; align-items:center; gap:4px; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); color:#ef4444; font-weight:600; cursor:pointer;">🗑️ ลบ</button>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function itemsHtmlEncode(str) {
+  // Let HTML tags pass through securely as they are controlled generated strings
+  return str;
+}
+
+// Update Order Status (Shopee style status manager)
+function updateOrderStatus(orderId, newStatus) {
+  const index = orders.findIndex(o => o.id === orderId);
+  if (index === -1) return;
+  
+  orders[index].status = newStatus;
+  localStorage.setItem('joythai_orders', JSON.stringify(orders));
+  
+  const msg = currentLang === 'de' 
+    ? `Bestellstatus aktualisiert: ${newStatus}` 
+    : currentLang === 'en' 
+      ? `Order status updated to ${newStatus}` 
+      : `\u0e2d\u0e31\u0e1b\u0e40\u0e14\u0e15\u0e2a\u0e16\u0e32\u0e19\u0e30\u0e01\u0e32\u0e23\u0e2a\u0e48\u0e07\u0e41\u0e25\u0e49\u0e27: ${TRANSLATIONS[currentLang]['status' + newStatus.charAt(0).toUpperCase() + newStatus.slice(1)]}`;
+      
+  showToast('\u2705 ' + msg, 'success');
+  renderAdminOrders();
+}
+
+// Update Tracking Number
+function updateTrackingNumber(orderId, trackingNumber) {
+  const index = orders.findIndex(o => o.id === orderId);
+  if (index === -1) return;
+  
+  orders[index].trackingNumber = trackingNumber.trim();
+  localStorage.setItem('joythai_orders', JSON.stringify(orders));
+  
+  if (trackingNumber.trim()) {
+    const msg = currentLang === 'de'
+      ? `Sendungsnummer gespeichert: ${trackingNumber}`
+      : currentLang === 'en'
+        ? `Tracking number saved: ${trackingNumber}`
+        : `\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e40\u0e25\u0e02\u0e1e\u0e31\u0e2a\u0e14\u0e38\u0e41\u0e25\u0e49\u0e27: ${trackingNumber}`;
+    showToast('\ud83d\udce6 ' + msg, 'success');
+  }
+  renderAdminOrders();
+}
+
+// Delete Order from Backoffice
+function deleteOrder(orderId) {
+  const confirmMsg = currentLang === 'de'
+    ? `Bestellung ${orderId} wirklich löschen?`
+    : currentLang === 'en'
+      ? `Are you sure you want to delete order ${orderId}?`
+      : `คุณต้องการลบคำสั่งซื้อ ${orderId} ใช่หรือไม่?`;
+      
+  if (confirm(confirmMsg)) {
+    orders = orders.filter(o => String(o.id) !== String(orderId));
+    localStorage.setItem('joythai_orders', JSON.stringify(orders));
+    renderAdminOrders();
+    showToast('🗑️ ลบประวัติคำสั่งซื้อสำเร็จ | Order Deleted', 'info');
+  }
+}
+
+// Open Form Modal (Add mode)
+function openAddProductForm() {
+  document.getElementById('productFormTitle').textContent = '+ เพิ่มสินค้าใหม่ (Add Product)';
+  document.getElementById('formProductId').value = '';
+  document.getElementById('formProdNameTh').value = '';
+  document.getElementById('formProdNameDe').value = '';
+  document.getElementById('formProdNameEn').value = '';
+  document.getElementById('formProdCategory').value = 'noodle';
+  document.getElementById('formProdWeight').value = '';
+  document.getElementById('formProdPriceThb').value = '';
+  document.getElementById('formProdPriceEur').value = '';
+  document.getElementById('formProdDescTh').value = '';
+  document.getElementById('formProdDescDe').value = '';
+  document.getElementById('formProdDescEn').value = '';
+  document.getElementById('formProdEmoji').value = '🌶️';
+  document.getElementById('formProdImage').value = '';
+  
+  // Image file & preview reset
+  document.getElementById('formProdImageFile').value = '';
+  const preview = document.getElementById('formProdImagePreview');
+  preview.src = '';
+  preview.style.display = 'none';
+  
+  // Stock reset
+  document.getElementById('formProdInStock').checked = true;
+  document.getElementById('formProdStock').value = 12;
+  document.getElementById('formProdStockGroup').style.opacity = '1';
+  
+  document.getElementById('formProdOnSale').checked = false;
+  document.getElementById('formProdDiscount').value = '';
+  document.getElementById('formDiscountRow').style.display = 'none';
+  
+  document.getElementById('productFormOverlay').classList.add('open');
+}
+
+// Open Form Modal (Edit mode)
+function editProduct(id) {
+  const p = activeProducts.find(prod => String(prod.id) === String(id));
+  if (!p) return;
+  
+  document.getElementById('productFormTitle').textContent = '✏️ แก้ไขสินค้า (Edit Product)';
+  document.getElementById('formProductId').value = p.id;
+  document.getElementById('formProdNameTh').value = p.name.th || '';
+  document.getElementById('formProdNameDe').value = p.name.de || '';
+  document.getElementById('formProdNameEn').value = p.name.en || '';
+  document.getElementById('formProdCategory').value = p.category || 'noodle';
+  document.getElementById('formProdWeight').value = p.weight || '';
+  
+  // Set discount calculations back to original prices to allow editing
+  const hasOrig = p.onSale && p.originalPriceThb !== null && p.originalPriceThb !== undefined;
+  const thbPrice = hasOrig ? p.originalPriceThb : p.priceThb;
+  const eurPrice = hasOrig ? p.originalPriceEur : p.priceEur;
+  
+  document.getElementById('formProdPriceThb').value = thbPrice || '';
+  document.getElementById('formProdPriceEur').value = eurPrice || '';
+  document.getElementById('formProdDescTh').value = p.desc?.th || '';
+  document.getElementById('formProdDescDe').value = p.desc?.de || '';
+  document.getElementById('formProdDescEn').value = p.desc?.en || '';
+  document.getElementById('formProdEmoji').value = p.emoji || '🌶️';
+  document.getElementById('formProdImage').value = p.image || '';
+  
+  // Image file & preview load
+  document.getElementById('formProdImageFile').value = '';
+  const preview = document.getElementById('formProdImagePreview');
+  if (p.image) {
+    preview.src = p.image;
+    preview.style.display = 'block';
+  } else {
+    preview.style.display = 'none';
+  }
+  
+  // Stock loading
+  const isStocked = p.stock > 0;
+  document.getElementById('formProdInStock').checked = isStocked;
+  document.getElementById('formProdStock').value = p.stock !== undefined ? p.stock : 12;
+  document.getElementById('formProdStockGroup').style.opacity = isStocked ? '1' : '0.5';
+  
+  // Discount fields
+  const onSale = !!(p.onSale && p.discountPercent > 0);
+  document.getElementById('formProdOnSale').checked = onSale;
+  document.getElementById('formProdDiscount').value = p.discountPercent || '';
+  document.getElementById('formDiscountRow').style.display = onSale ? 'block' : 'none';
+  
+  document.getElementById('productFormOverlay').classList.add('open');
+}
+
+function toggleDiscountRow() {
+  const checked = document.getElementById('formProdOnSale').checked;
+  document.getElementById('formDiscountRow').style.display = checked ? 'block' : 'none';
+  if (!checked) document.getElementById('formProdDiscount').value = '';
+}
+
+function handleProductImageUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const base64 = e.target.result;
+    document.getElementById('formProdImage').value = base64;
+    const preview = document.getElementById('formProdImagePreview');
+    preview.src = base64;
+    preview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function toggleStockField() {
+  const inStock = document.getElementById('formProdInStock').checked;
+  const stockInput = document.getElementById('formProdStock');
+  const group = document.getElementById('formProdStockGroup');
+  if (!inStock) {
+    stockInput.value = 0;
+    group.style.opacity = '0.5';
+  } else {
+    if (parseInt(stockInput.value) <= 0 || !stockInput.value) {
+      stockInput.value = 12;
+    }
+    group.style.opacity = '1';
+  }
+}
+
+function closeProductForm() {
+  document.getElementById('productFormOverlay').classList.remove('open');
+}
+
+function closeProductFormOutside(e) {
+  if (e.target === document.getElementById('productFormOverlay')) closeProductForm();
+}
+
+// Auto calculate EUR price based on THB typed
+function autoCalculateEur(thbValue) {
+  if (!thbValue) {
+    document.getElementById('formProdPriceEur').value = '';
+    return;
+  }
+  const thb = parseFloat(thbValue);
+  if (isNaN(thb)) return;
+  const eur = thb / EUR_TO_THB;
+  document.getElementById('formProdPriceEur').value = eur.toFixed(2);
+}
+
+// Save Add/Edit
+function saveProductForm() {
+  const idVal = document.getElementById('formProductId').value;
+  const nameTh = document.getElementById('formProdNameTh').value.trim();
+  const nameDe = document.getElementById('formProdNameDe').value.trim();
+  const nameEn = document.getElementById('formProdNameEn').value.trim();
+  const category = document.getElementById('formProdCategory').value;
+  const weight = document.getElementById('formProdWeight').value.trim();
+  const priceThb = parseFloat(document.getElementById('formProdPriceThb').value);
+  const priceEur = parseFloat(document.getElementById('formProdPriceEur').value);
+  const descTh = document.getElementById('formProdDescTh').value.trim();
+  const descDe = document.getElementById('formProdDescDe').value.trim();
+  const descEn = document.getElementById('formProdDescEn').value.trim();
+  const emoji = document.getElementById('formProdEmoji').value.trim();
+  const image = document.getElementById('formProdImage').value.trim();
+  const inStock = document.getElementById('formProdInStock').checked;
+  let stock = parseInt(document.getElementById('formProdStock').value) || 0;
+  if (!inStock) {
+    stock = 0;
+  } else if (stock <= 0) {
+    stock = 12; // fallback if checked but quantity is <= 0
+  }
+  // Discount
+  const onSale = document.getElementById('formProdOnSale').checked;
+  const discountPercent = onSale ? (parseFloat(document.getElementById('formProdDiscount').value) || 0) : 0;
+  
+  if (!nameTh || !nameDe || !nameEn || !weight || isNaN(priceThb) || isNaN(priceEur) || isNaN(stock) || stock < 0) {
+    showToast('❌ กรุณากรอกฟิลด์ที่มีเครื่องหมาย * ให้ครบถ้วน', 'error');
+    return;
+  }
+  if (onSale && (discountPercent <= 0 || discountPercent >= 100)) {
+    showToast('❌ กรุณากรอก % ส่วนลด ระหว่าง 1-99', 'error');
+    return;
+  }
+  
+  // Calculate discounted price
+  const finalPriceThb = onSale ? Math.round(priceThb * (1 - discountPercent / 100)) : priceThb;
+  const finalPriceEur = onSale ? parseFloat((priceEur * (1 - discountPercent / 100)).toFixed(2)) : priceEur;
+
+  if (idVal) {
+    // Edit Mode
+    const id = parseInt(idVal);
+    const index = activeProducts.findIndex(p => p.id == id);
+    if (index !== -1) {
+      activeProducts[index] = {
+        ...activeProducts[index],
+        name: { th: nameTh, de: nameDe, en: nameEn },
+        category,
+        weight,
+        priceThb: finalPriceThb,
+        priceEur: finalPriceEur,
+        originalPriceThb: onSale ? priceThb : null,
+        originalPriceEur: onSale ? priceEur : null,
+        onSale,
+        discountPercent,
+        desc: { th: descTh, de: descDe, en: descEn },
+        emoji,
+        image: image || null,
+        stock: stock,
+        inStock: stock > 0,
+        badge: onSale ? 'sale' : (activeProducts[index].badge === 'sale' ? null : activeProducts[index].badge),
+        badgeText: onSale ? { th: `ลด ${discountPercent}%`, de: `${discountPercent}% Rabatt`, en: `${discountPercent}% Off` } : activeProducts[index].badgeText
+      };
+      showToast('💾 แก้ไขสินค้าสำเร็จ | Product Updated', 'success');
+    }
+  } else {
+    // Add Mode
+    const newId = activeProducts.length > 0 ? Math.max(...activeProducts.map(p => p.id)) + 1 : 1;
+    const newProduct = {
+      id: newId,
+      name: { th: nameTh, de: nameDe, en: nameEn },
+      category,
+      weight,
+      priceThb: finalPriceThb,
+      priceEur: finalPriceEur,
+      originalPriceThb: onSale ? priceThb : null,
+      originalPriceEur: onSale ? priceEur : null,
+      onSale,
+      discountPercent,
+      desc: { th: descTh, de: descDe, en: descEn },
+      emoji,
+      image: image || null,
+      stock: stock,
+      inStock: stock > 0,
+      rating: 5.0,
+      reviews: 1,
+      badge: onSale ? 'sale' : 'new',
+      badgeText: onSale
+        ? { th: `ลด ${discountPercent}%`, de: `${discountPercent}% Rabatt`, en: `${discountPercent}% Off` }
+        : { th: 'ใหม่', de: 'Neu', en: 'New' }
+    };
+    activeProducts.push(newProduct);
+    showToast('➕ เพิ่มสินค้าสำเร็จ | Product Added', 'success');
+  }
+  
+  localStorage.setItem('joythai_products', JSON.stringify(activeProducts));
+  renderAdminProducts();
+  renderProducts(currentFilter, searchQuery);
+  updateHeroStats();
+  closeProductForm();
+}
+
+// Delete Product
+function deleteProduct(id) {
+  const p = activeProducts.find(prod => String(prod.id) === String(id));
+  if (!p) return;
+  
+  const confirmMsg = currentLang === 'de'
+    ? `Möchten Sie "${getVal(p.name)}" wirklich löschen?`
+    : currentLang === 'en'
+      ? `Are you sure you want to delete "${getVal(p.name)}"?`
+      : `คุณต้องการลบ "${getVal(p.name)}" ใช่หรือไม่?`;
+      
+  if (confirm(confirmMsg)) {
+    activeProducts = activeProducts.filter(prod => String(prod.id) !== String(id));
+    localStorage.setItem('joythai_products', JSON.stringify(activeProducts));
+    renderAdminProducts();
+    renderProducts(currentFilter, searchQuery);
+    updateHeroStats();
+    
+    // Also remove from cart if it was there
+    if (cart.some(i => String(i.id) === String(id))) {
+      cart = cart.filter(i => String(i.id) !== String(id));
+      saveCart();
+      updateCartBadge();
+    }
+    
+    showToast('🗑️ ลบสินค้าแล้ว | Product Deleted', 'info');
+  }
+}
+
+// ══════════════════════════════════════════════
+//  PRODUCT DETAIL PAGE (PDP) LOGIC
+// ══════════════════════════════════════════════
+let pdpCurrentProduct = null;
+let pdpCurrentQty = 1;
+
+function openProductDetail(productId) {
+  const p = activeProducts.find(x => String(x.id) === String(productId));
+  if (!p) return;
+
+  pdpCurrentProduct = p;
+  pdpCurrentQty = 1;
+
+  const lang = currentLang;
+  const isOutOfStock = p.stock === 0 || p.stock === undefined;
+
+  // -- Breadcrumb --
+  const homeText = { th: 'หน้าแรก', de: 'Startseite', en: 'Home' };
+  document.getElementById('pdpBreadHome').textContent = homeText[lang] || 'หน้าแรก';
+  document.getElementById('pdpBreadName').textContent = getVal(p.name);
+
+  // -- Main Image --
+  const imgWrap = document.getElementById('pdpMainImgWrap');
+  if (p.image) {
+    imgWrap.innerHTML = `<img src="${p.image}" alt="${getVal(p.name)}" onerror="this.parentElement.innerHTML='<div class=pdp-main-img-emoji>${p.emoji || '🌶️'}</div>'">`;
+  } else {
+    imgWrap.innerHTML = `<div class="pdp-main-img-emoji">${p.emoji || '🌶️'}</div>`;
+  }
+
+  // -- Thumbnail --
+  const thumbs = document.getElementById('pdpThumbnails');
+  if (p.image) {
+    thumbs.innerHTML = `
+      <div class="pdp-thumb active">
+        <img src="${p.image}" alt="${getVal(p.name)}" onerror="this.parentElement.innerHTML='<span style=font-size:24px>${p.emoji || '🌶️'}</span>'">
+      </div>`;
+  } else {
+    thumbs.innerHTML = `<div class="pdp-thumb active">${p.emoji || '🌶️'}</div>`;
+  }
+
+  // -- Title --
+  document.getElementById('pdpTitle').textContent = getVal(p.name);
+
+  // -- Price --
+  const priceMain = document.getElementById('pdpPriceMain');
+  const priceSec  = document.getElementById('pdpPriceSec');
+  const pricePer  = document.getElementById('pdpPricePer');
+  
+  priceMain.textContent = `฿${p.priceThb ? p.priceThb.toLocaleString() : 0}`;
+  if (priceSec) {
+    priceSec.textContent = `€${p.priceEur ? p.priceEur.toFixed(2) : '0.00'}`;
+  }
+  
+  if (p.weight) {
+    const unit = getWeightUnit(p.weight);
+    const pThbPer = ((p.priceThb || 0) / parseWeight(p.weight)).toFixed(2);
+    const pEurPer = ((p.priceEur || 0) / parseWeight(p.weight)).toFixed(2);
+    pricePer.textContent = `฿${pThbPer} / ${unit} | €${pEurPer} / ${unit}`;
+  } else {
+    pricePer.textContent = '';
+  }
+
+  // -- Tax note --
+  const taxNotes = {
+    th: '<span>ค่าจัดส่ง</span> คำนวณเมื่อชำระเงิน',
+    de: '<span>Versandkosten</span> werden an der Kasse berechnet',
+    en: '<span>Shipping costs</span> calculated at checkout'
+  };
+  document.getElementById('pdpTaxNote').innerHTML = taxNotes[lang] || taxNotes.th;
+
+  // -- Stock --
+  const stockRow = document.getElementById('pdpStockRow');
+  const stockText = document.getElementById('pdpStockText');
+  if (isOutOfStock) {
+    stockRow.classList.add('outstock');
+    stockText.textContent = { th: 'สินค้าหมด', de: 'Ausverkauft', en: 'Out of Stock' }[lang] || 'สินค้าหมด';
+  } else {
+    stockRow.classList.remove('outstock');
+    const t = TRANSLATIONS[lang];
+    stockText.textContent = t ? t.stockCount.replace('{num}', p.stock) : `${p.stock} ชิ้นในสต็อก`;
+  }
+
+  // -- Qty labels --
+  const qtyLabels = { th: 'จำนวน', de: 'Menge', en: 'Quantity' };
+  document.getElementById('pdpQtyLabel').textContent = qtyLabels[lang] || 'จำนวน';
+  document.getElementById('pdpQtyVal').textContent = pdpCurrentQty;
+  document.getElementById('pdpQtyMinus').disabled = true; // qty=1 start
+  document.getElementById('pdpQtyPlus').disabled  = isOutOfStock;
+
+  // -- Cart Button --
+  const btnCartText = { th: 'เพิ่มลงตะกร้า', de: 'In den Korb', en: 'Add to Cart' };
+  document.getElementById('pdpBtnCartText').textContent = btnCartText[lang] || 'เพิ่มลงตะกร้า';
+  document.getElementById('pdpBtnCart').disabled = isOutOfStock;
+
+  // -- Store info --
+  const storeTexts = {
+    th: `รับสินค้าที่ร้าน <strong>Joy Thai Shop</strong>`,
+    de: `Abholung im <strong>Joy Thai Shop</strong>`,
+    en: `Pick up at <strong>Joy Thai Shop</strong>`
+  };
+  const storeSubs = {
+    th: 'โดยปกติจะพร้อมใน 24 ชั่วโมง',
+    de: 'Normalerweise in 24 Stunden bereit',
+    en: 'Usually ready within 24 hours'
+  };
+  document.getElementById('pdpStoreText').innerHTML = storeTexts[lang] || storeTexts.th;
+  document.getElementById('pdpStoreSub').textContent = storeSubs[lang] || storeSubs.th;
+
+  // -- Description --
+  const descTitles = { th: 'รายละเอียดสินค้า', de: 'Produktbeschreibung', en: 'Product Description' };
+  document.getElementById('pdpDescTitle').textContent = descTitles[lang] || 'รายละเอียด';
+  const descText = getVal(p.desc);
+  const descEl = document.getElementById('pdpDescSection');
+  if (descText) {
+    document.getElementById('pdpDescText').textContent = descText;
+    descEl.style.display = 'block';
+  } else {
+    descEl.style.display = 'none';
+  }
+
+  // -- Open Modal --
+  document.getElementById('productDetailOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProductDetail() {
+  document.getElementById('productDetailOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  pdpCurrentProduct = null;
+  pdpCurrentQty = 1;
+}
+
+function closeProductDetailOutside(e) {
+  if (e.target === document.getElementById('productDetailOverlay')) {
+    closeProductDetail();
+  }
+}
+
+function pdpChangeQty(delta) {
+  if (!pdpCurrentProduct) return;
+  const maxStock = pdpCurrentProduct.stock || 0;
+  pdpCurrentQty = Math.max(1, Math.min(pdpCurrentQty + delta, maxStock || 99));
+  document.getElementById('pdpQtyVal').textContent = pdpCurrentQty;
+  document.getElementById('pdpQtyMinus').disabled = pdpCurrentQty <= 1;
+  document.getElementById('pdpQtyPlus').disabled  = pdpCurrentQty >= (maxStock || 99);
+}
+
+function pdpAddToCart() {
+  if (!pdpCurrentProduct) return;
+  const p = pdpCurrentProduct;
+  const existing = cart.find(i => String(i.id) === String(p.id));
+  if (existing) {
+    existing.qty = Math.min((existing.qty || 1) + pdpCurrentQty, p.stock || 99);
+    existing.name = existing.name || p.name;
+    existing.weight = existing.weight || p.weight;
+    existing.priceThb = existing.priceThb || p.priceThb;
+    existing.priceEur = existing.priceEur || p.priceEur;
+    existing.image = existing.image || p.image;
+    existing.emoji = existing.emoji || p.emoji;
+  } else {
+    cart.push({
+      id: p.id,
+      name: p.name,
+      weight: p.weight,
+      priceThb: p.priceThb,
+      priceEur: p.priceEur,
+      image: p.image,
+      emoji: p.emoji,
+      qty: pdpCurrentQty
+    });
+  }
+  saveCart();
+  updateCartBadge();
+
+  const addedText = { th: `✅ เพิ่ม ${getVal(p.name)} ลงตะกร้าแล้ว`, de: `✅ ${getVal(p.name)} zum Korb hinzugefügt`, en: `✅ ${getVal(p.name)} added to cart` };
+  showToast(addedText[currentLang] || addedText.th, 'success');
+  closeProductDetail();
+  openCart();
+}
+
+function shareProduct() {
+  if (!pdpCurrentProduct) return;
+  const name = getVal(pdpCurrentProduct.name);
+  if (navigator.share) {
+    navigator.share({ title: name, text: `${name} - Joy Thai Shop`, url: window.location.href })
+      .catch(() => {});
+  } else {
+    navigator.clipboard?.writeText(window.location.href).then(() => {
+      showToast('🔗 คัดลอกลิงก์แล้ว | Link copied!', 'info');
+    });
+  }
+}
+
+// Helper: parse weight string to number (g/ml as base)
+function parseWeight(w) {
+  if (!w) return 1;
+  const n = parseFloat(w);
+  if (isNaN(n) || n === 0) return 1;
+  if (w.toLowerCase().includes('kg')) return n * 1000;
+  return n; // g or ml
+}
+function getWeightUnit(w) {
+  if (!w) return '';
+  if (w.toLowerCase().includes('kg')) return 'kg';
+  if (w.toLowerCase().includes('ml')) return '100ml';
+  return '100g';
+}
+
+// ── RECOMMENDED PRODUCTS BANNER SLIDER LOGIC ──
+function initRecommendedBanners() {
+  recommendedBanners = JSON.parse(localStorage.getItem('joythai_recommended_banners') || '[]');
+  if (recommendedBanners.length === 0) {
+    // Fallback to default product recommendations
+    recommendedBanners = [
+      { id: 'def1', productId: 1, image: '' },
+      { id: 'def2', productId: 2, image: '' }
+    ];
+  }
+  
+  renderHeroSlider();
+  
+  // Connect scroll indicator dots to scroll snap state
+  const slider = document.getElementById('heroSlider');
+  if (slider) {
+    slider.addEventListener('scroll', () => {
+      const index = Math.round(slider.scrollLeft / (slider.clientWidth || 1));
+      updateSliderDots(index);
+    });
+  }
+}
+
+function renderHeroSlider() {
+  const container = document.getElementById('heroSlider');
+  const wrap = document.getElementById('heroSliderWrap');
+  const dotsContainer = document.getElementById('heroSliderDots');
+  if (!container || !wrap || !dotsContainer) return;
+  
+  if (recommendedBanners.length === 0) {
+    wrap.style.display = 'none';
+    return;
+  }
+  
+  wrap.style.display = 'flex';
+  container.innerHTML = '';
+  dotsContainer.innerHTML = '';
+  
+  recommendedBanners.forEach((banner, index) => {
+    const product = activeProducts.find(p => String(p.id) === String(banner.productId));
+    if (!product) return;
+    
+    const imgUrl = banner.image || product.image || '';
+    const badgeText = product.badge ? getVal(product.badgeText) : '';
+    const titleText = getVal(product.name);
+    
+    const priceText = `฿${product.priceThb ? product.priceThb.toLocaleString() : 0} / €${product.priceEur ? product.priceEur.toFixed(2) : '0.00'}`;
+        
+    const slide = document.createElement('div');
+    slide.className = 'hero-slide-item';
+    slide.onclick = () => openProductDetail(product.id);
+    
+    slide.innerHTML = `
+      <div class="hero-slide-img-box">
+        <img src="${imgUrl}" alt="${titleText}" class="hero-slide-img" onerror="this.src='images/placeholder.jpg';">
+        ${product.badge ? `<span class="hero-slide-badge">${badgeText}</span>` : ''}
+      </div>
+      <div class="hero-slide-info">
+        <h3 class="hero-slide-title">${titleText}</h3>
+        <span class="hero-slide-price">${priceText}</span>
+      </div>
+    `;
+    container.appendChild(slide);
+    
+    // Dot
+    const dot = document.createElement('div');
+    dot.className = `hero-dot ${index === 0 ? 'active' : ''}`;
+    dot.onclick = () => {
+      const slideWidth = container.clientWidth;
+      container.scrollTo({ left: index * slideWidth, behavior: 'smooth' });
+    };
+    dotsContainer.appendChild(dot);
+  });
+}
+
+function scrollHeroSlider(direction) {
+  const slider = document.getElementById('heroSlider');
+  if (!slider) return;
+  const slideWidth = slider.clientWidth;
+  slider.scrollBy({ left: direction * slideWidth, behavior: 'smooth' });
+}
+
+function updateSliderDots(activeIndex) {
+  const dots = document.querySelectorAll('.hero-dot');
+  dots.forEach((dot, index) => {
+    dot.classList.toggle('active', index === activeIndex);
+  });
+}
+
+// ── ADMIN BANNER MANAGEMENT CRUD ──
+function handleBannerUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    uploadedBannerImageBase64 = e.target.result;
+    const preview = document.getElementById('bannerImagePreview');
+    const placeholder = document.getElementById('bannerImagePlaceholder');
+    if (preview && placeholder) {
+      preview.src = uploadedBannerImageBase64;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function addRecommendedBanner() {
+  const productSelect = document.getElementById('bannerProductSelect');
+  if (!productSelect) return;
+  const productId = productSelect.value;
+  if (!productId) {
+    showToast('❌ กรุณาเลือกสินค้า | Please select a product', 'error');
+    return;
+  }
+  
+  // Filter out any initial dummy values if starting to customize
+  let customBanners = recommendedBanners.filter(b => !String(b.id).startsWith('def'));
+  
+  const newBanner = {
+    id: 'b' + Date.now(),
+    productId: parseInt(productId),
+    image: uploadedBannerImageBase64
+  };
+  
+  customBanners.push(newBanner);
+  recommendedBanners = customBanners;
+  localStorage.setItem('joythai_recommended_banners', JSON.stringify(recommendedBanners));
+  
+  // Reset form inputs
+  uploadedBannerImageBase64 = '';
+  const fileInput = document.getElementById('bannerImageFile');
+  if (fileInput) fileInput.value = '';
+  
+  const preview = document.getElementById('bannerImagePreview');
+  const placeholder = document.getElementById('bannerImagePlaceholder');
+  if (preview && placeholder) {
+    preview.style.display = 'none';
+    placeholder.style.display = 'block';
+  }
+  
+  renderHeroSlider();
+  renderAdminBanners();
+  showToast('✅ เพิ่มสินค้าแนะนำสำเร็จ | Recommended product added', 'success');
+}
+
+function deleteRecommendedBanner(id) {
+  let customBanners = recommendedBanners.filter(b => String(b.id) !== String(id));
+  recommendedBanners = customBanners;
+  
+  if (recommendedBanners.length === 0) {
+    localStorage.removeItem('joythai_recommended_banners');
+    // Fall back to default
+    recommendedBanners = [
+      { id: 'def1', productId: 1, image: '' },
+      { id: 'def2', productId: 2, image: '' }
+    ];
+  } else {
+    localStorage.setItem('joythai_recommended_banners', JSON.stringify(recommendedBanners));
+  }
+  
+  renderHeroSlider();
+  renderAdminBanners();
+  showToast('🗑️ ลบสินค้าแนะนำแล้ว | Recommended banner deleted', 'info');
+}
+
+function clearBannerImage(id) {
+  const banner = recommendedBanners.find(b => String(b.id) === String(id));
+  if (!banner) return;
+  
+  banner.image = '';
+  localStorage.setItem('joythai_recommended_banners', JSON.stringify(recommendedBanners));
+  
+  renderHeroSlider();
+  renderAdminBanners();
+  
+  const msg = currentLang === 'de' 
+    ? '📷 Banner-Bild gelöscht (Standardbild wird verwendet)' 
+    : currentLang === 'en' 
+      ? '📷 Banner image removed (will use default product image)' 
+      : '📷 ลบรูปแบนเนอร์แล้ว (ระบบจะใช้รูปสินค้าเริ่มต้นแทน)';
+  showToast(msg, 'info');
+}
+
+function populateBannerProductSelect() {
+  const select = document.getElementById('bannerProductSelect');
+  if (!select) return;
+  select.innerHTML = '<option value="">-- เลือกสินค้า / Select Product --</option>';
+  
+  activeProducts.forEach(p => {
+    const option = document.createElement('option');
+    option.value = p.id;
+    option.textContent = `[${p.category.toUpperCase()}] ${p.name.th} (฿${p.priceThb} / €${p.priceEur})`;
+    select.appendChild(option);
+  });
+}
+
+function renderAdminBanners() {
+  const tbody = document.getElementById('adminBannerTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  
+  recommendedBanners.forEach(b => {
+    const product = activeProducts.find(p => String(p.id) === String(b.productId));
+    const productName = product ? product.name.th : `Product ID: ${b.productId}`;
+    const imgUrl = b.image || (product ? product.image : '') || 'images/placeholder.jpg';
+    const isDefault = String(b.id).startsWith('def');
+    
+    // Check if it has a custom banner image uploaded
+    const hasCustomImage = !isDefault && b.image;
+    const deleteImageBtn = hasCustomImage
+      ? `<button class="btn-edit" style="background:rgba(255, 107, 53, 0.12); color:#ff6b35; border:1px solid rgba(255, 107, 53, 0.25); margin-right:8px;" onclick="clearBannerImage('${b.id}')">📷 ลบรูปแบนเนอร์</button>`
+      : '';
+      
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>
+        <img src="${imgUrl}" alt="" style="width:80px; height:50px; object-fit:cover; border-radius:4px; border:1px solid var(--border);">
+      </td>
+      <td>
+        <strong>${productName}</strong>
+        ${isDefault ? '<span class="admin-badge" style="background:#3b82f6; color:white; border:none; margin-left:6px;">ค่าเริ่มต้น</span>' : ''}
+      </td>
+      <td>
+        ${isDefault 
+          ? `<span style="font-size:12px; color:var(--text3);">ค่าเริ่มต้นระบบ (จะถูกซ่อนอัตโนมัติเมื่อท่านทำการเพิ่มสินค้าแนะนำของคุณเอง)</span>` 
+          : `${deleteImageBtn}<button class="btn-delete" onclick="deleteRecommendedBanner('${b.id}')">🗑️ ลบ</button>`}
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ── SALE MODAL LOGIC ──
+function openSaleModal() {
+  const overlay = document.getElementById('saleModalOverlay');
+  const grid = document.getElementById('saleProductsGrid');
+  if (!overlay || !grid) return;
+  
+  grid.innerHTML = '';
+  const bestsellerIds = getBestsellerIds();
+  
+  // Filter only on-sale products
+  const saleProducts = activeProducts.filter(p => p.onSale === true);
+  
+  if (saleProducts.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text3)">
+      <div style="font-size:48px;margin-bottom:16px">🏷️</div>
+      <p>${currentLang === 'de' ? 'Derzeit sind keine Produkte im Angebot.' : currentLang === 'en' ? 'No products are currently on sale.' : 'ขณะนี้ยังไม่มีสินค้าลดราคาพิเศษ'}</p>
+    </div>`;
+  } else {
+    saleProducts.forEach((p, idx) => {
+      const card = createProductCardHTML(p, idx, bestsellerIds);
+      grid.appendChild(card);
+    });
+  }
+  
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  
+  // Trigger reveal animations
+  setTimeout(() => {
+    grid.querySelectorAll('.product-card.reveal').forEach(el => el.classList.add('visible'));
+  }, 100);
+}
+
+function closeSaleModal() {
+  const overlay = document.getElementById('saleModalOverlay');
+  if (overlay) {
+    overlay.classList.remove('open');
+  }
+  document.body.style.overflow = '';
+}
+
+function closeSaleModalOutside(e) {
+  if (e.target === document.getElementById('saleModalOverlay')) {
+    closeSaleModal();
+  }
+}
+
+// ── Admin Dashboard Analytics ──
+function renderAdminAnalytics() {
+  const totalRevEl = document.getElementById('analyticsTotalRev');
+  const totalOrdersEl = document.getElementById('analyticsTotalOrders');
+  const totalUsersEl = document.getElementById('analyticsTotalUsers');
+  const totalProductsEl = document.getElementById('analyticsTotalProducts');
+  const chartContainer = document.getElementById('analyticsChartContainer');
+  if (!totalRevEl || !totalOrdersEl || !totalUsersEl || !totalProductsEl || !chartContainer) return;
+  
+  // Calculate revenue from all orders
+  const totalThb = orders.reduce((s, o) => s + (o.totalThb || 0), 0);
+  const totalEur = orders.reduce((s, o) => s + (o.totalEur || 0), 0);
+  
+  totalRevEl.textContent = `฿${totalThb.toLocaleString()} / €${totalEur.toFixed(2)}`;
+  totalOrdersEl.textContent = orders.length;
+  totalUsersEl.textContent = users.length + 1; // Registered users + Admin or Guest
+  totalProductsEl.textContent = activeProducts.length;
+  
+  // Calculate quantity sold per product
+  const counts = {};
+  orders.forEach(order => {
+    if (order.items) {
+      order.items.forEach(item => {
+        counts[item.id] = (counts[item.id] || 0) + (item.qty || 0);
+      });
+    }
+  });
+  
+  // Build chart dataset
+  const chartData = activeProducts.map(p => {
+    const qty = counts[p.id] || 0;
+    return {
+      id: p.id,
+      name: p.name[currentLang] || p.name.th || p.name.en || '',
+      qty: qty
+    };
+  });
+  
+  // Sort descending and select top 5
+  chartData.sort((a, b) => b.qty - a.qty);
+  const top5 = chartData.slice(0, 5);
+  
+  // Render CSS bars
+  chartContainer.innerHTML = '';
+  const maxQty = Math.max(...top5.map(x => x.qty), 1);
+  
+  top5.forEach(item => {
+    const percentage = (item.qty / maxQty) * 100;
+    const row = document.createElement('div');
+    row.className = 'chart-bar-row';
+    row.innerHTML = `
+      <div class="chart-bar-name" title="${item.name}">${item.name}</div>
+      <div class="chart-bar-outer">
+        <div class="chart-bar-inner" style="width: 0%;"></div>
+      </div>
+      <div class="chart-bar-val">${item.qty} ชิ้น</div>
+    `;
+    chartContainer.appendChild(row);
+    
+    // Animate width expansion
+    setTimeout(() => {
+      const bar = row.querySelector('.chart-bar-inner');
+      if (bar) bar.style.width = `${percentage}%`;
+    }, 100);
+  });
+}

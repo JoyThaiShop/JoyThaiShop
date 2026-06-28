@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Joy Thai Shop - สินค้าไทยพร้อมส่งในเยอรมนี อาหารและของกินพรีเมียมส่งตรงถึงบ้านคุณ">
+  <title id="pageTitle">Joy Thai Shop | สินค้าไทย พร้อมส่งในเยอรมัน</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Prompt:wght@300;400;500;600;700;800&family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=1.1">
+</head>
+<body>
+
+  <!-- Notification Bar -->
+  <div class="notif-bar" id="notifBar">
+    <div class="notif-inner">
+      <span id="notifText" data-i18n="notifText">สินค้าจากไทย พร้อมส่งในเยอรมัน</span>
+      <button class="notif-close" onclick="document.getElementById('notifBar').style.display='none'">✕</button>
+    </div>
+  </div>
+
+  <!-- Header / Navbar -->
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="#" class="logo" id="logo">
+        <span class="logo-icon">🌶️</span>
+        <span class="logo-text">Joy Thai<span class="logo-sub">Shop</span></span>
+      </a>
+      <nav class="nav" id="mainNav">
+        <a href="#hero" class="nav-link" data-i18n="navHome" onclick="closeMenu()">หน้าแรก</a>
+        <a href="#products" class="nav-link" data-i18n="navProducts" onclick="closeMenu()">สินค้า</a>
+        <a href="#categories" class="nav-link" data-i18n="navCategories" onclick="closeMenu()">หมวดหมู่</a>
+        <a href="#" class="nav-link nav-sale" style="color: #ef4444; font-weight: 800;" data-i18n="navSale" onclick="openSaleModal(); closeMenu(); return false;">🔥 ลดราคาพิเศษ</a>
+        <a href="#contact" class="nav-link" data-i18n="navContact" onclick="closeMenu()">ติดต่อ</a>
+      </nav>
+
+      <!-- Persistent Search Bar (always visible) -->
+      <div class="header-search">
+        <div class="header-search-inner">
+          <button class="header-search-icon-btn" onclick="scrollToFirstProduct()" aria-label="ค้นหา" style="background:none;border:none;padding:0;margin:0;cursor:pointer;display:flex;align-items:center;">
+            <svg class="header-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <input type="text" id="searchInput" class="header-search-input" data-i18n-placeholder="searchPlaceholder" placeholder="ค้นหาสินค้า..." oninput="filterProducts(this.value)" onkeydown="if(event.key==='Enter'){scrollToFirstProduct();}" autocomplete="off">
+          <button class="header-search-clear" id="searchClearBtn" onclick="clearSearch()" style="display:none" aria-label="Clear search">✕</button>
+        </div>
+      </div>
+
+
+      <div class="header-actions">
+        <!-- Language Switcher -->
+        <div class="lang-selector">
+          <button class="btn-icon btn-lang" id="langBtn" aria-label="Select Language" onclick="toggleLangDropdown(event)">
+            <span id="activeLangFlag">🇩🇪</span>
+          </button>
+          <div class="lang-dropdown" id="langDropdown">
+            <button onclick="changeLanguage('th')">🇹🇭 ไทย (TH)</button>
+            <button onclick="changeLanguage('de')">🇩🇪 Deutsch (DE)</button>
+            <button onclick="changeLanguage('en')">🇺🇸 English (EN)</button>
+          </div>
+        </div>
+        
+        <button class="btn-icon btn-wishlist" id="wishlistBtn" aria-label="สินค้าที่ชอบ" onclick="openWishlist()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          <span class="wishlist-badge" id="wishlistBadge" style="display:none">0</span>
+        </button>
+        
+        <button class="btn-icon btn-cart" id="cartBtn" aria-label="ตะกร้า" onclick="openCart()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </button>
+        
+        <!-- User Menu -->
+        <div class="user-menu" id="userMenu">
+          <!-- Not Logged In -->
+          <button class="btn-icon" id="loginToggleBtn" aria-label="Login" onclick="openAuthModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          </button>
+          <!-- Logged In -->
+          <div class="user-profile-wrap" id="userProfileWrap" style="display:none">
+            <button class="btn-icon btn-profile" id="profileBtn" onclick="toggleProfileDropdown(event)">
+              <span class="user-avatar-char" id="userAvatarChar">J</span>
+            </button>
+            <div class="profile-dropdown" id="profileDropdown">
+              <div class="profile-dropdown-header">
+                <span data-i18n="dropdownWelcome">สวัสดี,</span>
+                <strong id="dropdownUsername">Guest</strong>
+              </div>
+              <button onclick="openMyOrders()" data-i18n="dropdownMyOrders">📋 คำสั่งซื้อของฉัน</button>
+              <button onclick="handleLogout()" class="logout-btn" data-i18n="dropdownLogout">🚪 ออกจากระบบ</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="hamburger" id="hamburger" aria-label="เมนู" onclick="toggleMenu()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-badge" id="heroBadge" data-i18n="heroBadge">สินค้าไทย พร้อมส่งในเยอรมัน</div>
+      <h1 class="hero-title" id="heroTitle">
+        <span class="gradient-text-dark" data-i18n="heroTitle1">สินค้าไทย</span><br>
+        <span class="gradient-text" data-i18n="heroTitle2">ส่งตรงถึงบ้านคุณ</span>
+      </h1>
+      <p class="hero-sub" id="heroSub" data-i18n="heroSub">
+        สินค้าคุณภาพสูง อาหารไทย และอีกมากมาย<br>รับประกันความสดใหม่ ส่งรวดเร็วทั่วโลก
+      </p>
+      <div class="hero-cta">
+        <a href="#products" class="btn btn-green">
+          <span data-i18n="heroShopBtn">เลือกซื้อสินค้า</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num" id="statProductsNum">12</span><span class="stat-label" data-i18n="statProducts">สินค้า</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">100%</span><span class="stat-label" data-i18n="statAuthentic">ของแท้</span></div>
+      </div>
+    </div>
+
+    <!-- Recommended Products Slider -->
+    <div class="hero-slider-wrap" id="heroSliderWrap" style="display:none;">
+      <div class="hero-slider-header">
+        <span class="hero-slider-tag" data-i18n="recProductsTag">แนะนำ</span>
+        <h2 class="hero-slider-title" data-i18n="recProductsTitle">สินค้าแนะนำ</h2>
+      </div>
+      <div class="hero-slider-container">
+        <button class="hero-slider-arrow prev" onclick="scrollHeroSlider(-1)">‹</button>
+        <div class="hero-slider" id="heroSlider">
+          <!-- Slide items will be dynamically rendered by JS -->
+        </div>
+        <button class="hero-slider-arrow next" onclick="scrollHeroSlider(1)">›</button>
+      </div>
+      <div class="hero-slider-dots" id="heroSliderDots">
+        <!-- Dots injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Tabs -->
+  <section class="categories" id="categories">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag" data-i18n="catSectionTag">หมวดหมู่สินค้า</div>
+        <h2 class="section-title" data-i18n="catSectionTitle">เลือกตามประเภท</h2>
+      </div>
+      <div class="cat-grid">
+        <div class="cat-card active" data-cat="all" onclick="filterCat('all', this)">
+          <div class="cat-icon"><img src="images/cat_all.png" alt="All" class="cat-img"></div>
+          <div class="cat-name" data-i18n="catAll">ทั้งหมด</div>
+        </div>
+        <div class="cat-card" data-cat="noodle" onclick="filterCat('noodle', this)">
+          <div class="cat-icon"><img src="images/cat_noodle.png" alt="Noodle" class="cat-img"></div>
+          <div class="cat-name" data-i18n="catNoodle">บะหมี่ & เส้น</div>
+        </div>
+        <div class="cat-card" data-cat="sauce" onclick="filterCat('sauce', this)">
+          <div class="cat-icon"><img src="images/cat_sauce.png" alt="Sauce" class="cat-img"></div>
+          <div class="cat-name" data-i18n="catSauce">ซอส & เครื่องปรุง</div>
+        </div>
+        <div class="cat-card" data-cat="snack" onclick="filterCat('snack', this)">
+          <div class="cat-icon"><img src="images/cat_snack.png" alt="Snack" class="cat-img"></div>
+          <div class="cat-name" data-i18n="catSnack">ของว่าง & ขนม</div>
+        </div>
+        <div class="cat-card" data-cat="drink" onclick="filterCat('drink', this)">
+          <div class="cat-icon"><img src="images/cat_drink.png" alt="Drink" class="cat-img"></div>
+          <div class="cat-name" data-i18n="catDrink">เครื่องดื่ม</div>
+        </div>
+        <div class="cat-card" data-cat="fruit" onclick="filterCat('fruit', this)">
+          <div class="cat-icon"><img src="images/cat_fruit.png" alt="Fruit" class="cat-img"></div>
+          <div class="cat-name" data-i18n="catFruit">ผัก / ผลไม้</div>
+        </div>
+        <div class="cat-card" data-cat="ingredient" onclick="filterCat('ingredient', this)">
+          <div class="cat-icon"><img src="images/cat_ingredient.png" alt="Ingredient" class="cat-img"></div>
+          <div class="cat-name" data-i18n="catIngredient">วัตถุดิบ</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section class="products" id="products">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag" data-i18n="prodSectionTag">สินค้าของเรา</div>
+        <h2 class="section-title" data-i18n="prodSectionTitle">สินค้าแนะนำ</h2>
+        <p class="section-sub" data-i18n="prodSectionSub">คัดสรรสินค้าไทยคุณภาพดีที่สุดสำหรับคุณ</p>
+      </div>
+      <div class="products-filter-bar">
+        <label class="filter-instock-toggle">
+          <input type="checkbox" id="filterInStock" onchange="toggleInStockFilter()">
+          <span class="filter-instock-label" data-i18n="filterInStock">✅ เฉพาะสินค้าพร้อมส่ง</span>
+        </label>
+        
+        <!-- Sorting Custom Dropdown -->
+        <div class="filter-sort-selector" id="sortSelector">
+          <button class="filter-sort-btn" onclick="toggleSortDropdown(event)">
+            <span id="currentSortLabel" data-i18n="sortFeatured">แนะนำ</span>
+            <svg class="sort-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:14px;height:14px;stroke-width:2.5;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="filter-sort-dropdown" id="sortDropdown">
+            <button class="sort-option active" data-sort="featured" onclick="selectSortOption('featured')"><span data-i18n="sortFeatured">แนะนำ</span></button>
+            <button class="sort-option" data-sort="relevant" onclick="selectSortOption('relevant')"><span data-i18n="sortRelevant">เกี่ยวข้องมากที่สุด</span></button>
+            <button class="sort-option" data-sort="bestseller" onclick="selectSortOption('bestseller')"><span data-i18n="sortBestseller">ขายดี</span></button>
+            <button class="sort-option" data-sort="alpha-asc" onclick="selectSortOption('alpha-asc')"><span data-i18n="sortAlphaAsc">เรียงตามตัวอักษร A-Z</span></button>
+            <button class="sort-option" data-sort="alpha-desc" onclick="selectSortOption('alpha-desc')"><span data-i18n="sortAlphaDesc">เรียงตามตัวอักษร Z-A</span></button>
+            <button class="sort-option" data-sort="price-asc" onclick="selectSortOption('price-asc')"><span data-i18n="sortPriceAsc">ราคา จากต่ำไปสูง</span></button>
+            <button class="sort-option" data-sort="price-desc" onclick="selectSortOption('price-desc')"><span data-i18n="sortPriceDesc">ราคา จากสูงไปต่ำ</span></button>
+            <button class="sort-option" data-sort="date-asc" onclick="selectSortOption('date-asc')"><span data-i18n="sortDateAsc">วันที่ จากเก่าไปใหม่</span></button>
+            <button class="sort-option" data-sort="date-desc" onclick="selectSortOption('date-desc')"><span data-i18n="sortDateDesc">วันที่ จากใหม่ไปเก่า</span></button>
+          </div>
+        </div>
+        
+        <div class="filter-price-range">
+          <span class="filter-price-label" data-i18n="filterPriceLabel">💰 ราคา (฿)</span>
+          <input type="number" id="priceMin" class="filter-price-input" data-i18n-placeholder="priceMinPlaceholder" placeholder="จาก" min="0">
+          <span class="filter-price-sep">—</span>
+          <input type="number" id="priceMax" class="filter-price-input" data-i18n-placeholder="priceMaxPlaceholder" placeholder="ถึง" min="0">
+          <button class="filter-btn-apply" onclick="applyPriceFilter()" data-i18n="filterApplyBtn">🔍 ค้นหา</button>
+          <button class="filter-btn-clear" onclick="clearFilters()" data-i18n="filterClearBtn">✕ ล้างเงื่อนไข</button>
+        </div>
+      </div>
+      <div class="products-grid" id="productsGrid">
+        <!-- Products injected by JS -->
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Contact Section -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag" data-i18n="contactSectionTag">ติดต่อเรา</div>
+        <h2 class="section-title" data-i18n="contactSectionTitle">พร้อมให้บริการตลอด 24 ชม.</h2>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-item">
+          <div class="contact-icon">📱</div>
+          <div class="contact-title" data-i18n="contactLine">LINE Official</div>
+          <div class="contact-val">@joythaishop</div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📧</div>
+          <div class="contact-title" data-i18n="contactEmail">อีเมล</div>
+          <div class="contact-val">hello@joythaishop.com</div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📞</div>
+          <div class="contact-title" data-i18n="contactPhone">โทรศัพท์</div>
+          <div class="contact-val">+49 123-456-7890</div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">💬</div>
+          <div class="contact-title" data-i18n="contactFacebook">Facebook</div>
+          <div class="contact-val">fb.com/joythaishop</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">
+            <span class="logo-icon">🌶️</span>
+            <span class="logo-text">Joy Thai<span class="logo-sub">Shop</span></span>
+          </div>
+          <p data-i18n="footerBrandText">ร้านค้าออนไลน์สินค้าอาหารไทยระดับพรีเมียม จัดส่งรวดเร็วทั่วประเทศเยอรมนี</p>
+          <div class="social-links">
+            <a href="#" class="social-btn" aria-label="Facebook">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="Instagram">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="LINE">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footerColProducts">สินค้า</h4>
+          <ul>
+            <li><a href="#categories" onclick="filterCat('noodle', document.querySelector('[data-cat=noodle]'))" data-i18n="catNoodle">บะหมี่ & เส้น</a></li>
+            <li><a href="#categories" onclick="filterCat('sauce', document.querySelector('[data-cat=sauce]'))" data-i18n="catSauce">ซอส & เครื่องปรุง</a></li>
+            <li><a href="#categories" onclick="filterCat('snack', document.querySelector('[data-cat=snack]'))" data-i18n="catSnack">ของว่าง & ขนม</a></li>
+            <li><a href="#categories" onclick="filterCat('drink', document.querySelector('[data-cat=drink]'))" data-i18n="catDrink">เครื่องดื่ม</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footerColService">การจัดการ</h4>
+          <ul>
+            <li><a href="#" onclick="openAdminLogin(event)" data-i18n="footerAdminLink">🔐 ระบบหลังบ้าน (Backoffice)</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footerColPayment">ช่องทางชำระเงิน</h4>
+          <div class="payment-logos">
+            <span class="pay-badge">📱 QR PromptPay</span>
+            <span class="pay-badge">🏦 Bank Transfer (Germany)</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p data-i18n="footerCopyright">© 2026 Joy Thai Shop. สงวนลิขสิทธิ์ทุกประการ | All Rights Reserved</p>
+        <div class="footer-links">
+          <a href="#" data-i18n="footerPrivacy">นโยบายความเป็นส่วนตัว</a>
+          <a href="#" data-i18n="footerTerms">ข้อกำหนดการใช้งาน</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- CART DRAWER -->
+  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3 data-i18n="cartTitle">🛒 ตะกร้าของฉัน</h3>
+      <button class="cart-close" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-body" id="cartBody">
+      <div class="cart-empty" id="cartEmpty">
+        <div class="cart-empty-icon">🛒</div>
+        <p data-i18n="cartEmptyText">ยังไม่มีสินค้าในตะกร้า</p>
+        <a href="#products" class="btn btn-green btn-sm" data-i18n="cartShopBtn" onclick="closeCart()">เลือกซื้อสินค้า</a>
+      </div>
+      <div id="cartItems"></div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-fee-toggle-row" style="margin-bottom: 15px; padding: 12px; background: var(--bg-hover); border-radius: var(--radius); display: flex; align-items: center; gap: 10px; border: 1px solid var(--border);">
+        <input type="checkbox" id="cartFeeCheckbox" checked onchange="toggleCartFee(this.checked)" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent); margin: 0;">
+        <label for="cartFeeCheckbox" style="cursor: pointer; font-weight: 600; color: var(--text-main); margin-bottom: 0; font-size: 14px; display: flex; align-items: center; gap: 4px;" data-i18n="cartFeeLabel">
+          บวกเพิ่ม 7€ (259฿)
+        </label>
+      </div>
+      <div class="cart-summary">
+        <div class="cart-summary-row">
+          <span data-i18n="cartSubtotalLabel">ยอดรวม</span>
+          <span id="cartSubtotal">฿0 / €0.00</span>
+        </div>
+        <div class="cart-summary-row" id="cartServiceFeeRow">
+          <span data-i18n="cartServiceFeeLabel">ค่าบริการ (+7€)</span>
+          <span id="cartServiceFee">฿0 / €0.00</span>
+        </div>
+        <div class="cart-summary-row" style="display: none;">
+          <span data-i18n="cartShippingLabel">ค่าจัดส่ง</span>
+          <span id="cartShipping">คำนวณในขั้นตอนชำระ</span>
+        </div>
+        <div class="cart-summary-row total">
+          <span data-i18n="cartTotalLabel">รวมทั้งหมด</span>
+          <span id="cartTotal">฿0 / €0.00</span>
+        </div>
+      </div>
+      <button id="cartCheckoutBtn" class="btn btn-primary btn-full" data-i18n="cartCheckoutBtn" onclick="openCheckout()">ดำเนินการชำระเงิน →</button>
+      <div id="cartFeeWarning" style="display:none; text-align:center; color:#e53e3e; font-size:13px; font-weight:600; margin-top:-6px; margin-bottom:2px;" data-i18n="cartFeeRequired">⚠️ กรุณาติ๊กยอมรับค่าบริการก่อนดำเนินการต่อ</div>
+      <button class="btn btn-ghost btn-full" data-i18n="cartContinueBtn" onclick="closeCart()">เลือกซื้อต่อ</button>
+    </div>
+  </aside>
+
+  <!-- WISHLIST DRAWER -->
+  <div class="wishlist-overlay" id="wishlistOverlay" onclick="closeWishlist()"></div>
+  <aside class="wishlist-drawer" id="wishlistDrawer">
+    <div class="wishlist-header">
+      <h3 id="wishlistTitle" data-i18n="wishlistTitle">❤️ สินค้าที่ชอบของฉัน</h3>
+      <button class="wishlist-close" onclick="closeWishlist()">✕</button>
+    </div>
+    <div class="wishlist-body" id="wishlistBody">
+      <div class="wishlist-empty" id="wishlistEmpty">
+        <div class="wishlist-empty-icon">❤️</div>
+        <p data-i18n="wishlistEmptyText">ยังไม่มีสินค้าที่ชอบ</p>
+        <a href="#products" class="btn btn-green btn-sm" data-i18n="cartShopBtn" onclick="closeWishlist()">เลือกซื้อสินค้า</a>
+      </div>
+      <div id="wishlistItems"></div>
+    </div>
+    <div class="wishlist-footer" id="wishlistFooter" style="display:none">
+      <button class="btn btn-primary btn-full" onclick="addAllWishlistToCart()" data-i18n="wishlistAddAllBtn" style="margin-bottom:8px;">เพิ่มลงตะกร้าทั้งหมด</button>
+      <button class="btn btn-ghost btn-full" data-i18n="cartContinueBtn" onclick="closeWishlist()">เลือกซื้อต่อ</button>
+    </div>
+  </aside>
+
+  <!-- CHECKOUT MODAL -->
+  <div class="modal-overlay" id="checkoutOverlay" onclick="closeCheckoutOutside(event)">
+    <div class="modal checkout-modal" id="checkoutModal">
+      <button class="modal-close" onclick="closeCheckout()">✕</button>
+
+      <!-- Step Indicator -->
+      <div class="steps">
+        <div class="step active" id="step1Ind">
+          <div class="step-num">1</div>
+          <div class="step-label" data-i18n="stepAddress">ที่อยู่</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step2Ind">
+          <div class="step-num">2</div>
+          <div class="step-label" data-i18n="stepPayment">ชำระเงิน</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step3Ind">
+          <div class="step-num">3</div>
+          <div class="step-label" data-i18n="stepConfirm">ยืนยัน</div>
+        </div>
+      </div>
+
+      <!-- Step 1: Address -->
+      <div class="checkout-step" id="checkoutStep1">
+        <h2 class="checkout-title" data-i18n="shippingTitle">📍 ข้อมูลการจัดส่ง</h2>
+
+        <!-- Country Selector (Top - determines which form to show) -->
+        <div class="form-group">
+          <label><span data-i18n="fieldCountry">ประเทศ</span> <span class="req">*</span></label>
+          <select id="country" class="form-input" onchange="onCountryChange()">
+            <option value="DE">🇩🇪 เยอรมนี (Germany)</option>
+            <option value="TH">🇹🇭 ไทย (Thailand)</option>
+            <option value="AT">🇦🇹 ออสเตรีย (Austria)</option>
+            <option value="CH">🇨🇭 สวิตเซอร์แลนด์ (Switzerland)</option>
+            <option value="FR">🇫🇷 ฝรั่งเศส (France)</option>
+            <option value="NL">🇳🇱 เนเธอร์แลนด์ (Netherlands)</option>
+            <option value="GB">🇬🇧 อังกฤษ (UK)</option>
+            <option value="US">🇺🇸 สหรัฐอเมริกา (USA)</option>
+          </select>
+        </div>
+
+        <!-- ── Common Fields ── -->
+        <div class="form-group">
+          <label><span data-i18n="fieldFullName">ชื่อ - นามสกุล</span> <span class="req">*</span></label>
+          <input type="text" id="fullName" placeholder="Jane Doe" class="form-input">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label><span data-i18n="fieldEmail">อีเมล</span> <span class="req">*</span></label>
+            <input type="email" id="email" placeholder="jane@example.com" class="form-input">
+          </div>
+          <div class="form-group">
+            <label><span data-i18n="fieldPhone">เบอร์โทรศัพท์</span> <span class="req">*</span></label>
+            <input type="tel" id="phone" placeholder="+49 17x-xxx-xxxx" class="form-input">
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 🇩🇪 GERMANY ADDRESS FORM                  -->
+        <!-- ══════════════════════════════════════════ -->
+        <div id="addrFormDE" class="addr-country-form">
+          <div class="addr-form-badge de-badge">🇩🇪 Lieferadresse in Deutschland</div>
+
+          <div class="form-group">
+            <label>Straße und Hausnummer <span class="req">*</span></label>
+            <input type="text" id="de_street" placeholder="z.B. Hauptstraße 42" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Adresszusatz <span class="addr-opt-tag">optional</span></label>
+            <input type="text" id="de_extra" placeholder="z.B. Wohnung 3, Hinterhaus" class="form-input">
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="max-width:160px;">
+              <label>Postleitzahl (PLZ) <span class="req">*</span></label>
+              <input type="text" id="de_plz" placeholder="z.B. 10115" class="form-input" maxlength="5">
+            </div>
+            <div class="form-group">
+              <label>Stadt <span class="req">*</span></label>
+              <input type="text" id="de_city" placeholder="z.B. Berlin" class="form-input">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Bundesland <span class="addr-opt-tag">optional</span></label>
+            <select id="de_bundesland" class="form-input">
+              <option value="">— Bundesland wählen —</option>
+              <option value="BW">Baden-Württemberg</option>
+              <option value="BY">Bayern</option>
+              <option value="BE">Berlin</option>
+              <option value="BB">Brandenburg</option>
+              <option value="HB">Bremen</option>
+              <option value="HH">Hamburg</option>
+              <option value="HE">Hessen</option>
+              <option value="MV">Mecklenburg-Vorpommern</option>
+              <option value="NI">Niedersachsen</option>
+              <option value="NW">Nordrhein-Westfalen</option>
+              <option value="RP">Rheinland-Pfalz</option>
+              <option value="SL">Saarland</option>
+              <option value="SN">Sachsen</option>
+              <option value="ST">Sachsen-Anhalt</option>
+              <option value="SH">Schleswig-Holstein</option>
+              <option value="TH">Thüringen</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 🇹🇭 THAILAND ADDRESS FORM                 -->
+        <!-- ══════════════════════════════════════════ -->
+        <div id="addrFormTH" class="addr-country-form" style="display:none;">
+          <div class="addr-form-badge th-badge">🇹🇭 ที่อยู่จัดส่งในประเทศไทย</div>
+
+          <div class="form-group">
+            <label>บ้านเลขที่ / หมู่บ้าน / อาคาร <span class="req">*</span></label>
+            <input type="text" id="th_house" placeholder="เช่น 123/45 หมู่บ้านสุขสบาย อาคาร A ชั้น 5" class="form-input">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>ซอย <span class="addr-opt-tag">ถ้ามี</span></label>
+              <input type="text" id="th_soi" placeholder="เช่น ซอยสุขุมวิท 21" class="form-input">
+            </div>
+            <div class="form-group">
+              <label>ถนน <span class="addr-opt-tag">ถ้ามี</span></label>
+              <input type="text" id="th_road" placeholder="เช่น ถนนสุขุมวิท" class="form-input">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>แขวง / ตำบล <span class="req">*</span></label>
+              <input type="text" id="th_subdistrict" placeholder="เช่น คลองเตย" class="form-input">
+            </div>
+            <div class="form-group">
+              <label>เขต / อำเภอ <span class="req">*</span></label>
+              <input type="text" id="th_district" placeholder="เช่น คลองเตย" class="form-input">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>จังหวัด <span class="req">*</span></label>
+              <select id="th_province" class="form-input">
+                <option value="">— เลือกจังหวัด —</option>
+                <option>กรุงเทพมหานคร</option><option>กระบี่</option><option>กาญจนบุรี</option>
+                <option>กาฬสินธุ์</option><option>กำแพงเพชร</option><option>ขอนแก่น</option>
+                <option>จันทบุรี</option><option>ฉะเชิงเทรา</option><option>ชลบุรี</option>
+                <option>ชัยนาท</option><option>ชัยภูมิ</option><option>ชุมพร</option>
+                <option>เชียงราย</option><option>เชียงใหม่</option><option>ตรัง</option>
+                <option>ตราด</option><option>ตาก</option><option>นครนายก</option>
+                <option>นครปฐม</option><option>นครพนม</option><option>นครราชสีมา</option>
+                <option>นครศรีธรรมราช</option><option>นครสวรรค์</option><option>นนทบุรี</option>
+                <option>นราธิวาส</option><option>น่าน</option><option>บึงกาฬ</option>
+                <option>บุรีรัมย์</option><option>ปทุมธานี</option><option>ประจวบคีรีขันธ์</option>
+                <option>ปราจีนบุรี</option><option>ปัตตานี</option><option>พระนครศรีอยุธยา</option>
+                <option>พะเยา</option><option>พังงา</option><option>พัทลุง</option>
+                <option>พิจิตร</option><option>พิษณุโลก</option><option>เพชรบุรี</option>
+                <option>เพชรบูรณ์</option><option>แพร่</option><option>ภูเก็ต</option>
+                <option>มหาสารคาม</option><option>มุกดาหาร</option><option>แม่ฮ่องสอน</option>
+                <option>ยโสธร</option><option>ยะลา</option><option>ร้อยเอ็ด</option>
+                <option>ระนอง</option><option>ระยอง</option><option>ราชบุรี</option>
+                <option>ลพบุรี</option><option>ลำปาง</option><option>ลำพูน</option>
+                <option>เลย</option><option>ศรีสะเกษ</option><option>สกลนคร</option>
+                <option>สงขลา</option><option>สตูล</option><option>สมุทรปราการ</option>
+                <option>สมุทรสงคราม</option><option>สมุทรสาคร</option><option>สระแก้ว</option>
+                <option>สระบุรี</option><option>สิงห์บุรี</option><option>สุโขทัย</option>
+                <option>สุพรรณบุรี</option><option>สุราษฎร์ธานี</option><option>สุรินทร์</option>
+                <option>หนองคาย</option><option>หนองบัวลำภู</option><option>อ่างทอง</option>
+                <option>อำนาจเจริญ</option><option>อุดรธานี</option><option>อุตรดิตถ์</option>
+                <option>อุทัยธานี</option><option>อุบลราชธานี</option>
+              </select>
+            </div>
+            <div class="form-group" style="max-width:150px;">
+              <label>รหัสไปรษณีย์ <span class="req">*</span></label>
+              <input type="text" id="th_zip" placeholder="เช่น 10110" class="form-input" maxlength="5">
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 🇦🇹 AUSTRIA ADDRESS FORM                  -->
+        <!-- ══════════════════════════════════════════ -->
+        <div id="addrFormAT" class="addr-country-form" style="display:none;">
+          <div class="addr-form-badge de-badge">🇦🇹 Lieferadresse in Österreich</div>
+
+          <div class="form-group">
+            <label>Straße und Hausnummer <span class="req">*</span></label>
+            <input type="text" id="at_street" placeholder="z.B. Maria-Theresien-Straße 12" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Adresszusatz <span class="addr-opt-tag">optional</span></label>
+            <input type="text" id="at_extra" placeholder="z.B. Top 4" class="form-input">
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="max-width:160px;">
+              <label>Postleitzahl (PLZ) <span class="req">*</span></label>
+              <input type="text" id="at_plz" placeholder="z.B. 1010" class="form-input" maxlength="4">
+            </div>
+            <div class="form-group">
+              <label>Stadt / Ort <span class="req">*</span></label>
+              <input type="text" id="at_city" placeholder="z.B. Wien" class="form-input">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Bundesland <span class="addr-opt-tag">optional</span></label>
+            <select id="at_bundesland" class="form-input">
+              <option value="">— Bundesland wählen —</option>
+              <option>Burgenland</option>
+              <option>Kärnten</option>
+              <option>Niederösterreich</option>
+              <option>Oberösterreich</option>
+              <option>Salzburg</option>
+              <option>Steiermark</option>
+              <option>Tirol</option>
+              <option>Vorarlberg</option>
+              <option>Wien</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 🇨🇭 SWITZERLAND ADDRESS FORM                -->
+        <!-- ══════════════════════════════════════════ -->
+        <div id="addrFormCH" class="addr-country-form" style="display:none;">
+          <div class="addr-form-badge de-badge">🇨🇭 Lieferadresse in der Schweiz</div>
+
+          <div class="form-group">
+            <label>Strasse und Hausnummer <span class="req">*</span></label>
+            <input type="text" id="ch_street" placeholder="z.B. Bahnhofstrasse 45" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Adresszusatz <span class="addr-opt-tag">optional</span></label>
+            <input type="text" id="ch_extra" placeholder="z.B. Wohnung/Stockwerk" class="form-input">
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="max-width:160px;">
+              <label>Postleitzahl (PLZ) <span class="req">*</span></label>
+              <input type="text" id="ch_plz" placeholder="z.B. 8001" class="form-input" maxlength="4">
+            </div>
+            <div class="form-group">
+              <label>Ort <span class="req">*</span></label>
+              <input type="text" id="ch_city" placeholder="z.B. Zürich" class="form-input">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Kanton <span class="addr-opt-tag">optional</span></label>
+            <select id="ch_kanton" class="form-input">
+              <option value="">— Kanton wählen —</option>
+              <option>Zürich</option><option>Bern</option><option>Luzern</option>
+              <option>Uri</option><option>Schwyz</option><option>Obwalden</option>
+              <option>Nidwalden</option><option>Glarus</option><option>Zug</option>
+              <option>Freiburg</option><option>Solothurn</option><option>Basel-Stadt</option>
+              <option>Basel-Landschaft</option><option>Schaffhausen</option>
+              <option>Appenzell Ausserrhoden</option><option>Appenzell Innerrhoden</option>
+              <option>St. Gallen</option><option>Graubünden</option><option>Aargau</option>
+              <option>Thurgau</option><option>Tessin</option><option>Waadt</option>
+              <option>Wallis</option><option>Neuenburg</option><option>Genf</option>
+              <option>Jura</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 🇫🇷 FRANCE ADDRESS FORM                   -->
+        <!-- ══════════════════════════════════════════ -->
+        <div id="addrFormFR" class="addr-country-form" style="display:none;">
+          <div class="addr-form-badge de-badge">🇫🇷 Adresse de livraison en France</div>
+
+          <div class="form-group">
+            <label>Numéro et nom de rue <span class="req">*</span></label>
+            <input type="text" id="fr_street" placeholder="Ex: 15 Rue de Rivoli" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Complément d'adresse <span class="addr-opt-tag">optionnel</span></label>
+            <input type="text" id="fr_extra" placeholder="Ex: Appartement 4B, Bâtiment C" class="form-input">
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="max-width:160px;">
+              <label>Code postal <span class="req">*</span></label>
+              <input type="text" id="fr_zip" placeholder="Ex: 75001" class="form-input" maxlength="5">
+            </div>
+            <div class="form-group">
+              <label>Ville <span class="req">*</span></label>
+              <input type="text" id="fr_city" placeholder="Ex: Paris" class="form-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 🇳🇱 NETHERLANDS ADDRESS FORM               -->
+        <!-- ══════════════════════════════════════════ -->
+        <div id="addrFormNL" class="addr-country-form" style="display:none;">
+          <div class="addr-form-badge de-badge">🇳🇱 Bezorgadres in Nederland</div>
+
+          <div class="form-group">
+            <label>Straatnaam en huisnummer <span class="req">*</span></label>
+            <input type="text" id="nl_street" placeholder="Bijv. Keizersgracht 100" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Toevoeging <span class="addr-opt-tag">optioneel</span></label>
+            <input type="text" id="nl_extra" placeholder="Bijv. 3hoog, Huis" class="form-input">
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="max-width:160px;">
+              <label>Postcode <span class="req">*</span></label>
+              <input type="text" id="nl_zip" placeholder="Bijv. 1012 TQ" class="form-input" maxlength="7">
+            </div>
+            <div class="form-group">
+              <label>Stad / Woonplaats <span class="req">*</span></label>
+              <input type="text" id="nl_city" placeholder="Bijv. Amsterdam" class="form-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 🇬🇧 UNITED KINGDOM ADDRESS FORM             -->
+        <!-- ══════════════════════════════════════════ -->
+        <div id="addrFormGB" class="addr-country-form" style="display:none;">
+          <div class="addr-form-badge de-badge">🇬🇧 Shipping Address in United Kingdom</div>
+
+          <div class="form-group">
+            <label>Address Line 1 <span class="req">*</span></label>
+            <input type="text" id="gb_line1" placeholder="e.g. 10 Downing Street" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Address Line 2 <span class="addr-opt-tag">optional</span></label>
+            <input type="text" id="gb_line2" placeholder="e.g. Apartment, suite, unit" class="form-input">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Town / City <span class="req">*</span></label>
+              <input type="text" id="gb_city" placeholder="e.g. London" class="form-input">
+            </div>
+            <div class="form-group" style="max-width:180px;">
+              <label>Postcode <span class="req">*</span></label>
+              <input type="text" id="gb_postcode" placeholder="e.g. SW1A 2AA" class="form-input" maxlength="10">
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 🇺🇸 UNITED STATES ADDRESS FORM               -->
+        <!-- ══════════════════════════════════════════ -->
+        <div id="addrFormUS" class="addr-country-form" style="display:none;">
+          <div class="addr-form-badge de-badge">🇺🇸 Shipping Address in United States</div>
+
+          <div class="form-group">
+            <label>Address Line 1 <span class="req">*</span></label>
+            <input type="text" id="us_line1" placeholder="e.g. 1600 Pennsylvania Avenue NW" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Address Line 2 <span class="addr-opt-tag">optional</span></label>
+            <input type="text" id="us_line2" placeholder="e.g. Apt 4B, Building C" class="form-input">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>City <span class="req">*</span></label>
+              <input type="text" id="us_city" placeholder="e.g. Washington" class="form-input">
+            </div>
+            <div class="form-group" style="max-width:140px;">
+              <label>State <span class="req">*</span></label>
+              <select id="us_state" class="form-input">
+                <option value="">— State —</option>
+                <option value="AL">Alabama</option><option value="AK">Alaska</option><option value="AZ">Arizona</option><option value="AR">Arkansas</option><option value="CA">California</option><option value="CO">Colorado</option><option value="CT">Connecticut</option><option value="DE">Delaware</option><option value="FL">Florida</option><option value="GA">Georgia</option><option value="HI">Hawaii</option><option value="ID">Idaho</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="IA">Iowa</option><option value="KS">Kansas</option><option value="KY">Kentucky</option><option value="LA">Louisiana</option><option value="ME">Maine</option><option value="MD">Maryland</option><option value="MA">Massachusetts</option><option value="MI">Michigan</option><option value="MN">Minnesota</option><option value="MS">Mississippi</option><option value="MO">Missouri</option><option value="MT">Montana</option><option value="NE">Nebraska</option><option value="NV">Nevada</option><option value="NH">New Hampshire</option><option value="NJ">New Jersey</option><option value="NM">New Mexico</option><option value="NY">New York</option><option value="NC">North Carolina</option><option value="ND">North Dakota</option><option value="OH">Ohio</option><option value="OK">Oklahoma</option><option value="OR">Oregon</option><option value="PA">Pennsylvania</option><option value="RI">Rhode Island</option><option value="SC">South Carolina</option><option value="SD">South Dakota</option><option value="TN">Tennessee</option><option value="TX">Texas</option><option value="UT">Utah</option><option value="VT">Vermont</option><option value="VA">Virginia</option><option value="WA">Washington</option><option value="WV">West Virginia</option><option value="WI">Wisconsin</option><option value="WY">Wyoming</option>
+              </select>
+            </div>
+            <div class="form-group" style="max-width:130px;">
+              <label>ZIP Code <span class="req">*</span></label>
+              <input type="text" id="us_zip" placeholder="20500" class="form-input" maxlength="10">
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 🌍 OTHER COUNTRIES (Generic Form)         -->
+        <!-- ══════════════════════════════════════════ -->
+        <div id="addrFormOTHER" class="addr-country-form" style="display:none;">
+          <div class="form-group">
+            <label><span data-i18n="fieldAddress">ที่อยู่</span> <span class="req">*</span></label>
+            <input type="text" id="address" placeholder="Street address" class="form-input">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label><span data-i18n="fieldCity">เมือง</span> <span class="req">*</span></label>
+              <input type="text" id="city" placeholder="City" class="form-input">
+            </div>
+            <div class="form-group">
+              <label><span data-i18n="fieldPostcode">รหัสไปรษณีย์</span> <span class="req">*</span></label>
+              <input type="text" id="postcode" placeholder="Postcode" class="form-input">
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full" data-i18n="btnNextPayment" onclick="goToStep2()">ถัดไป: วิธีชำระเงิน →</button>
+      </div>
+
+      <!-- Step 2: Payment -->
+      <div class="checkout-step" id="checkoutStep2" style="display:none">
+        <h2 class="checkout-title" data-i18n="paymentTitle">💳 วิธีชำระเงิน</h2>
+
+        <div class="payment-methods">
+          <label class="payment-method" id="pm_de_bank">
+            <input type="radio" name="payMethod" value="de_bank" checked onchange="selectPayMethod(this)">
+            <div class="pm-content">
+              <div class="pm-icon">🏦</div>
+              <div class="pm-info">
+                <div class="pm-name">Bank Transfer (Germany) / โอนผ่านธนาคารเยอรมนี</div>
+                <div class="pm-sub">โอนเงินเข้าบัญชี IBAN ของทางร้านในเยอรมนี</div>
+              </div>
+              <div class="pm-check">✓</div>
+            </div>
+          </label>
+          
+          <label class="payment-method" id="pm_th_qr">
+            <input type="radio" name="payMethod" value="th_qr" onchange="selectPayMethod(this)">
+            <div class="pm-content">
+              <div class="pm-icon">📱</div>
+              <div class="pm-info">
+                <div class="pm-name">PromptPay QR Code / สแกนคิวอาร์โค้ดไทย</div>
+                <div class="pm-sub">ชำระเงินสะดวกผ่าน QR Code ประเทศไทย</div>
+              </div>
+              <div class="pm-check">✓</div>
+            </div>
+          </label>
+        </div>
+
+        <!-- Details Box for Germany Bank Transfer -->
+        <div id="deBankBox" class="bank-info" style="margin-top: 20px;">
+          <div class="bank-row"><span>ธนาคาร:</span><strong id="displayDeBankName">Sparkasse Berlin</strong></div>
+          <div class="bank-row"><span>ชื่อบัญชี:</span><strong id="displayDeAccountName">Joy Thai Shop GmbH</strong></div>
+          <div class="bank-row"><span>IBAN:</span><strong id="displayDeIban">DE12 3456 ...</strong></div>
+        </div>
+
+        <!-- Details Box for Thai QR -->
+        <div id="thQrBox" class="promptpay-box" style="margin-top: 20px; display:none; text-align: center;">
+          <div style="background: white; padding: 15px; border-radius: var(--radius); display: inline-block; box-shadow: var(--shadow); border: 1px solid var(--border);">
+            <img id="displayThQrImage" src="" alt="PromptPay QR Code" style="max-width: 250px; width: 100%; display: none;">
+            <div id="displayThQrPlaceholder" style="padding: 40px; color: var(--text3); font-weight: 700; border: 2px dashed var(--border); border-radius: 8px;">ยังไม่ได้อัพโหลดรูปภาพ QR ของร้าน</div>
+          </div>
+        </div>
+
+        <!-- Slip Upload Box (Required for all payment methods) -->
+        <div class="form-group" style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);">
+          <label style="font-weight: 700; font-size: 14px; color: var(--text);">
+            📷 อัพโหลดหลักฐานการชำระเงิน (Upload Payment Slip) <span class="req">*</span>
+          </label>
+          <input type="file" id="paymentSlipFile" accept="image/*" class="form-input" style="padding: 10px;" onchange="handlePaymentSlipUpload(this)">
+          <div style="margin-top: 12px; text-align: center;">
+            <img id="paymentSlipPreview" src="" alt="Payment Slip Preview" style="max-width: 100%; max-height: 250px; border-radius: var(--radius-sm); border: 1px solid var(--border); display: none; margin: 0 auto;">
+            <div id="paymentSlipPlaceholder" style="padding: 24px; border: 2px dashed var(--border); border-radius: var(--radius-sm); color: var(--text3); font-size: 13px; background: var(--bg3);">
+              กรุณาเลือกไฟล์รูปภาพหลักฐานการโอนเงิน (JPG, PNG)
+            </div>
+          </div>
+        </div>
+
+        <div class="checkout-nav">
+          <button class="btn btn-ghost" data-i18n="btnBack" onclick="goToStep1()">← ย้อนกลับ</button>
+          <button class="btn btn-primary" data-i18n="btnNextConfirm" onclick="goToStep3()">ถัดไป: ตรวจสอบ →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Confirm -->
+      <div class="checkout-step" id="checkoutStep3" style="display:none">
+        <h2 class="checkout-title" data-i18n="confirmTitle">✅ ตรวจสอบคำสั่งซื้อ</h2>
+        <div id="orderSummaryItems" class="order-summary-items"></div>
+        <div class="order-summary-total">
+          <div class="order-row"><span data-i18n="confirmSubtotalLabel">ยอดสินค้า</span><span id="confirmSubtotal">฿0 / €0.00</span></div>
+          <div class="order-row" id="confirmServiceFeeRow"><span data-i18n="cartServiceFeeLabel">ค่าบริการพิเศษ (+7€)</span><span id="confirmServiceFee">฿0 / €0.00</span></div>
+          <div class="order-row" style="display: none;"><span data-i18n="confirmShippingLabel">ค่าจัดส่ง</span><span id="confirmShipping">฿0 / €0.00</span></div>
+          <div class="order-row total"><span data-i18n="confirmTotalLabel">รวมทั้งหมด</span><span id="confirmTotal">฿0 / €0.00</span></div>
+        </div>
+        <div class="confirm-address" id="confirmAddress"></div>
+        <div class="confirm-payment" id="confirmPayment"></div>
+        <div class="checkout-nav">
+          <button class="btn btn-ghost" data-i18n="btnEdit" onclick="goToStep2()">← แก้ไข</button>
+          <button class="btn btn-primary" data-i18n="btnPlaceOrder" onclick="placeOrder()">🎉 ยืนยันคำสั่งซื้อ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="successOverlay">
+    <div class="modal success-modal">
+      <div class="success-icon">🎉</div>
+      <h2 data-i18n="successTitle">สั่งซื้อสำเร็จ!</h2>
+      <p data-i18n="successSub">ขอบคุณที่ช้อปกับเรา คุณจะได้รับอีเมลยืนยันเร็วๆ นี้</p>
+      <div class="order-id-box"><span data-i18n="successOrderLabel">หมายเลขคำสั่งซื้อ:</span> <strong id="orderId">JOY-00001</strong></div>
+      <button class="btn btn-primary" data-i18n="successCloseBtn" onclick="closeSuccess()">กลับหน้าหลัก</button>
+    </div>
+  </div>
+
+  <!-- USER AUTH MODAL (LOGIN/REGISTER) -->
+  <div class="modal-overlay" id="authOverlay" onclick="closeAuthOutside(event)">
+    <div class="modal auth-modal">
+      <button class="modal-close" onclick="closeAuthModal()">✕</button>
+      
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')" data-i18n="authTabLogin">เข้าสู่ระบบ</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')" data-i18n="authTabRegister">สมัครสมาชิก</button>
+      </div>
+      
+      <div class="auth-form" id="authForm">
+        <h2 id="authTitle" style="text-align:center; margin-bottom:24px; font-weight:800;" data-i18n="authLoginTitle">🔓 เข้าสู่ระบบสมาชิก</h2>
+        
+        <div class="form-group">
+          <label data-i18n="authUsernameLabel">ชื่อผู้ใช้ / Username (ID) <span class="req">*</span></label>
+          <input type="text" id="authUsername" placeholder="เช่น joyuser" class="form-input">
+        </div>
+        
+        <div class="form-group">
+          <label data-i18n="authPasswordLabel">รหัสผ่าน / Password <span class="req">*</span></label>
+          <input type="password" id="authPassword" placeholder="••••••••" class="form-input">
+        </div>
+        
+        <button class="btn btn-primary btn-full" id="authSubmitBtn" style="margin-top:12px;" onclick="handleAuthSubmit()" data-i18n="authSubmitBtnLogin">เข้าสู่ระบบ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY ORDERS MODAL -->
+  <div class="modal-overlay" id="myOrdersOverlay" onclick="closeMyOrdersOutside(event)">
+    <div class="modal my-orders-modal">
+      <button class="modal-close" onclick="closeMyOrders()">✕</button>
+      <h2 style="margin-bottom:24px; font-weight:800;" data-i18n="myOrdersHeader">📋 ประวัติคำสั่งซื้อของฉัน</h2>
+      
+      <div class="my-orders-body" id="myOrdersBody">
+        <!-- Orders list injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN LOGIN MODAL -->
+  <div class="modal-overlay" id="adminLoginOverlay" onclick="closeAdminLoginOutside(event)">
+    <div class="modal admin-login-modal">
+      <button class="modal-close" onclick="closeAdminLogin()">✕</button>
+      <h2 style="text-align:center; margin-bottom:24px; font-weight:800;" data-i18n="adminLoginHeader">🔐 เข้าสู่ระบบหลังบ้าน</h2>
+      <div class="form-group">
+        <label data-i18n="adminPassLabel">รหัสผ่านผู้ดูแลระบบ (Admin Password)</label>
+        <input type="password" id="adminPassword" placeholder="รหัสผ่านเริ่มต้น: admin123" class="form-input">
+      </div>
+      <button class="btn btn-primary btn-full" data-i18n="adminLoginBtn" onclick="loginAdmin()">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD MODAL -->
+  <div class="modal-overlay" id="adminDashboardOverlay">
+    <div class="modal admin-dashboard-modal">
+      <button class="modal-close" onclick="closeAdminDashboard()">✕</button>
+      
+      <div class="admin-dash-header">
+        <h2 data-i18n="adminDashTitle">🛠️ ระบบจัดการหลังบ้าน (Backoffice)</h2>
+        <!-- Tab Switcher -->
+        <div class="admin-tabs">
+          <button class="admin-tab active" id="adminTabProducts" onclick="switchAdminTab('products')" data-i18n="adminTabProducts">📦 จัดการสินค้า</button>
+          <button class="admin-tab" id="adminTabOrders" onclick="switchAdminTab('orders')" data-i18n="adminTabOrders">📑 จัดการคำสั่งซื้อ</button>
+          <button class="admin-tab" id="adminTabBanners" onclick="switchAdminTab('banners')" data-i18n="adminTabBanners">📢 จัดการสินค้าแนะนำ</button>
+          <button class="admin-tab" id="adminTabAnalytics" onclick="switchAdminTab('analytics')">📊 สถิติร้านค้า</button>
+          <button class="admin-tab" id="adminTabSettings" onclick="switchAdminTab('settings')">⚙️ ตั้งค่าระบบ</button>
+        </div>
+      </div>
+      
+      <!-- Content: Products Tab -->
+      <div class="admin-tab-content" id="adminContentProducts">
+        <div style="display:flex; justify-content:flex-end; margin-bottom:16px;">
+          <button class="btn btn-primary btn-sm" data-i18n="adminAddProductBtn" onclick="openAddProductForm()">+ เพิ่มสินค้าใหม่</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th data-i18n="thImage">รูปภาพ</th>
+                <th data-i18n="thName">ชื่อสินค้า (TH / DE / EN)</th>
+                <th data-i18n="thCategory">หมวดหมู่</th>
+                <th data-i18n="thWeight">น้ำหนัก</th>
+                <th data-i18n="thPrice">ราคา (฿ / €)</th>
+                <th data-i18n="thActions">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="adminProductTableBody">
+              <!-- Product rows injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Content: Orders Tab -->
+      <div class="admin-tab-content" id="adminContentOrders" style="display:none; flex-direction:column; gap:20px; overflow-y:auto; padding-right:6px; width:100%;">
+        <div id="adminOrderCardsContainer" style="display:flex; flex-direction:column; gap:16px; width:100%;">
+          <!-- Order cards injected by JS -->
+        </div>
+      </div>
+
+      <!-- Content: Settings Tab -->
+      <div class="admin-tab-content" id="adminContentSettings" style="display:none; overflow-y:auto; padding-right:6px;">
+        <div style="max-width: 600px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 20px; padding: 20px; background: var(--bg2); border-radius: var(--radius); border: 1px solid var(--border); margin-bottom:20px;">
+          <h3 style="margin-bottom:10px; font-weight:800; border-bottom: 1px solid var(--border); padding-bottom:10px; color:var(--text)">🇹🇭 ตั้งค่าการชำระเงินฝั่งไทย (Thai PromptPay QR)</h3>
+          
+          <div class="form-group">
+            <label style="color:var(--text2)">รูปภาพ QR Code (แนะนำรูปสี่เหลี่ยมจัตุรัส)</label>
+            <input type="file" id="settingsQrFile" accept="image/*" class="form-input" style="padding: 10px;" onchange="handleQrUpload(this)">
+            <div style="margin-top: 10px; text-align: center; display: flex; justify-content: center; align-items: center;">
+              <img id="settingsQrPreview" src="" alt="QR Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 1px solid var(--border); display: none;">
+              <div id="settingsQrPlaceholder" style="padding: 40px; border: 2px dashed var(--border); border-radius: 8px; color: var(--text3); width: 100%; text-align: center;">ยังไม่ได้อัพโหลดรูปภาพ QR</div>
+            </div>
+          </div>
+
+          <h3 style="margin-top:20px; margin-bottom:10px; font-weight:800; border-bottom: 1px solid var(--border); padding-bottom:10px; color:var(--text)">🇩🇪 ตั้งค่าการชำระเงินฝั่งเยอรมัน (Germany Bank Transfer)</h3>
+          
+          <div class="form-group">
+            <label style="color:var(--text2)">ชื่อธนาคาร (Bank Name)</label>
+            <input type="text" id="settingsBankName" placeholder="เช่น Sparkasse Berlin" class="form-input">
+          </div>
+          <div class="form-group">
+            <label style="color:var(--text2)">ชื่อบัญชี (Account Holder Name)</label>
+            <input type="text" id="settingsAccountName" placeholder="เช่น Joy Thai Shop GmbH" class="form-input">
+          </div>
+          <div class="form-group">
+            <label style="color:var(--text2)">หมายเลข IBAN</label>
+            <input type="text" id="settingsIban" placeholder="เช่น DE12 3456 7890 ..." class="form-input">
+          </div>
+
+          <button class="btn btn-primary btn-full" style="margin-top:10px;" onclick="saveAdminSettings()">💾 บันทึกการตั้งค่า</button>
+        </div>
+      </div>
+
+      <!-- Content: Banners Tab -->
+      <div class="admin-tab-content" id="adminContentBanners" style="display:none; flex-direction:column; gap:20px; overflow-y:auto; padding-right:6px;">
+        <div style="max-width: 600px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 20px; padding: 20px; background: var(--bg2); border-radius: var(--radius); border: 1px solid var(--border); margin-bottom:20px;">
+          <h3 style="margin-bottom:10px; font-weight:800; border-bottom: 1px solid var(--border); padding-bottom:10px; color:var(--text)">➕ เพิ่มสินค้าแนะนำ</h3>
+          
+          <div class="form-group">
+            <label style="color:var(--text2)">เลือกสินค้าที่ต้องการลิงก์ <span class="req">*</span></label>
+            <select id="bannerProductSelect" class="form-input"></select>
+          </div>
+          
+          <div class="form-group">
+            <label style="color:var(--text2)">รูปภาพแนะนำ (หากเว้นว่างไว้ จะใช้รูปภาพสินค้าเริ่มต้น)</label>
+            <input type="file" id="bannerImageFile" accept="image/*" class="form-input" style="padding: 10px;" onchange="handleBannerUpload(this)">
+            <div style="margin-top: 10px; text-align: center; display: flex; justify-content: center; align-items: center; width: 100%;">
+              <img id="bannerImagePreview" src="" alt="Banner Preview" style="max-width: 100%; max-height: 180px; border-radius: 8px; border: 1px solid var(--border); display: none;">
+              <div id="bannerImagePlaceholder" style="padding: 30px; border: 2px dashed var(--border); border-radius: 8px; color: var(--text3); width: 100%; text-align: center;">ไม่มีรูปภาพที่อัพโหลด (จะใช้รูปภาพของสินค้าที่เลือก)</div>
+            </div>
+          </div>
+          
+          <button class="btn btn-primary btn-full" onclick="addRecommendedBanner()">➕ เพิ่มสินค้าแนะนำ</button>
+        </div>
+        
+        <div class="admin-table-wrap" style="max-width: 800px; margin: 0 auto; width: 100%;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>รูปภาพ</th>
+                <th>ลิงก์สินค้า</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="adminBannerTableBody">
+              <!-- Banner rows injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Content: Analytics Tab -->
+      <div class="admin-tab-content" id="adminContentAnalytics" style="display:none; flex-direction:column; gap:20px; overflow-y:auto; padding-right:6px; width: 100%;">
+        <!-- KPI Row -->
+        <div class="admin-analytics-kpi-row" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; width: 100%;">
+          <div class="kpi-card" style="background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius); padding:20px; display:flex; flex-direction:column; gap:8px;">
+            <span style="font-size:14px; color:var(--text3); font-weight: 600;">💰 ยอดขายรวม (Total Revenue)</span>
+            <strong id="analyticsTotalRev" style="font-size:24px; color:var(--accent); font-weight: 800;">฿0 / €0.00</strong>
+          </div>
+          <div class="kpi-card" style="background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius); padding:20px; display:flex; flex-direction:column; gap:8px;">
+            <span style="font-size:14px; color:var(--text3); font-weight: 600;">📑 คำสั่งซื้อทั้งหมด (Total Orders)</span>
+            <strong id="analyticsTotalOrders" style="font-size:24px; color:var(--primary-dark); font-weight: 800;">0</strong>
+          </div>
+          <div class="kpi-card" style="background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius); padding:20px; display:flex; flex-direction:column; gap:8px;">
+            <span style="font-size:14px; color:var(--text3); font-weight: 600;">👤 สมาชิกทั้งหมด (Registered Users)</span>
+            <strong id="analyticsTotalUsers" style="font-size:24px; color:var(--text); font-weight: 800;">0</strong>
+          </div>
+          <div class="kpi-card" style="background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius); padding:20px; display:flex; flex-direction:column; gap:8px;">
+            <span style="font-size:14px; color:var(--text3); font-weight: 600;">📦 สินค้าทั้งหมด (Total Items)</span>
+            <strong id="analyticsTotalProducts" style="font-size:24px; color:var(--text); font-weight: 800;">0</strong>
+          </div>
+        </div>
+
+        <!-- Sales Chart Section -->
+        <div style="background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius); padding:24px; display:flex; flex-direction:column; gap:16px; margin-top:10px; width: 100%;">
+          <h3 style="margin:0; font-weight:800; font-size:18px; color:var(--text);">🏆 สินค้าขายดีที่สุด 5 อันดับแรก (Top 5 Best Sellers)</h3>
+          <div class="chart-container" id="analyticsChartContainer" style="display:flex; flex-direction:column; gap:12px; margin-top:10px; width: 100%;">
+            <!-- Dynamic CSS Bar charts injected here -->
+          </div>
+        </div>
+      </div>
+      
+      <div class="admin-dash-footer">
+        <button class="btn btn-ghost" data-i18n="adminLogoutBtn" onclick="logoutAdmin()">ออกจากระบบผู้ดูแล</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ADD/EDIT PRODUCT MODAL -->
+  <div class="modal-overlay" id="productFormOverlay" onclick="closeProductFormOutside(event)">
+    <div class="modal product-form-modal">
+      <button class="modal-close" onclick="closeProductForm()">✕</button>
+      <h2 id="productFormTitle" style="margin-bottom:24px; font-weight:800;">+ เพิ่มสินค้าใหม่</h2>
+      <input type="hidden" id="formProductId">
+      
+      <div class="form-group">
+        <label>ชื่อสินค้าภาษาไทย (Thai Name) <span class="req">*</span></label>
+        <input type="text" id="formProdNameTh" placeholder="เช่น มาม่าต้มยำกุ้ง" class="form-input">
+      </div>
+      <div class="form-group">
+        <label>ชื่อสินค้าภาษาเยอรมัน (German Name) <span class="req">*</span></label>
+        <input type="text" id="formProdNameDe" placeholder="z.B. MAMA Tom Yum Nudeln" class="form-input">
+      </div>
+      <div class="form-group">
+        <label>ชื่อสินค้าภาษาอังกฤษ (English Name) <span class="req">*</span></label>
+        <input type="text" id="formProdNameEn" placeholder="e.g. MAMA Tom Yum Noodles" class="form-input">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>หมวดหมู่ (Category) <span class="req">*</span></label>
+          <select id="formProdCategory" class="form-input">
+            <option value="noodle">🍜 บะหมี่ & เส้น</option>
+            <option value="sauce">🫙 ซอส & เครื่องปรุง</option>
+            <option value="snack">🍡 ของว่าง & ขนม</option>
+            <option value="drink">🧋 เครื่องดื่ม</option>
+            <option value="fruit">🥦 ผัก / ผลไม้</option>
+            <option value="ingredient">🥥 วัตถุดิบ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>น้ำหนัก / ปริมาตร (Weight) <span class="req">*</span></label>
+          <input type="text" id="formProdWeight" placeholder="เช่น 90g, 400ml, 1kg" class="form-input">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>ราคาในไทย (Price THB - ฿) <span class="req">*</span></label>
+          <input type="number" id="formProdPriceThb" placeholder="35" class="form-input" oninput="autoCalculateEur(this.value)">
+        </div>
+        <div class="form-group">
+          <label>ราคาในเยอรมัน (Price EUR - €) <span class="req">*</span></label>
+          <input type="number" id="formProdPriceEur" placeholder="0.92" step="0.01" class="form-input">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>คำอธิบายสินค้าภาษาไทย (Description TH)</label>
+        <textarea id="formProdDescTh" placeholder="เช่น รสชาติกลมกล่อมเผ็ดร้อน..." class="form-input" style="resize:vertical; height:50px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>คำอธิบายสินค้าภาษาเยอรมัน (Description DE)</label>
+        <textarea id="formProdDescDe" placeholder="z.B. Herzhafter und scharfer Geschmack..." class="form-input" style="resize:vertical; height:50px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>คำอธิบายสินค้าภาษาอังกฤษ (Description EN)</label>
+        <textarea id="formProdDescEn" placeholder="e.g. Savory and spicy taste..." class="form-input" style="resize:vertical; height:50px;"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>รูปภาพ Emoji ตัวแทน (แทนภาพจริง)</label>
+          <input type="text" id="formProdEmoji" placeholder="เช่น 🍜" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>รูปภาพ URL (อัปโหลดไว้ภายนอก)</label>
+          <input type="text" id="formProdImage" placeholder="เช่น images/myproduct.png" class="form-input">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>อัปโหลดรูปภาพสินค้าจากเครื่อง / เลือกจากมือถือ</label>
+        <input type="file" id="formProdImageFile" accept="image/*" class="form-input" style="padding: 10px;" onchange="handleProductImageUpload(this)">
+        <div style="margin-top: 10px; text-align: center; display: flex; justify-content: center; align-items: center;">
+          <img id="formProdImagePreview" src="" alt="Product Preview" style="max-width: 100px; max-height: 100px; border-radius: 8px; border: 1px solid var(--border); display: none;">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" id="formProdInStock" style="width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer;" onchange="toggleStockField()">
+        <label for="formProdInStock" style="margin-bottom: 0; font-size: 14px; font-weight: 700; cursor: pointer; color:var(--text)">📦 สินค้าพร้อมส่ง (Ready to Ship / In Stock)</label>
+      </div>
+      <div class="form-group" id="formProdStockGroup" style="margin-bottom: 16px; transition: opacity 0.2s ease;">
+        <label>จำนวนสินค้าในสต็อก (Stock Quantity) <span class="req">*</span></label>
+        <input type="number" id="formProdStock" min="0" placeholder="เช่น 12" class="form-input">
+      </div>
+
+      <!-- Discount Section -->
+      <div style="background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.25);border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+        <label class="instock-toggle-label" style="background:none;border:none;padding:0;margin-bottom:0;">
+          <input type="checkbox" id="formProdOnSale" onchange="toggleDiscountRow()" style="width:18px;height:18px;accent-color:#f59e0b;cursor:pointer;">
+          <span style="font-size:14px;font-weight:700;color:#d97706;">🏷️ สินค้าลดราคา (On Sale)</span>
+        </label>
+        <div id="formDiscountRow" style="display:none; margin-top:12px;">
+          <label style="font-size:13px;font-weight:600;color:var(--text2);display:block;margin-bottom:6px;">ส่วนลด (%) <span class="req">*</span></label>
+          <input type="number" id="formProdDiscount" min="1" max="99" placeholder="เช่น 20 (หมายถึงลด 20%)" class="form-input">
+          <p style="font-size:11px;color:var(--text3);margin-top:6px;">⚠️ ราคาจะถูกคำนวณลดอัตโนมัติจากราคาที่กรอกด้านบน</p>
+        </div>
+      </div>
+      
+      <button class="btn btn-primary btn-full" style="margin-top:12px;" onclick="saveProductForm()">💾 บันทึกสินค้า</button>
+    </div>
+  </div>
+
+  <!-- PRODUCT DETAIL MODAL -->
+  <div class="modal-overlay" id="productDetailOverlay" onclick="closeProductDetailOutside(event)">
+    <div class="modal product-detail-modal" id="productDetailModal">
+      <button class="modal-close" onclick="closeProductDetail()">✕</button>
+
+      <!-- Breadcrumb -->
+      <nav class="pdp-breadcrumb" id="pdpBreadcrumb">
+        <a href="#" onclick="closeProductDetail(); return false;" id="pdpBreadHome">หน้าแรก</a>
+        <span class="pdp-breadcrumb-sep">›</span>
+        <span id="pdpBreadName">สินค้า</span>
+      </nav>
+
+      <div class="pdp-layout">
+        <!-- LEFT: Images -->
+        <div class="pdp-gallery">
+          <div class="pdp-main-img-wrap" id="pdpMainImgWrap">
+            <!-- injected by JS -->
+          </div>
+          <div class="pdp-thumbnails" id="pdpThumbnails">
+            <!-- injected by JS -->
+          </div>
+        </div>
+
+        <!-- RIGHT: Info -->
+        <div class="pdp-info">
+          <!-- Share button -->
+          <div class="pdp-share-row">
+            <h1 class="pdp-title" id="pdpTitle">ชื่อสินค้า</h1>
+            <button class="pdp-share-btn" onclick="shareProduct()" aria-label="Share">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Share
+            </button>
+          </div>
+
+          <!-- Price -->
+          <div class="pdp-price-block">
+            <div class="pdp-price-main" id="pdpPriceMain">฿0</div>
+            <div class="pdp-price-sec" id="pdpPriceSec" style="font-size: 18px; font-weight: 600; color: var(--text2); margin-top: 4px;">€0.00</div>
+            <div class="pdp-price-per" id="pdpPricePer"></div>
+          </div>
+
+          <!-- Tax & Shipping note -->
+          <div class="pdp-tax-note" id="pdpTaxNote"><span>ค่าจัดส่ง</span> คำนวณเมื่อชำระเงิน</div>
+
+          <!-- Stock status -->
+          <div class="pdp-stock-row" id="pdpStockRow">
+            <span class="pdp-stock-dot"></span>
+            <span class="pdp-stock-text" id="pdpStockText">พร้อมส่ง</span>
+          </div>
+
+          <!-- Qty Selector -->
+          <div class="pdp-qty-label" id="pdpQtyLabel">จำนวน</div>
+          <div class="pdp-qty-row">
+            <button class="pdp-qty-btn" onclick="pdpChangeQty(-1)" id="pdpQtyMinus">−</button>
+            <span class="pdp-qty-val" id="pdpQtyVal">1</span>
+            <button class="pdp-qty-btn" onclick="pdpChangeQty(1)" id="pdpQtyPlus">+</button>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="pdp-actions">
+            <button class="pdp-btn-cart" id="pdpBtnCart" onclick="pdpAddToCart()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+              <span id="pdpBtnCartText">เพิ่มลงตะกร้า</span>
+            </button>
+          </div>
+
+          <!-- Store Info -->
+          <div class="pdp-store-info">
+            <div class="pdp-store-row">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span id="pdpStoreText">รับสินค้าที่ร้าน <strong>Joy Thai Shop</strong></span>
+            </div>
+            <div class="pdp-store-sub" id="pdpStoreSub">โดยปกติจะพร้อมใน 24 ชั่วโมง</div>
+          </div>
+          <!-- Description -->
+          <div class="pdp-desc-section" id="pdpDescSection">
+            <div class="pdp-desc-title" id="pdpDescTitle">รายละเอียด</div>
+            <div class="pdp-desc-text" id="pdpDescText"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SALE MODAL -->
+  <div class="modal-overlay" id="saleModalOverlay" onclick="closeSaleModalOutside(event)">
+    <div class="modal sale-modal" style="max-width: 960px; width: 95%; max-height: 90vh; display: flex; flex-direction: column; padding: 24px;">
+      <button class="modal-close" onclick="closeSaleModal()">✕</button>
+      
+      <div class="sale-modal-header" style="text-align: center; margin-bottom: 24px; border-bottom: 2px dashed rgba(239, 68, 68, 0.2); padding-bottom: 16px;">
+        <h2 style="font-size: 28px; font-weight: 800; color: #ef4444; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <span>🔥</span> <span data-i18n="saleModalTitle">สินค้าลดราคาพิเศษ / Special Deals</span>
+        </h2>
+        <p style="color: var(--text3); font-size: 14px; margin-top: 6px;" data-i18n="saleModalDesc">โปรโมชั่นลดราคาสุดพิเศษ สินค้าแท้ส่งตรงจากไทยถึงเยอรมนี</p>
+      </div>
+      
+      <div class="sale-modal-body" style="flex: 1; overflow-y: auto; padding-right: 4px;">
+        <div class="products-grid" id="saleProductsGrid">
+          <!-- Sale products injected by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
