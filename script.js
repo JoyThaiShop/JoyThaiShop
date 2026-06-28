@@ -3000,6 +3000,7 @@ function loadAdminSettings() {
     placeholder.style.display = 'block';
   }
   uploadedQrBase64 = paymentSettings.qrImage || '';
+  loadAdminList();
 }
 
 if (typeof handleQrUpload === 'undefined') {
@@ -3080,7 +3081,7 @@ function renderAdminProducts() {
   });
 }
 
-function quickRestock(id) {
+async function quickRestock(id) {
   const p = activeProducts.find(prod => String(prod.id) === String(id));
   if (!p) return;
   
@@ -3490,7 +3491,7 @@ function autoCalculateEur(thbValue) {
 }
 
 // Save Add/Edit
-function saveProductForm() {
+async function saveProductForm() {
   const idVal = document.getElementById('formProductId').value;
   const nameTh = document.getElementById('formProdNameTh').value.trim();
   const nameDe = document.getElementById('formProdNameDe').value.trim();
@@ -3592,7 +3593,7 @@ function saveProductForm() {
 }
 
 // Delete Product
-function deleteProduct(id) {
+async function deleteProduct(id) {
   const p = activeProducts.find(prod => String(prod.id) === String(id));
   if (!p) return;
   
