@@ -922,8 +922,12 @@
       <button class="modal-close" onclick="closeAdminLogin()">✕</button>
       <h2 style="text-align:center; margin-bottom:24px; font-weight:800;" data-i18n="adminLoginHeader">🔐 เข้าสู่ระบบหลังบ้าน</h2>
       <div class="form-group">
+        <label>ชื่อผู้ดูแลระบบ (Admin Username)</label>
+        <input type="text" id="adminUsername" placeholder="เช่น admin" class="form-input">
+      </div>
+      <div class="form-group">
         <label data-i18n="adminPassLabel">รหัสผ่านผู้ดูแลระบบ (Admin Password)</label>
-        <input type="password" id="adminPassword" placeholder="รหัสผ่านเริ่มต้น: admin123" class="form-input">
+        <input type="password" id="adminPassword" placeholder="รหัสผ่าน" class="form-input" onkeydown="if(event.key==='Enter') loginAdmin()">
       </div>
       <button class="btn btn-primary btn-full" data-i18n="adminLoginBtn" onclick="loginAdmin()">เข้าสู่ระบบ</button>
     </div>
@@ -979,6 +983,26 @@
 
       <!-- Content: Settings Tab -->
       <div class="admin-tab-content" id="adminContentSettings" style="display:none; overflow-y:auto; padding-right:6px;">
+
+        <!-- ── สร้างบัญชีแอดมินใหม่ ── -->
+        <div style="max-width:600px; margin:0 auto 20px; width:100%; padding:20px; background:var(--bg2); border-radius:var(--radius); border:1px solid var(--border);">
+          <h3 style="margin-bottom:16px; font-weight:800; border-bottom:1px solid var(--border); padding-bottom:10px; color:var(--text)">👤 จัดการบัญชีแอดมิน</h3>
+          <div class="form-group">
+            <label style="color:var(--text2)">ชื่อผู้ใช้แอดมินใหม่</label>
+            <input type="text" id="newAdminUsername" placeholder="เช่น manager" class="form-input">
+          </div>
+          <div class="form-group">
+            <label style="color:var(--text2)">รหัสผ่าน</label>
+            <input type="password" id="newAdminPassword" placeholder="รหัสผ่านแอดมินใหม่" class="form-input">
+          </div>
+          <div class="form-group">
+            <label style="color:var(--text2)">ยืนยันรหัสผ่าน</label>
+            <input type="password" id="newAdminPasswordConfirm" placeholder="ยืนยันรหัสผ่าน" class="form-input">
+          </div>
+          <button class="btn btn-primary" style="width:100%; margin-top:8px;" onclick="registerAdmin()">➕ สร้างบัญชีแอดมินใหม่</button>
+          <div id="adminListWrap" style="margin-top:20px;"></div>
+        </div>
+
         <div style="max-width: 600px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 20px; padding: 20px; background: var(--bg2); border-radius: var(--radius); border: 1px solid var(--border); margin-bottom:20px;">
           <h3 style="margin-bottom:10px; font-weight:800; border-bottom: 1px solid var(--border); padding-bottom:10px; color:var(--text)">🇹🇭 ตั้งค่าการชำระเงินฝั่งไทย (Thai PromptPay QR)</h3>
           

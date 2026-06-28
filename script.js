@@ -835,37 +835,245 @@ const TRANSLATIONS = {
 // ── State Management ──
 let currentLang = localStorage.getItem('joythai_lang') || 'de';
 
-// Products State (persisted)
-let activeProducts = JSON.parse(localStorage.getItem('joythai_products'));
-if (!activeProducts || !Array.isArray(activeProducts) || activeProducts.length === 0) {
-  activeProducts = DEFAULT_PRODUCTS.map(p => ({ ...p, stock: p.stock !== undefined ? p.stock : 12, inStock: (p.stock !== undefined ? p.stock : 12) > 0 }));
-  localStorage.setItem('joythai_products', JSON.stringify(activeProducts));
-} else {
-  // Migrate: ensure all products have stock & inStock fields
-  let migrated = false;
-  activeProducts = activeProducts.map(p => {
-    let updated = { ...p };
-    if (p.stock === undefined) {
-      updated.stock = p.inStock === false ? 0 : 12;
-      migrated = true;
+// Products/Orders/Users — loaded async from Supabase
+let activeProducts = [];
+let users = [];
+let currentUser = localStorage.getItem('joythai_currentUser') || null;
+let orders = [];
+
+// ── Supabase Data Layer ──
+async function loadProductsFromDB() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('products')
+      .select('*')
+      .order('id', { ascending: true });
+    if (error) throw error;
+    if (data && data.length > 0) {
+      // Map Supabase snake_case columns to app camelCase format
+      activeProducts = data.map(p => ({
+        id: p.id,
+        name: { th: p.name_th, de: p.name_de || p.name_th, en: p.name_en || p.name_th },
+        priceThb: parseFloat(p.price_thb),
+        priceEur: parseFloat(p.price_eur),
+        originalPriceThb: p.original_price_thb ? parseFloat(p.original_price_thb) : null,
+        originalPriceEur: p.original_price_eur ? parseFloat(p.original_price_eur) : null,
+        onSale: !!p.on_sale,
+        discount: p.discount ? parseFloat(p.discount) : null,
+        category: p.category,
+        image: p.image,
+        weight: p.weight,
+        emoji: p.emoji || '🛒',
+        badge: p.badge,
+        badgeText: p.badge_th ? { th: p.badge_th, de: p.badge_de || p.badge_th, en: p.badge_en || p.badge_th } : null,
+        inStock: !!p.in_stock,
+        stock: p.stock || 0,
+        rating: parseFloat(p.rating) || 5.0,
+        reviews: p.reviews || 0,
+        desc: { th: p.desc_th || '', de: p.desc_de || '', en: p.desc_en || '' }
+      }));
+    } else {
+      // ฐานข้อมูลว่าง — ใส่สินค้าเริ่มต้น
+      await seedDefaultProducts();
     }
-    if (updated.inStock !== (updated.stock > 0)) {
-      updated.inStock = updated.stock > 0;
-      migrated = true;
-    }
-    return updated;
-  });
-  if (migrated) localStorage.setItem('joythai_products', JSON.stringify(activeProducts));
+  } catch (err) {
+    console.warn('Supabase products load failed, falling back to defaults:', err);
+    activeProducts = DEFAULT_PRODUCTS.map(p => ({
+      ...p,
+      stock: p.stock !== undefined ? p.stock : 12,
+      inStock: (p.stock !== undefined ? p.stock : 12) > 0
+    }));
+  }
 }
 
-// Users State (persisted)
-let users = JSON.parse(localStorage.getItem('joythai_users') || '[]');
+async function seedDefaultProducts() {
+  const rows = DEFAULT_PRODUCTS.map(p => ({
+    id: p.id,
+    name_th: p.name.th,
+    name_de: p.name.de,
+    name_en: p.name.en,
+    price_thb: p.priceThb,
+    price_eur: p.priceEur,
+    category: p.category,
+    image: p.image,
+    weight: p.weight,
+    emoji: p.emoji,
+    badge: p.badge,
+    badge_th: p.badgeText ? p.badgeText.th : null,
+    badge_de: p.badgeText ? p.badgeText.de : null,
+    badge_en: p.badgeText ? p.badgeText.en : null,
+    in_stock: p.inStock !== false,
+    stock: 12,
+    rating: p.rating,
+    reviews: p.reviews,
+    desc_th: p.desc.th,
+    desc_de: p.desc.de,
+    desc_en: p.desc.en
+  }));
+  const { error } = await supabaseClient.from('products').upsert(rows, { onConflict: 'id' });
+  if (error) console.error('Seed products error:', error);
+  await loadProductsFromDB();
+}
 
-// Active Session
-let currentUser = localStorage.getItem('joythai_currentUser') || null;
+async function saveProductsToDB() {
+  const rows = activeProducts.map(p => ({
+    id: p.id,
+    name_th: p.name.th,
+    name_de: p.name.de,
+    name_en: p.name.en,
+    price_thb: p.priceThb,
+    price_eur: p.priceEur,
+    original_price_thb: p.originalPriceThb || null,
+    original_price_eur: p.originalPriceEur || null,
+    on_sale: !!p.onSale,
+    discount: p.discount || null,
+    category: p.category,
+    image: p.image,
+    weight: p.weight,
+    emoji: p.emoji,
+    badge: p.badge,
+    badge_th: p.badgeText ? p.badgeText.th : null,
+    badge_de: p.badgeText ? p.badgeText.de : null,
+    badge_en: p.badgeText ? p.badgeText.en : null,
+    in_stock: !!p.inStock,
+    stock: p.stock || 0,
+    rating: p.rating,
+    reviews: p.reviews,
+    desc_th: p.desc.th,
+    desc_de: p.desc.de,
+    desc_en: p.desc.en
+  }));
+  const { error } = await supabaseClient.from('products').upsert(rows, { onConflict: 'id' });
+  if (error) console.error('Save products error:', error);
+}
 
-// Orders State (persisted)
-let orders = JSON.parse(localStorage.getItem('joythai_orders') || '[]');
+async function loadOrdersFromDB() {
+  try {
+    const { data: ordersData, error } = await supabaseClient
+      .from('orders')
+      .select('*, order_items(*)')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    orders = (ordersData || []).map(o => ({
+      id: o.id,
+      username: o.username,
+      status: o.status,
+      subtotalThb: parseFloat(o.subtotal_thb),
+      subtotalEur: parseFloat(o.subtotal_eur),
+      serviceFeeThb: parseFloat(o.service_fee_thb),
+      serviceFeeEur: parseFloat(o.service_fee_eur),
+      shippingThb: parseFloat(o.shipping_thb),
+      shippingEur: parseFloat(o.shipping_eur),
+      totalThb: parseFloat(o.total_thb),
+      totalEur: parseFloat(o.total_eur),
+      paymentMethod: o.payment_method,
+      paymentSlip: o.payment_slip,
+      trackingNumber: o.tracking_number,
+      address: {
+        name: o.addr_name, street: o.addr_street, city: o.addr_city,
+        zip: o.addr_zip, country: o.addr_country, phone: o.addr_phone, notes: o.addr_notes
+      },
+      items: (o.order_items || []).map(i => ({
+        id: i.product_id,
+        qty: i.qty,
+        priceThb: parseFloat(i.price_thb),
+        priceEur: parseFloat(i.price_eur),
+        name: { th: i.product_name_th, de: i.product_name_de, en: i.product_name_en },
+        image: i.image,
+        emoji: i.emoji
+      })),
+      createdAt: o.created_at
+    }));
+  } catch (err) {
+    console.warn('Supabase orders load failed:', err);
+    orders = [];
+  }
+}
+
+async function saveOrderToDB(newOrder) {
+  const addr = newOrder.address || {};
+
+  // Truncate payment slip if too large (Supabase has row size limits)
+  // Store only first 500KB of base64
+  const slip = newOrder.paymentSlip
+    ? newOrder.paymentSlip.substring(0, 500000)
+    : null;
+
+  // Insert order row
+  const { error: orderError } = await supabaseClient.from('orders').insert({
+    id: newOrder.id,
+    username: newOrder.username,
+    status: newOrder.status,
+    subtotal_thb: newOrder.subtotalThb || 0,
+    subtotal_eur: newOrder.subtotalEur || 0,
+    service_fee_thb: newOrder.serviceFeeThb || 0,
+    service_fee_eur: newOrder.serviceFeeEur || 0,
+    shipping_thb: newOrder.shippingThb || 0,
+    shipping_eur: newOrder.shippingEur || 0,
+    total_thb: newOrder.totalThb || 0,
+    total_eur: newOrder.totalEur || 0,
+    payment_method: newOrder.paymentMethod || 'unknown',
+    payment_slip: slip,
+    // getAddressData() returns: fullName, address, city, postcode, country, phone
+    addr_name:    addr.fullName   || addr.name    || '',
+    addr_street:  addr.address    || addr.street  || '',
+    addr_city:    addr.city       || '',
+    addr_zip:     addr.postcode   || addr.zip     || '',
+    addr_country: addr.country    || '',
+    addr_phone:   addr.phone      || '',
+    addr_notes:   addr.email      || ''
+  });
+
+  if (orderError) {
+    console.error('❌ Save order error:', orderError);
+    return false;
+  }
+
+  // Insert order items
+  if (newOrder.items && newOrder.items.length > 0) {
+    const items = newOrder.items.map(item => ({
+      order_id: newOrder.id,
+      product_id: item.id,
+      product_name_th: item.name?.th || '',
+      product_name_de: item.name?.de || '',
+      product_name_en: item.name?.en || '',
+      qty: item.qty || 1,
+      price_thb: item.priceThb || 0,
+      price_eur: item.priceEur || 0,
+      image: item.image || null,
+      emoji: item.emoji || null
+    }));
+    const { error: itemsError } = await supabaseClient.from('order_items').insert(items);
+    if (itemsError) {
+      console.error('❌ Save order items error:', itemsError);
+    }
+  }
+  return true;
+}
+
+async function updateOrderInDB(orderId, fields) {
+  const { error } = await supabaseClient
+    .from('orders')
+    .update(fields)
+    .eq('id', orderId);
+  if (error) console.error('Update order error:', error);
+  return !error;
+}
+
+async function deleteOrderFromDB(orderId) {
+  const { error } = await supabaseClient
+    .from('orders')
+    .delete()
+    .eq('id', orderId);
+  return !error;
+}
+
+async function initSupabaseData() {
+  await Promise.all([
+    loadProductsFromDB(),
+    loadOrdersFromDB()
+  ]);
+}
 
 let cart = JSON.parse(localStorage.getItem('joythai_cart') || '[]');
 let wishlist = JSON.parse(localStorage.getItem('joythai_wishlist') || '[]');
@@ -926,71 +1134,38 @@ const SERVICE_FEE_EUR = 7;          // €7 per item per qty
 const SERVICE_FEE_THB = 7 * 37;    // ฿259 per item per qty
 
 function migratePrices() {
-  // v5 migration kept here only for reference – no longer applied.
-  // v6 migration below reverses the v5 price inflation.
+  // Legacy migration — no longer needed with Supabase
 }
 
 function migratePricesV6() {
-  const done = localStorage.getItem('joythai_prices_migrated_v6');
-  if (done) return;
-
-  if (localStorage.getItem('joythai_products')) {
-    try {
-      let prods = JSON.parse(localStorage.getItem('joythai_products'));
-      if (prods && Array.isArray(prods)) {
-        const p1 = prods.find(p => p.id === 1);
-        const needsRevert = p1 && p1.priceThb > 200;
-        
-        if (needsRevert) {
-          prods = prods.map(p => {
-            let updated = { ...p };
-            updated.priceEur = Math.max(0, (Number(p.priceEur) || 0) - 7);
-            updated.priceThb = Math.max(0, (Number(p.priceThb) || 0) - 266);
-            if (p.originalPriceEur != null) updated.originalPriceEur = Math.max(0, (Number(p.originalPriceEur) || 0) - 7);
-            if (p.originalPriceThb != null) updated.originalPriceThb = Math.max(0, (Number(p.originalPriceThb) || 0) - 266);
-            return updated;
-          });
-          localStorage.setItem('joythai_products', JSON.stringify(prods));
-          activeProducts = prods;
-        }
-      }
-    } catch(e) {}
-  }
-  
-  try {
-    let localCart = JSON.parse(localStorage.getItem('joythai_cart') || '[]');
-    if (localCart && Array.isArray(localCart) && localCart.length > 0) {
-      localCart = localCart.map(item => {
-        let updated = { ...item };
-        const def = DEFAULT_PRODUCTS.find(p => p.id === item.id);
-        if (def && item.priceThb > def.priceThb) {
-          updated.priceEur = Math.max(0, (Number(item.priceEur) || 0) - 7);
-          updated.priceThb = Math.max(0, (Number(item.priceThb) || 0) - 266);
-        }
-        return updated;
-      });
-      localStorage.setItem('joythai_cart', JSON.stringify(localCart));
-      cart = localCart;
-    }
-  } catch(e) {}
-
-  localStorage.setItem('joythai_prices_migrated_v6', 'true');
+  // Legacy localStorage migration — no longer needed with Supabase
 }
 
 // ── Init ──
-document.addEventListener('DOMContentLoaded', () => {
-  migratePrices();
-  migratePricesV6();
+document.addEventListener('DOMContentLoaded', async () => {
   setLanguage(currentLang);
-  renderProducts();
   updateCartBadge();
   updateWishlistBadge();
+  updateHeaderUser();
   initScrollReveal();
   initScrollHeader();
   updateShippingCost();
-  updateHeaderUser();
-  updateHeroStats();
   initRecommendedBanners();
+
+  // ── โหลดข้อมูลจาก Supabase ──
+  try {
+    await initSupabaseData();
+  } catch(e) {
+    console.warn('Could not reach Supabase, using fallback data:', e);
+    if (activeProducts.length === 0) {
+      activeProducts = DEFAULT_PRODUCTS.map(p => ({
+        ...p, stock: 12, inStock: true
+      }));
+    }
+  }
+
+  renderProducts();
+  updateHeroStats();
   
   // Close dropdown on outside click
   window.addEventListener('click', (e) => {
@@ -1655,7 +1830,7 @@ function switchAuthTab(tab) {
   }
 }
 
-function handleAuthSubmit() {
+async function handleAuthSubmit() {
   const username = document.getElementById('authUsername').value.trim();
   const pass = document.getElementById('authPassword').value;
   
@@ -1666,38 +1841,60 @@ function handleAuthSubmit() {
   }
   
   if (activeAuthTab === 'register') {
-    // Register Logic
-    const exist = users.some(u => u.username.toLowerCase() === username.toLowerCase());
-    if (exist) {
+    // Register — save to Supabase profiles
+    const { data: existing } = await supabaseClient
+      .from('profiles')
+      .select('username')
+      .ilike('username', username)
+      .maybeSingle();
+
+    if (existing) {
       const errorMsg = currentLang === 'de' ? 'Dieser Name ist bereits vergeben' : currentLang === 'en' ? 'Username already taken' : 'ชื่อผู้ใช้นี้ถูกใช้งานแล้ว';
       showToast(errorMsg, 'error');
       return;
     }
     
-    users.push({ username, password: pass });
-    localStorage.setItem('joythai_users', JSON.stringify(users));
+    const { error: regError } = await supabaseClient
+      .from('profiles')
+      .insert({ username, email: null });
+
+    if (regError) {
+      showToast('❌ เกิดข้อผิดพลาด | Registration error', 'error');
+      return;
+    }
+
+    users.push({ username });
     
-    // Auto log in
-    currentUser = username;
-    localStorage.setItem('joythai_currentUser', username);
-    
-    const successMsg = currentLang === 'de' ? 'Konto erfolgreich erstellt!' : currentLang === 'en' ? 'Account successfully created!' : 'สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!';
+    // ✅ สมัครสำเร็จ → switch ไปแท็บ Login
+    const successMsg = currentLang === 'de' 
+      ? '✅ Konto erstellt! Bitte jetzt einloggen.' 
+      : currentLang === 'en' 
+        ? '✅ Account created! Please log in.' 
+        : '✅ สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ';
     showToast(successMsg, 'success');
-    closeAuthModal();
-    updateHeaderUser();
+    
+    // เคลียร์ password แต่คง username ไว้เพื่อให้ login สะดวก
+    document.getElementById('authPassword').value = '';
+    // Switch ไปแท็บ Login
+    switchAuthTab('login');
   } else {
-    // Login Logic
-    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === pass);
-    if (!user) {
+    // Login — check Supabase profiles
+    const { data: profile } = await supabaseClient
+      .from('profiles')
+      .select('username')
+      .ilike('username', username)
+      .maybeSingle();
+
+    if (!profile) {
       const errorMsg = currentLang === 'de' ? 'Falscher Name oder Passwort' : currentLang === 'en' ? 'Incorrect username or password' : 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
       showToast(errorMsg, 'error');
       return;
     }
     
-    currentUser = user.username;
-    localStorage.setItem('joythai_currentUser', user.username);
+    currentUser = profile.username;
+    localStorage.setItem('joythai_currentUser', profile.username);
     
-    const successMsg = currentLang === 'de' ? `Willkommen zurück, ${user.username}!` : currentLang === 'en' ? `Welcome back, ${user.username}!` : `ยินดีต้อนรับกลับมา, คุณ ${user.username}!`;
+    const successMsg = currentLang === 'de' ? `Willkommen zurück, ${profile.username}!` : currentLang === 'en' ? `Welcome back, ${profile.username}!` : `ยินดีต้อนรับกลับมา, คุณ ${profile.username}!`;
     showToast(successMsg, 'success');
     closeAuthModal();
     updateHeaderUser();
@@ -2535,14 +2732,14 @@ function renderOrderSummary() {
     ${payNames[selectedPayMethod] || selectedPayMethod}`;
 }
 
-function placeOrder() {
+async function placeOrder() {
   const randNum = String(Math.floor(Math.random() * 90000) + 10000);
   const orderId = 'JOY-' + randNum;
   
   const serviceFeeThb = getCartServiceFeeThb();
   const serviceFeeEur = getCartServiceFeeEur();
   
-  // Create Order Object (Shopee style order tracking)
+  // Create Order Object
   const newOrder = {
     id: orderId,
     username: currentUser || 'Guest',
@@ -2558,7 +2755,7 @@ function placeOrder() {
     address: getAddressData(),
     paymentMethod: selectedPayMethod,
     paymentSlip: uploadedPaymentSlipBase64,
-    status: 'pending', // Default status: รออนุมัติ (pending)
+    status: 'pending',
     createdAt: new Date().toISOString()
   };
   
@@ -2570,11 +2767,20 @@ function placeOrder() {
       prod.inStock = prod.stock > 0;
     }
   });
-  localStorage.setItem('joythai_products', JSON.stringify(activeProducts));
 
-  // Save order to state and localStorage
-  orders.push(newOrder);
-  localStorage.setItem('joythai_orders', JSON.stringify(orders));
+  // Save to Supabase
+  showToast('📦 กำลังบันทึกคำสั่งซื้อ...', 'info');
+  const saved = await saveOrderToDB(newOrder);
+  if (!saved) {
+    showToast('❌ เกิดข้อผิดพลาดในการบันทึกคำสั่งซื้อ | Order save failed', 'error');
+    return;
+  }
+  
+  // Update product stock in DB
+  await saveProductsToDB();
+
+  // Update local orders list
+  orders.unshift(newOrder);
   
   document.getElementById('orderId').textContent = orderId;
   closeCheckout();
@@ -2618,7 +2824,10 @@ function formatExp(input) {
 function openAdminLogin(e) {
   if (e) e.preventDefault();
   closeMenu();
-  document.getElementById('adminPassword').value = '';
+  const u = document.getElementById('adminUsername');
+  const p = document.getElementById('adminPassword');
+  if (u) u.value = '';
+  if (p) p.value = '';
   document.getElementById('adminLoginOverlay').classList.add('open');
 }
 
@@ -2630,16 +2839,38 @@ function closeAdminLoginOutside(e) {
   if (e.target === document.getElementById('adminLoginOverlay')) closeAdminLogin();
 }
 
-function loginAdmin() {
-  const pass = document.getElementById('adminPassword').value;
-  if (pass === 'admin123') {
-    closeAdminLogin();
-    document.getElementById('adminDashboardOverlay').classList.add('open');
-    switchAdminTab('products');
-    showToast('🔐 เข้าสู่ระบบผู้ดูแลสำเร็จ | Admin Logged In', 'success');
-  } else {
-    showToast('❌ รหัสผ่านไม่ถูกต้อง | Invalid Password', 'error');
+async function loginAdmin() {
+  const username = (document.getElementById('adminUsername')?.value || '').trim();
+  const pass = (document.getElementById('adminPassword')?.value || '').trim();
+
+  if (!username || !pass) {
+    showToast('❌ กรุณากรอกชื่อผู้ใช้และรหัสผ่าน', 'error');
+    return;
   }
+
+  // ตรวจสอบกับ Supabase admins table
+  const { data, error } = await supabaseClient
+    .from('admins')
+    .select('username')
+    .eq('username', username)
+    .eq('password', pass)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Admin login error:', error);
+    showToast('❌ เกิดข้อผิดพลาด | Login error', 'error');
+    return;
+  }
+
+  if (!data) {
+    showToast('❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง | Invalid credentials', 'error');
+    return;
+  }
+
+  closeAdminLogin();
+  document.getElementById('adminDashboardOverlay').classList.add('open');
+  switchAdminTab('products');
+  showToast(`🔐 ยินดีต้อนรับ ${data.username} | Admin Logged In`, 'success');
 }
 
 function closeAdminDashboard() {
@@ -2649,6 +2880,68 @@ function closeAdminDashboard() {
 function logoutAdmin() {
   closeAdminDashboard();
   showToast('🔒 ออกจากระบบผู้ดูแลแล้ว | Admin Logged Out', 'info');
+}
+
+// ── Register New Admin ──
+async function registerAdmin() {
+  const username = (document.getElementById('newAdminUsername')?.value || '').trim();
+  const pass = (document.getElementById('newAdminPassword')?.value || '').trim();
+  const confirm = (document.getElementById('newAdminPasswordConfirm')?.value || '').trim();
+
+  if (!username || !pass) {
+    showToast('❌ กรุณากรอกชื่อผู้ใช้และรหัสผ่าน', 'error'); return;
+  }
+  if (pass !== confirm) {
+    showToast('❌ รหัสผ่านไม่ตรงกัน | Passwords do not match', 'error'); return;
+  }
+  if (pass.length < 4) {
+    showToast('❌ รหัสผ่านต้องมีอย่างน้อย 4 ตัวอักษร', 'error'); return;
+  }
+
+  // เช็คว่า username ซ้ำไหม
+  const { data: existing } = await supabaseClient
+    .from('admins').select('username').eq('username', username).maybeSingle();
+  if (existing) {
+    showToast('❌ ชื่อผู้ใช้นี้ถูกใช้งานแล้ว | Username taken', 'error'); return;
+  }
+
+  const { error } = await supabaseClient
+    .from('admins').insert({ username, password: pass });
+
+  if (error) {
+    console.error('Register admin error:', error);
+    showToast('❌ เกิดข้อผิดพลาด | Could not create admin', 'error'); return;
+  }
+
+  showToast(`✅ สร้างแอดมิน "${username}" สำเร็จ!`, 'success');
+  document.getElementById('newAdminUsername').value = '';
+  document.getElementById('newAdminPassword').value = '';
+  document.getElementById('newAdminPasswordConfirm').value = '';
+  loadAdminList();
+}
+
+// ── Load Admin List ──
+async function loadAdminList() {
+  const wrap = document.getElementById('adminListWrap');
+  if (!wrap) return;
+  const { data } = await supabaseClient.from('admins').select('username, created_at').order('created_at');
+  if (!data || data.length === 0) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = `
+    <p style="font-weight:700; margin-bottom:8px; color:var(--text2)">รายชื่อแอดมินทั้งหมด:</p>
+    ${data.map(a => `
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:var(--bg); border-radius:8px; margin-bottom:6px;">
+        <span style="font-weight:600;">👤 ${a.username}</span>
+        <button onclick="deleteAdminUser('${a.username}')" style="background:#e74c3c; color:#fff; border:none; border-radius:6px; padding:4px 10px; cursor:pointer; font-size:12px;">ลบ</button>
+      </div>
+    `).join('')}
+  `;
+}
+
+async function deleteAdminUser(username) {
+  if (!confirm(`ลบแอดมิน "${username}" ใช่หรือไม่?`)) return;
+  await supabaseClient.from('admins').delete().eq('username', username);
+  showToast(`🗑️ ลบแอดมิน "${username}" แล้ว`, 'info');
+  loadAdminList();
 }
 
 // Settings global state
@@ -2811,7 +3104,7 @@ function quickRestock(id) {
   p.stock = currentStock + qty;
   p.inStock = p.stock > 0;
   
-  localStorage.setItem('joythai_products', JSON.stringify(activeProducts));
+  await saveProductsToDB();
   
   const successMsg = currentLang === 'de'
     ? `📦 Lagerbestand für "${getVal(p.name)}" aktualisiert! Neuer Bestand: ${p.stock}`
@@ -2996,44 +3289,50 @@ function itemsHtmlEncode(str) {
 }
 
 // Update Order Status (Shopee style status manager)
-function updateOrderStatus(orderId, newStatus) {
+async function updateOrderStatus(orderId, newStatus) {
   const index = orders.findIndex(o => o.id === orderId);
   if (index === -1) return;
   
+  // Update Supabase
+  await updateOrderInDB(orderId, { status: newStatus });
+  
+  // Update local state
   orders[index].status = newStatus;
-  localStorage.setItem('joythai_orders', JSON.stringify(orders));
   
   const msg = currentLang === 'de' 
     ? `Bestellstatus aktualisiert: ${newStatus}` 
     : currentLang === 'en' 
       ? `Order status updated to ${newStatus}` 
-      : `\u0e2d\u0e31\u0e1b\u0e40\u0e14\u0e15\u0e2a\u0e16\u0e32\u0e19\u0e30\u0e01\u0e32\u0e23\u0e2a\u0e48\u0e07\u0e41\u0e25\u0e49\u0e27: ${TRANSLATIONS[currentLang]['status' + newStatus.charAt(0).toUpperCase() + newStatus.slice(1)]}`;
+      : `อัปเดตสถานะการส่งแล้ว: ${TRANSLATIONS[currentLang]['status' + newStatus.charAt(0).toUpperCase() + newStatus.slice(1)]}`;
       
-  showToast('\u2705 ' + msg, 'success');
+  showToast('✅ ' + msg, 'success');
   renderAdminOrders();
 }
 
 // Update Tracking Number
-function updateTrackingNumber(orderId, trackingNumber) {
+async function updateTrackingNumber(orderId, trackingNumber) {
   const index = orders.findIndex(o => o.id === orderId);
   if (index === -1) return;
   
+  // Update Supabase
+  await updateOrderInDB(orderId, { tracking_number: trackingNumber.trim() });
+  
+  // Update local state
   orders[index].trackingNumber = trackingNumber.trim();
-  localStorage.setItem('joythai_orders', JSON.stringify(orders));
   
   if (trackingNumber.trim()) {
     const msg = currentLang === 'de'
       ? `Sendungsnummer gespeichert: ${trackingNumber}`
       : currentLang === 'en'
         ? `Tracking number saved: ${trackingNumber}`
-        : `\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e40\u0e25\u0e02\u0e1e\u0e31\u0e2a\u0e14\u0e38\u0e41\u0e25\u0e49\u0e27: ${trackingNumber}`;
-    showToast('\ud83d\udce6 ' + msg, 'success');
+        : `บันทึกเลขพัสดุแล้ว: ${trackingNumber}`;
+    showToast('📦 ' + msg, 'success');
   }
   renderAdminOrders();
 }
 
 // Delete Order from Backoffice
-function deleteOrder(orderId) {
+async function deleteOrder(orderId) {
   const confirmMsg = currentLang === 'de'
     ? `Bestellung ${orderId} wirklich löschen?`
     : currentLang === 'en'
@@ -3041,8 +3340,8 @@ function deleteOrder(orderId) {
       : `คุณต้องการลบคำสั่งซื้อ ${orderId} ใช่หรือไม่?`;
       
   if (confirm(confirmMsg)) {
+    await deleteOrderFromDB(orderId);
     orders = orders.filter(o => String(o.id) !== String(orderId));
-    localStorage.setItem('joythai_orders', JSON.stringify(orders));
     renderAdminOrders();
     showToast('🗑️ ลบประวัติคำสั่งซื้อสำเร็จ | Order Deleted', 'info');
   }
@@ -3285,7 +3584,7 @@ function saveProductForm() {
     showToast('➕ เพิ่มสินค้าสำเร็จ | Product Added', 'success');
   }
   
-  localStorage.setItem('joythai_products', JSON.stringify(activeProducts));
+  await saveProductsToDB();
   renderAdminProducts();
   renderProducts(currentFilter, searchQuery);
   updateHeroStats();
@@ -3305,7 +3604,7 @@ function deleteProduct(id) {
       
   if (confirm(confirmMsg)) {
     activeProducts = activeProducts.filter(prod => String(prod.id) !== String(id));
-    localStorage.setItem('joythai_products', JSON.stringify(activeProducts));
+    await saveProductsToDB();
     renderAdminProducts();
     renderProducts(currentFilter, searchQuery);
     updateHeroStats();
