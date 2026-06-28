@@ -2,7 +2,7 @@
    Joy Thai Shop — Supabase Configuration
    ============================================ */
 
-const SUPABASE_URL = 'https://cotekvvsnvkmaqkwvrba.supabase.co';
+const SUPABASE_URL = 'https://ootekvvsnvkmaqkwvrba.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vdGVrdnZzbnZrbWFxa3d2cmJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NjY2OTQsImV4cCI6MjA5ODI0MjY5NH0._LDgF38HpCzeLS6yv4gsux02JQMmp3IU_NI74RXh3KU';
 
 // ─── สร้าง Supabase Client ───
