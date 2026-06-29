@@ -4,6 +4,20 @@
 
    ============================================ */
 
+// ── Global Toast Notification Function ──
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = message;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.animation = 'toastOut 0.4s ease forwards';
+    toast.addEventListener('animationend', () => toast.remove());
+  }, 3500);
+}
+
 
 
 // ── Default Product Data ──
@@ -3695,83 +3709,161 @@ function switchAuthTab(tab) {
 
 
 async function handleAuthSubmit() {
+
   const username = document.getElementById('authUsername').value.trim();
+
   const pass = document.getElementById('authPassword').value;
 
+
+
   if (!username || !pass) {
+
     const errorMsg = currentLang === 'de' ? 'Bitte füllen Sie alle Felder aus' : currentLang === 'en' ? 'Please fill out all fields' : 'กรุณากรอกข้อมูลให้ครบถ้วน';
+
     showToast(errorMsg, 'error');
+
     return;
+
   }
 
+
+
   if (activeAuthTab === 'register') {
+
     try {
+
       const checkRes = await fetch(`${API_BASE_URL}/profiles/check`, {
+
         method: 'POST',
+
         headers: { 'Content-Type': 'application/json' },
+
         body: JSON.stringify({ username })
+
       });
+
       if (!checkRes.ok) throw new Error('Check username failed');
+
       const checkData = await checkRes.json();
+
       if (checkData.exists) {
+
         const errorMsg = currentLang === 'de' ? 'Dieser Name ist bereits vergeben' : currentLang === 'en' ? 'Username already taken' : 'ชื่อผู้ใช้นี้ถูกใช้งานแล้ว';
+
         showToast(errorMsg, 'error');
+
         return;
+
       }
+
       
+
       const regRes = await fetch(`${API_BASE_URL}/profiles`, {
+
         method: 'POST',
+
         headers: { 'Content-Type': 'application/json' },
+
         body: JSON.stringify({ username, email: null })
+
       });
+
       if (!regRes.ok) throw new Error('Registration failed');
+
     } catch (err) {
+
       console.error(err);
+
       showToast('❌ เกิดข้อผิดพลาด | Registration error', 'error');
+
       return;
+
     }
+
+
 
     users.push({ username });
 
+
+
     // ✅ สมัครสำเร็จ → switch ไปแท็บ Login
+
     const successMsg = currentLang === 'de'
+
       ? '✅ Konto erstellt! Bitte jetzt einloggen.'
+
       : currentLang === 'en'
+
         ? '✅ Account created! Please log in.'
+
         : '✅ สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ';
+
     showToast(successMsg, 'success');
 
+
+
     // เคลียร์ password แต่คง username ไว้เพื่อให้ login สะดวก
+
     document.getElementById('authPassword').value = '';
+
     // Switch ไปแท็บ Login
+
     switchAuthTab('login');
+
   } else {
+
     try {
+
       const checkRes = await fetch(`${API_BASE_URL}/profiles/check`, {
+
         method: 'POST',
+
         headers: { 'Content-Type': 'application/json' },
+
         body: JSON.stringify({ username })
+
       });
+
       if (!checkRes.ok) throw new Error('Login failed');
+
       const checkData = await checkRes.json();
+
       if (!checkData.exists) {
+
         const errorMsg = currentLang === 'de' ? 'Falscher Name หรือ Pass' : currentLang === 'en' ? 'Incorrect username or password' : 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
+
         showToast(errorMsg, 'error');
+
         return;
+
       }
+
       
+
       currentUser = checkData.profile.username;
+
       localStorage.setItem('joythai_currentUser', checkData.profile.username);
+
       
+
       const successMsg = currentLang === 'de' ? `Willkommen zurück, ${checkData.profile.username}!` : currentLang === 'en' ? `Welcome back, ${checkData.profile.username}!` : `ยินดีต้อนรับกลับมา, คุณ ${checkData.profile.username}!`;
+
       showToast(successMsg, 'success');
+
       closeAuthModal();
+
       updateHeaderUser();
+
     } catch (err) {
+
       console.error(err);
+
       showToast('❌ เกิดข้อผิดพลาด | Login error', 'error');
+
     }
+
   }
+
 }
 
 
