@@ -1676,6 +1676,15 @@ option { background: var(--bg2); }
 }
 @media (max-width: 768px) {
   .container { padding: 0 16px; }
+  /* Prevent iOS automatic page zoom on text fields */
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="number"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
   .notif-bar { padding: 10px 48px 10px 16px; }
 
   /* Grid layout for Header on mobile to prevent squeezing */

@@ -1061,7 +1061,7 @@
           <button class="btn btn-primary btn-full" onclick="addRecommendedBanner()">➕ เพิ่มสินค้าแนะนำ</button>
         </div>
         
-        <div class="admin-table-wrap" style="max-width: 800px; margin: 0 auto; width: 100%;">
+        <div class="admin-table-wrap desktop-only" style="max-width: 800px; margin: 0 auto; width: 100%;">
           <table class="admin-table">
             <thead>
               <tr>
@@ -1074,6 +1074,11 @@
               <!-- Banner rows injected by JS -->
             </tbody>
           </table>
+        </div>
+        <div class="admin-mobile-cards-wrap mobile-only" style="max-width: 800px; margin: 0 auto; width: 100%;">
+          <div id="adminBannerCardsMobile" style="display:flex; flex-direction:column; gap:12px; width:100%;">
+            <!-- Mobile cards injected by JS -->
+          </div>
         </div>
       </div>
       
