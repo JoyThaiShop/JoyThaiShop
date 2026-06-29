@@ -1774,7 +1774,17 @@ option { background: var(--bg2); }
   .form-row { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; gap: 24px; }
   .footer-bottom { flex-direction: column; text-align: center; }
-  .admin-dashboard-modal { width: 98%; padding: 20px 16px; }
+  #adminDashboardOverlay { padding: 0 !important; }
+  .admin-dashboard-modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    padding: 16px 12px !important;
+  }
 
   /* Admin tabs scrollable on mobile */
   .admin-tabs {
@@ -1840,7 +1850,13 @@ option { background: var(--bg2); }
 }
 @media (max-width: 480px) {
   .container { padding: 0 12px; }
-  .logo-text { display: none; }
+  .logo-text {
+    display: inline-block !important;
+    font-size: 16px !important;
+  }
+  .logo-icon {
+    font-size: 20px !important;
+  }
   .cat-grid {
     grid-template-columns: repeat(2, 1fr);
   }

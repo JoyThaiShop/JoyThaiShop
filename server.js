@@ -426,7 +426,13 @@ app.post('/api/profiles/check', async (req, res) => {
     if (result.rows.length > 0) {
       res.json({ exists: true, profile: result.rows[0] });
     } else {
-      res.json({ exists: false, profile: null });
+      // Check admins table so admin accounts can login to the store as well
+      const adminResult = await pool.query('SELECT username FROM admins WHERE LOWER(username) = LOWER($1)', [username]);
+      if (adminResult.rows.length > 0) {
+        res.json({ exists: true, profile: adminResult.rows[0] });
+      } else {
+        res.json({ exists: false, profile: null });
+      }
     }
   } catch (err) {
     console.error(err);
