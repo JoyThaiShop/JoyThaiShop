@@ -123,6 +123,23 @@ async function initDatabase() {
       )
     `);
 
+    // 6. Banners Table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS banners (
+        id          TEXT PRIMARY KEY,
+        product_id  INT NOT NULL,
+        image       TEXT,
+        created_at  TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+
+    // Seed default recommended banners if empty
+    const bannerCheck = await client.query('SELECT COUNT(*) FROM banners');
+    if (parseInt(bannerCheck.rows[0].count) === 0) {
+      await client.query("INSERT INTO banners (id, product_id, image) VALUES ('def1', 1, ''), ('def2', 2, '')");
+      console.log('📢 Seeded default recommended banners');
+    }
+
     // Seed default admin accounts if empty
     const adminCheck = await client.query('SELECT COUNT(*) FROM admins');
     if (parseInt(adminCheck.rows[0].count) === 0) {
@@ -509,6 +526,74 @@ app.delete('/api/admins/:username', async (req, res) => {
   const { username } = req.params;
   try {
     await pool.query('DELETE FROM admins WHERE username = $1', [username]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ==========================================
+// RECOMMENDED BANNERS ENDPOINTS
+// ==========================================
+
+// GET ALL BANNERS
+app.get('/api/banners', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, product_id AS "productId", image FROM banners ORDER BY created_at ASC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ADD/UPSERT BANNER
+app.post('/api/banners', async (req, res) => {
+  const { id, productId, image } = req.body;
+  if (!productId) {
+    return res.status(400).json({ error: 'Product ID required' });
+  }
+  try {
+    // Delete default banners if adding custom banners to match frontend expectations
+    if (id && !id.startsWith('def')) {
+      await pool.query("DELETE FROM banners WHERE id LIKE 'def%'");
+    }
+    await pool.query(
+      'INSERT INTO banners (id, product_id, image) VALUES ($1, $2, $3) ON CONFLICT (id) DO UPDATE SET product_id = $2, image = $3',
+      [id || 'b' + Date.now(), productId, image || '']
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE BANNER
+app.delete('/api/banners/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM banners WHERE id = $1', [id]);
+    
+    // Check if empty, and if so, re-seed defaults
+    const check = await pool.query('SELECT COUNT(*) FROM banners');
+    if (parseInt(check.rows[0].count) === 0) {
+      await pool.query("INSERT INTO banners (id, product_id, image) VALUES ('def1', 1, ''), ('def2', 2, '')");
+    }
+    
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// CLEAR BANNER IMAGE
+app.put('/api/banners/clear-image/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query("UPDATE banners SET image = '' WHERE id = $1", [id]);
     res.json({ success: true });
   } catch (err) {
     console.error(err);
