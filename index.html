@@ -955,7 +955,7 @@
         <div style="display:flex; justify-content:flex-end; margin-bottom:16px;">
           <button class="btn btn-primary btn-sm" data-i18n="adminAddProductBtn" onclick="openAddProductForm()">+ เพิ่มสินค้าใหม่</button>
         </div>
-        <div class="admin-table-wrap">
+        <div class="admin-table-wrap desktop-only">
           <table class="admin-table">
             <thead>
               <tr>
@@ -971,6 +971,11 @@
               <!-- Product rows injected by JS -->
             </tbody>
           </table>
+        </div>
+        <div class="admin-mobile-cards-wrap mobile-only">
+          <div class="admin-product-cards-mobile" id="adminProductCardsMobile">
+            <!-- Product cards injected by JS for mobile -->
+          </div>
         </div>
       </div>
       
@@ -1317,9 +1322,7 @@
   <!-- Toast Notification -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Supabase Config (ใส่ URL และ Key ของคุณในไฟล์นี้) -->
+  <!-- Supabase Config (API Settings) -->
   <script src="supabase-config.js"></script>
   <!-- Main App -->
   <script src="script.js"></script>

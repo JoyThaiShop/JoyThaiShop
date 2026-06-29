@@ -1,33 +1,10 @@
 /* ============================================
-   Joy Thai Shop — Supabase Configuration
+   Joy Thai Shop — API Configuration
    ============================================ */
 
-const SUPABASE_URL = 'https://ootekvvsnvkmaqkwvrba.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vdGVrdnZzbnZrbWFxa3d2cmJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NjY2OTQsImV4cCI6MjA5ODI0MjY5NH0._LDgF38HpCzeLS6yv4gsux02JQMmp3IU_NI74RXh3KU';
+// The Express server serves frontend files on the same domain/port on Render,
+// so we can use relative paths ('/api') for all backend calls.
+const API_BASE_URL = '/api';
 
-// ─── สร้าง Supabase Client ───
-let supabaseClient;
-try {
-  const { createClient } = supabase;
-  supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  console.log('✅ Supabase client initialized successfully');
-} catch (e) {
-  console.error('❌ Supabase init failed:', e);
-  // Fallback mock client — จะ log error แทน crash
-  supabaseClient = {
-    from: () => ({
-      select: async () => ({ data: [], error: new Error('Supabase not available') }),
-      insert: async () => ({ error: new Error('Supabase not available') }),
-      update: async () => ({ error: new Error('Supabase not available') }),
-      delete: async () => ({ error: new Error('Supabase not available') }),
-      upsert: async () => ({ error: new Error('Supabase not available') }),
-      eq: function() { return this; },
-      ilike: function() { return this; },
-      order: function() { return this; },
-      maybeSingle: async () => ({ data: null, error: null }),
-    })
-  };
-}
-
-// ─── Admin password ───
+// Fallback admin password for quick UI client checks
 const ADMIN_PASSWORD = 'admin123';
