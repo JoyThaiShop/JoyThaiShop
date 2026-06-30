@@ -1694,7 +1694,7 @@ const TRANSLATIONS = {
 
 
 
-    bankNote: '* โอนเงินเรียบร้อยแล้ว กรุณาส่งสลิปหลักฐานมาทาง LINE: @joythaishop',
+    bankNote: '* โอนเงินเรียบร้อยแล้ว กรุณาส่งสลิปหลักฐานมาทางอีเมล: hello@joythaishop.com หรือ Facebook: fb.com/joythaishop',
 
 
 
@@ -2370,7 +2370,7 @@ const TRANSLATIONS = {
 
 
 
-    bankNote: '* Bitte senden Sie den Überweisungsbeleg per LINE an: @joythaishop',
+    bankNote: '* Bitte senden Sie den Überweisungsbeleg per E-Mail an hello@joythaishop.com oder Facebook: fb.com/joythaishop',
 
 
 
@@ -3046,7 +3046,7 @@ const TRANSLATIONS = {
 
 
 
-    bankNote: '* Please send your transfer slip via LINE to: @joythaishop',
+    bankNote: '* Please send your transfer slip via Email to hello@joythaishop.com or Facebook: fb.com/joythaishop',
 
 
 
@@ -10500,210 +10500,102 @@ async function placeOrder() {
 
 
 
-  const saved = await saveOrderToDB(newOrder);
-
-
-
-  if (!saved) {
-
-
-
-    showToast('❌ เกิดข้อผิดพลาดในการบันทึกคำสั่งซื้อ | Order save failed', 'error');
-
-
-
-    isPlacingOrder = false;
-
-
-
-    if (placeOrderBtn) {
-
-
-
-      placeOrderBtn.disabled = false;
-
-
-
-      placeOrderBtn.style.opacity = '1';
-
-
-
-      placeOrderBtn.innerHTML = originalBtnText;
-
-
-
-    }
-
-
-
-    return;
-
-
-
-  }
-
-
-
-  // Update product stock in DB
-
-
-
-  await saveProductsToDB();
-
-
-
-  // Update local orders list
-
-
-
-  orders.unshift(newOrder);
-
-
-
-  document.getElementById('orderId').textContent = orderId;
-
-
-
-  closeCheckout();
-
-
-
-  // Reset payment slip state
-
-
-
-  uploadedPaymentSlipBase64 = '';
-
-
-
-  const fileInput = document.getElementById('paymentSlipFile');
-
-
-
-  if (fileInput) fileInput.value = '';
-
-
-
-  const preview = document.getElementById('paymentSlipPreview');
-
-
-
-  if (preview) {
-
-
-
-    preview.src = '';
-
-
-
-    preview.style.display = 'none';
-
-
-
-  }
-
-
-
-  const placeholder = document.getElementById('paymentSlipPlaceholder');
-
-
-
-  if (placeholder) {
-
-
-
-    placeholder.style.display = 'block';
-
-
-
-  }
-
-
-
-  cart = [];
-
-
-
-  saveCart();
-
-
-
-  updateCartBadge();
-
-
-
-  document.getElementById('successOverlay').classList.add('open');
-
-
-
-  // Reset loading state
-
-
-
-  isPlacingOrder = false;
-
-
-
-  if (placeOrderBtn) {
-
-
-
-    placeOrderBtn.disabled = false;
-
-
-
-    placeOrderBtn.style.opacity = '1';
-
-
-
-    placeOrderBtn.innerHTML = originalBtnText;
-
-
-
-  }
-
-
-
-}
-
-
-
-function closeSuccess() {
-
-
-
-  document.getElementById('successOverlay').classList.remove('open');
-
-
-
-  renderProducts(currentFilter, searchQuery);
-
-
-
-}
-
-
-
-// ── Card Formatting ──
-
-
-
-function formatCard(input) {
-
-
-
-  let v = input.value.replace(/\D/g, '').slice(0, 16);
-
-
-
-  input.value = v.replace(/(\d{4})(?=\d)/g, '$1 ');
-
-
-
-}
-
-
-
+  const saved = await saveOrderToDB(newOrder);
+
+
+
+  if (!saved) {
+
+
+
+    showToast('❌ เกิดข้อผิดพลาดในการบันทึกคำสั่งซื้อ | Order save failed', 'error');
+
+
+
+    isPlacingOrder = false;
+
+
+
+    if (placeOrderBtn) {
+
+
+
+      placeOrderBtn.disabled = false;
+
+
+
+      placeOrderBtn.style.opacity = '1';
+
+
+
+      placeOrderBtn.innerHTML = originalBtnText;
+
+
+
+    }
+
+
+
+    return;
+
+
+
+  }
+
+
+
+  // Update product stock in DB
+  await saveProductsToDB();
+
+  // Update local orders list
+  orders.unshift(newOrder);
+
+  document.getElementById('orderId').textContent = orderId;
+  closeCheckout();
+
+  // Reset payment slip state
+  uploadedPaymentSlipBase64 = '';
+  const fileInput = document.getElementById('paymentSlipFile');
+  if (fileInput) fileInput.value = '';
+
+  const preview = document.getElementById('paymentSlipPreview');
+  if (preview) {
+    preview.src = '';
+    preview.style.display = 'none';
+  }
+
+  const placeholder = document.getElementById('paymentSlipPlaceholder');
+  if (placeholder) {
+    placeholder.style.display = 'block';
+  }
+
+  cart = [];
+  saveCart();
+  updateCartBadge();
+
+  document.getElementById('successOverlay').classList.add('open');
+
+  // Reset loading state
+  isPlacingOrder = false;
+  if (placeOrderBtn) {
+    placeOrderBtn.disabled = false;
+    placeOrderBtn.style.opacity = '1';
+    placeOrderBtn.innerHTML = originalBtnText;
+  }
+}
+
+function closeSuccess() {
+  document.getElementById('successOverlay').classList.remove('open');
+  renderProducts(currentFilter, searchQuery);
+}
+
+function formatCard(input) {
+  let v = input.value.replace(/\D/g, '').slice(0, 16);
+  input.value = v.replace(/(\d{4})(?=\d)/g, '$1 ');
+}
+
+
+
 function formatExp(input) {
 
 
@@ -11356,10 +11248,6 @@ function switchAdminTab(tab) {
 
 
 
-  document.getElementById('adminTabBanners').classList.toggle('active', tab === 'banners');
-
-
-
   document.getElementById('adminTabAnalytics').classList.toggle('active', tab === 'analytics');
 
 
@@ -11373,10 +11261,6 @@ function switchAdminTab(tab) {
 
 
   document.getElementById('adminContentSettings').style.display = tab === 'settings' ? 'flex' : 'none';
-
-
-
-  document.getElementById('adminContentBanners').style.display = tab === 'banners' ? 'flex' : 'none';
 
 
 
@@ -11405,14 +11289,6 @@ function switchAdminTab(tab) {
 
 
     loadAdminSettings();
-
-
-
-  } else if (tab === 'banners') {
-
-
-
-    renderAdminBanners();
 
 
 
