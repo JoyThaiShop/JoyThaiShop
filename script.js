@@ -7444,11 +7444,11 @@ function renderMyOrders() {
 
 
 
-  // Filter customer's orders
-
-
-
-  const myOrders = orders.filter(o => o.username === currentUser);
+    // Filter customer's orders
+  const myOrders = orders.filter(o => {
+    if (!o.username || !currentUser) return false;
+    return o.username.trim().toLowerCase() === currentUser.trim().toLowerCase();
+  });
 
 
 
@@ -9943,22 +9943,10 @@ function formatAddressHTML(addrData) {
 
 
 
-  const address = addrData.address || '';
-
-
-
+    const address = addrData.address || addrData.street || '';
   const city = addrData.city || '';
-
-
-
-  const postcode = addrData.postcode || '';
-
-
-
+  const postcode = addrData.postcode || addrData.zip || '';
   const countryText = addrData.countryText || addrData.country || '';
-
-
-
   return [address, [city, postcode].filter(Boolean).join(' '), countryText].filter(Boolean).join('<br>');
 
 
