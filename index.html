@@ -1121,6 +1121,10 @@
         <input type="checkbox" id="formProdInStock" style="width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer;" onchange="toggleStockField()">
         <label for="formProdInStock" style="margin-bottom: 0; font-size: 14px; font-weight: 700; cursor: pointer; color:var(--text)">📦 สินค้าพร้อมส่ง (Ready to Ship / In Stock)</label>
       </div>
+      <div class="form-group" style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" id="formProdIsPreorder" style="width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer;">
+        <label for="formProdIsPreorder" style="margin-bottom: 0; font-size: 14px; font-weight: 700; cursor: pointer; color:var(--text)">⏳ สินค้าพรีออเดอร์ (Pre-order)</label>
+      </div>
       <div class="form-group" id="formProdStockGroup" style="margin-bottom: 16px; transition: opacity 0.2s ease;">
         <label>จำนวนสินค้าในสต็อก (Stock Quantity) <span class="req">*</span></label>
         <input type="number" id="formProdStock" min="0" placeholder="เช่น 12" class="form-input">

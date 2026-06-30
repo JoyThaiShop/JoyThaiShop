@@ -568,40 +568,41 @@ ul { list-style: none; }
   box-shadow: 0 20px 60px rgba(43,147,72,0.12);
   border-color: rgba(43,147,72,0.25);
 }
-.product-img-wrap {
-  position: relative; overflow: hidden;
-  background: var(--bg3); aspect-ratio: 1;
-  display: flex; align-items: center; justify-content: center;
-}
-.product-img-wrap img {
-  width: 100%; height: 100%; object-fit: contain;
-  padding: 12px;
-  background: #ffffff;
-  box-sizing: border-box;
-  transition: transform 0.5s ease;
-}
-.product-card:hover .product-img-wrap img { transform: scale(1.07); }
-.product-badge {
-  position: absolute; top: 12px; left: 12px;
-  background: var(--primary); color: white;
-  padding: 4px 10px; border-radius: 100px;
-  font-size: 11px; font-weight: 700;
-}
-.product-badge.new { background: var(--accent); color: #000; }
-.product-badge.hot { background: #ef4444; }
-.product-badge.sale { background: #f59e0b; color: white; }
-.product-wishlist {
-  position: absolute; top: 12px; right: 12px;
-  width: 34px; height: 34px; border-radius: 50%;
-  background: rgba(242,250,244,0.7); backdrop-filter: blur(8px);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; cursor: pointer; transition: all var(--transition);
-  border: 1px solid var(--border);
-}
-.product-wishlist:hover { background: rgba(239,68,68,0.2); transform: scale(1.1); }
-.product-info { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-.product-category { font-size: 11px; color: #1d7a38; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-.product-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; line-height: 1.3; }
+.product-img-wrap {
+  position: relative; overflow: hidden;
+  background: var(--bg3); aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.product-img-wrap img {
+  width: 100%; height: 100%; object-fit: contain;
+  padding: 12px;
+  background: #ffffff;
+  box-sizing: border-box;
+  transition: transform 0.5s ease;
+}
+.product-card:hover .product-img-wrap img { transform: scale(1.07); }
+.product-badge {
+  position: absolute; top: 12px; left: 12px;
+  background: var(--primary); color: white;
+  padding: 4px 10px; border-radius: 100px;
+  font-size: 11px; font-weight: 700;
+}
+.product-badge.new { background: var(--accent); color: #000; }
+.product-badge.hot { background: #ef4444; }
+.product-badge.sale { background: #f59e0b; color: white; }
+.product-badge.preorder { background: #8b5cf6; color: white; }
+.product-wishlist {
+  position: absolute; top: 12px; right: 12px;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(242,250,244,0.7); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; transition: all var(--transition);
+  border: 1px solid var(--border);
+}
+.product-wishlist:hover { background: rgba(239,68,68,0.2); transform: scale(1.1); }
+.product-info { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+.product-category { font-size: 11px; color: #1d7a38; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.product-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; line-height: 1.3; }
 .product-weight { font-size: 12px; color: var(--text3); font-weight: 500; margin-bottom: 10px; display: flex; align-items: center; gap: 4px; }
 .product-weight::before { content: '⚖️'; }
 .product-desc { font-size: 13px; color: var(--text3); margin-bottom: 12px; line-height: 1.5; flex: 1; }
@@ -1936,7 +1937,13 @@ option { background: var(--bg2); }
 .pdp-stock-text {
   font-size: 13.5px; font-weight: 600; color: #2b9348;
 }
-.pdp-stock-row.outstock .pdp-stock-text { color: #9ca3af; }
+.pdp-stock-row.outstock .pdp-stock-text { color: #9ca3af; }
+
+.pdp-stock-row.preorder-stock .pdp-stock-dot {
+  background: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+}
+.pdp-stock-row.preorder-stock .pdp-stock-text { color: #8b5cf6; }
 
 /* Qty */
 .pdp-qty-label {

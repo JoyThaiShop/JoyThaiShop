@@ -3466,6 +3466,10 @@ async function loadProductsFromDB() {
 
 
 
+        isPreorder: !!p.is_preorder,
+
+
+
         rating: parseFloat(p.rating) || 5.0,
 
 
@@ -3763,6 +3767,10 @@ async function saveProductsToDB() {
 
 
     stock: p.stock || 0,
+
+
+
+    is_preorder: !!p.isPreorder,
 
 
 
@@ -4695,38 +4703,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
 
+    }
 
   });
 
-
-
 });
-
-
 
 // ── Language Toggle & Translation Engine ──
 
-
-
 function toggleLangDropdown(e) {
-
-
 
   e.stopPropagation();
 
-
-
   document.getElementById('langDropdown').classList.toggle('open');
-
-
 
 }
 
-
-
 function changeLanguage(lang) {
-
-
 
   setLanguage(lang);
 
@@ -4761,6 +4754,16 @@ function changeLanguage(lang) {
 
 
   }
+
+  const matchPriceMin = filterPriceMin === null || (p.priceThb || 0) >= filterPriceMin;
+
+
+
+  const matchPriceMax = filterPriceMax === null || (p.priceThb || 0) <= filterPriceMax;
+
+
+
+  return matchCat && matchQ && matchInStock && matchPriceMin && matchPriceMax;
 
 
 
@@ -4918,17 +4921,9 @@ function initScrollReveal() {
 
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
 
-
-
   }, { threshold: 0.1 });
 
-
-
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-
-
-
-}
 
 
 
@@ -5386,6 +5381,81 @@ function renderProducts(filter = 'all', query = '') {
 
     const matchPriceMin = filterPriceMin === null || (p.priceThb || 0) >= filterPriceMin;
 
+
+
+  const isPreorder = !!p.isPreorder;
+
+
+
+  const localizedBtnText = isPreorder
+
+
+
+    ? (currentLang === 'de' ? 'Vorbestellen' : currentLang === 'en' ? 'Pre-order' : 'สั่งซื้อพรีออเดอร์')
+
+
+
+    : (currentLang === 'de' ? 'In den Korb' : currentLang === 'en' ? 'Add to Cart' : 'ใส่ตะกร้า');
+
+
+
+  const isOutOfStock = !isPreorder && (p.stock === 0 || p.stock === undefined);
+
+
+
+  const stockText = isPreorder
+
+
+
+    ? (currentLang === 'de' ? 'Vorbestellung' : currentLang === 'en' ? 'Pre-order' : 'พรีออเดอร์')
+
+
+
+    : (isOutOfStock
+
+
+
+      ? TRANSLATIONS[currentLang].outOfStock
+
+
+
+      : TRANSLATIONS[currentLang].stockCount.replace('{num}', p.stock));
+
+
+
+  const stockColor = isPreorder ? '#8b5cf6' : (isOutOfStock ? '#ef4444' : '#2b9348');
+
+
+
+  const disabledAttr = isOutOfStock ? 'disabled' : '';
+
+
+
+  const isBestseller = bestsellerIds.includes(Number(p.id));
+
+
+
+  let badgeHtml = '';
+
+
+
+  if (isPreorder) {
+
+
+
+    const preorderText = currentLang === 'de' ? '⏳ Vorbestellung' : currentLang === 'en' ? '⏳ Pre-order' : '⏳ พรีออเดอร์';
+
+
+
+    badgeHtml = `<div class="product-badge preorder">${preorderText}</div>`;
+
+
+
+  } else if (p.badge) {
+
+
+
+    badgeHtml = `<div class="product-badge ${p.badge}">${getVal(p.badgeText) || p.badge}</div>`;
 
 
     const matchPriceMax = filterPriceMax === null || (p.priceThb || 0) <= filterPriceMax;
@@ -5936,30 +6006,17 @@ function createProductCardHTML(p, i, bestsellerIds) {
 
 
 
-  const localizedBtnText = currentLang === 'de' ? 'In den Korb' : currentLang === 'en' ? 'Add to Cart' : 'ใส่ตะกร้า';
-
-
-
-  const isOutOfStock = p.stock === 0 || p.stock === undefined;
-
-
-
-  const stockText = isOutOfStock
-
-
-
-    ? TRANSLATIONS[currentLang].outOfStock
-
-
-
-    : TRANSLATIONS[currentLang].stockCount.replace('{num}', p.stock);
-
-
-
-  const stockColor = isOutOfStock ? '#ef4444' : '#2b9348';
-
-
-
+  const isPreorder = !!p.isPreorder;
+  const localizedBtnText = isPreorder
+    ? (currentLang === 'de' ? 'Vorbestellen' : currentLang === 'en' ? 'Pre-order' : 'สั่งซื้อพรีออเดอร์')
+    : (currentLang === 'de' ? 'In den Korb' : currentLang === 'en' ? 'Add to Cart' : 'ใส่ตะกร้า');
+  const isOutOfStock = !isPreorder && (p.stock === 0 || p.stock === undefined);
+  const stockText = isPreorder
+    ? (currentLang === 'de' ? 'Vorbestellung' : currentLang === 'en' ? 'Pre-order' : 'พรีออเดอร์')
+    : (isOutOfStock
+      ? TRANSLATIONS[currentLang].outOfStock
+      : TRANSLATIONS[currentLang].stockCount.replace('{num}', p.stock));
+  const stockColor = isPreorder ? '#8b5cf6' : (isOutOfStock ? '#ef4444' : '#2b9348');
   const disabledAttr = isOutOfStock ? 'disabled' : '';
 
 
@@ -5972,26 +6029,14 @@ function createProductCardHTML(p, i, bestsellerIds) {
 
 
 
-  if (p.badge) {
-
-
-
+  if (isPreorder) {
+    const preorderText = currentLang === 'de' ? '⏳ Vorbestellung' : currentLang === 'en' ? '⏳ Pre-order' : '⏳ พรีออเดอร์';
+    badgeHtml = `<div class="product-badge preorder">${preorderText}</div>`;
+  } else if (p.badge) {
     badgeHtml = `<div class="product-badge ${p.badge}">${getVal(p.badgeText) || p.badge}</div>`;
-
-
-
   } else if (isBestseller) {
-
-
-
     const bestText = currentLang === 'de' ? '🔥 Bestseller' : currentLang === 'en' ? '🔥 Bestseller' : '🔥 ขายดี';
-
-
-
     badgeHtml = `<div class="product-badge hot">${bestText}</div>`;
-
-
-
   }
 
 
@@ -8069,41 +8114,15 @@ function addToCart(id) {
 
 
     cart.push({
-
-
-
       id: product.id,
-
-
-
       name: product.name,
-
-
-
       weight: product.weight,
-
-
-
       priceThb: product.priceThb,
-
-
-
       priceEur: product.priceEur,
-
-
-
       image: product.image,
-
-
-
       emoji: product.emoji,
-
-
-
-      qty: 1
-
-
-
+      qty: 1,
+      isPreorder: product.isPreorder
     });
 
 
@@ -8317,14 +8336,11 @@ function renderCart() {
 
 
     const baseThb = item.priceThb * item.qty;
-
-
-
-    const baseEur = item.priceEur * item.qty;
-
-
-
-    el.innerHTML = `
+      const baseEur = item.priceEur * item.qty;
+      const preorderBadgeHtml = item.isPreorder 
+        ? ' <span class="product-badge preorder" style="display:inline-block; font-size:10px; padding:1px 5px; margin-left:4px; vertical-align:middle; border-radius:4px; background:#8b5cf6; color:white;">⏳ Pre-order</span>'
+        : '';
+      el.innerHTML = `
 
 
 
@@ -8352,7 +8368,7 @@ function renderCart() {
 
 
 
-        <div class="cart-item-name">${getVal(item.name)} (${item.weight || 'N/A'})</div>
+        <div class="cart-item-name">${getVal(item.name)}${preorderBadgeHtml} (${item.weight || 'N/A'})</div>
 
 
 
@@ -10101,26 +10117,14 @@ function renderOrderSummary() {
 
 
   cart.forEach(item => {
-
-
-
-    const baseThb = item.priceThb * item.qty;
-
-
-
-    const baseEur = item.priceEur * item.qty;
-
-
-
-    const el = document.createElement('div');
-
-
-
-    el.className = 'order-summary-item';
-
-
-
-    el.innerHTML = `
+      const baseThb = item.priceThb * item.qty;
+      const baseEur = item.priceEur * item.qty;
+      const el = document.createElement('div');
+      el.className = 'order-summary-item';
+      const preorderBadgeHtml = item.isPreorder 
+        ? ' <span class="product-badge preorder" style="display:inline-block; font-size:10px; padding:1px 5px; margin-left:4px; vertical-align:middle; border-radius:4px; background:#8b5cf6; color:white;">⏳ Pre-order</span>'
+        : '';
+      el.innerHTML = `
 
 
 
@@ -10148,7 +10152,7 @@ function renderOrderSummary() {
 
 
 
-        <div class="order-summary-item-name">${getVal(item.name)} (${item.weight || 'N/A'})</div>
+        <div class="order-summary-item-name">${getVal(item.name)}${preorderBadgeHtml} (${item.weight || 'N/A'})</div>
 
 
 
@@ -11516,6 +11520,10 @@ function renderAdminProducts() {
 
 
 
+    const preorderBadge = p.isPreorder ? '<span class="admin-badge" style="background:#8b5cf6; color:white; border:none; margin-left:6px;">⏳ พรีออเดอร์</span>' : '';
+
+
+
     const stockBadge = p.stock > 0 ? `<span class="admin-badge instock">พร้อมส่ง (${p.stock})</span>` : `<span class="admin-badge outstock">⛔ หมดสต็อก</span>`;
 
 
@@ -11585,6 +11593,8 @@ function renderAdminProducts() {
 
 
             ${saleBadge}
+
+            ${preorderBadge}
 
 
 
@@ -11733,6 +11743,8 @@ function renderAdminProducts() {
 
 
               ${saleBadge}
+
+              ${preorderBadge}
 
 
 
@@ -12785,6 +12797,10 @@ function openAddProductForm() {
 
 
 
+  document.getElementById('formProdIsPreorder').checked = false;
+
+
+
   document.getElementById('formProdStock').value = 12;
 
 
@@ -12946,6 +12962,10 @@ function editProduct(id) {
 
 
   document.getElementById('formProdInStock').checked = isStocked;
+
+
+
+  document.getElementById('formProdIsPreorder').checked = !!p.isPreorder;
 
 
 
@@ -13246,6 +13266,10 @@ async function saveProductForm() {
 
 
 
+  const isPreorder = document.getElementById('formProdIsPreorder').checked;
+
+
+
   let stock = parseInt(document.getElementById('formProdStock').value) || 0;
 
 
@@ -13410,6 +13434,10 @@ async function saveProductForm() {
 
 
 
+        isPreorder: isPreorder,
+
+
+
         badge: onSale ? 'sale' : (activeProducts[index].badge === 'sale' ? null : activeProducts[index].badge),
 
 
@@ -13503,6 +13531,10 @@ async function saveProductForm() {
 
 
       inStock: stock > 0,
+
+
+
+      isPreorder: isPreorder,
 
 
 
@@ -13802,7 +13834,13 @@ function openProductDetail(productId) {
 
 
 
-  document.getElementById('pdpTitle').textContent = getVal(p.name);
+  const pdpTitleEl = document.getElementById('pdpTitle');
+  if (p.isPreorder) {
+    const preorderText = lang === 'de' ? '⏳ Vorbestellung' : lang === 'en' ? '⏳ Pre-order' : '⏳ พรีออเดอร์';
+    pdpTitleEl.innerHTML = `${getVal(p.name)} <span class="product-badge preorder" style="display:inline-block; font-size:12px; padding:3px 8px; margin-left:8px; vertical-align:middle; border-radius:4px; background:#8b5cf6; color:white;">${preorderText}</span>`;
+  } else {
+    pdpTitleEl.textContent = getVal(p.name);
+  }
 
 
 
@@ -13910,34 +13948,18 @@ function openProductDetail(productId) {
 
 
 
-  if (isOutOfStock) {
-
-
-
-    stockRow.classList.add('outstock');
-
-
-
-    stockText.textContent = { th: 'สินค้าหมด', de: 'Ausverkauft', en: 'Out of Stock' }[lang] || 'สินค้าหมด';
-
-
-
-  } else {
-
-
-
+  stockRow.classList.remove('preorder-stock');
+  if (p.isPreorder) {
     stockRow.classList.remove('outstock');
-
-
-
+    stockRow.classList.add('preorder-stock');
+    stockText.textContent = { th: 'พรีออเดอร์ (Pre-order)', de: 'Vorbestellung (Pre-order)', en: 'Pre-order' }[lang] || 'พรีออเดอร์ (Pre-order)';
+  } else if (isOutOfStock) {
+    stockRow.classList.add('outstock');
+    stockText.textContent = { th: 'สินค้าหมด', de: 'Ausverkauft', en: 'Out of Stock' }[lang] || 'สินค้าหมด';
+  } else {
+    stockRow.classList.remove('outstock');
     const t = TRANSLATIONS[lang];
-
-
-
     stockText.textContent = t ? t.stockCount.replace('{num}', p.stock) : `${p.stock} ชิ้นในสต็อก`;
-
-
-
   }
 
 
@@ -13962,23 +13984,13 @@ function openProductDetail(productId) {
 
 
 
-  document.getElementById('pdpQtyPlus').disabled = isOutOfStock;
-
-
-
+  document.getElementById('pdpQtyPlus').disabled = isOutOfStock && !p.isPreorder;
   // -- Cart Button --
-
-
-
-  const btnCartText = { th: 'เพิ่มลงตะกร้า', de: 'In den Korb', en: 'Add to Cart' };
-
-
-
-  document.getElementById('pdpBtnCartText').textContent = btnCartText[lang] || 'เพิ่มลงตะกร้า';
-
-
-
-  document.getElementById('pdpBtnCart').disabled = isOutOfStock;
+  const btnCartText = p.isPreorder
+    ? { th: 'สั่งซื้อพรีออเดอร์', de: 'Vorbestellen', en: 'Pre-order' }
+    : { th: 'เพิ่มลงตะกร้า', de: 'In den Korb', en: 'Add to Cart' };
+  document.getElementById('pdpBtnCartText').textContent = btnCartText[lang] || (p.isPreorder ? 'สั่งซื้อพรีออเดอร์' : 'เพิ่มลงตะกร้า');
+  document.getElementById('pdpBtnCart').disabled = isOutOfStock && !p.isPreorder;
 
 
 
@@ -14139,17 +14151,8 @@ function closeProductDetailOutside(e) {
 
 
 function pdpChangeQty(delta) {
-
-
-
   if (!pdpCurrentProduct) return;
-
-
-
-  const maxStock = pdpCurrentProduct.stock || 0;
-
-
-
+  const maxStock = pdpCurrentProduct.isPreorder ? 99 : (pdpCurrentProduct.stock || 0);
   pdpCurrentQty = Math.max(1, Math.min(pdpCurrentQty + delta, maxStock || 99));
 
 
@@ -14187,10 +14190,7 @@ function pdpAddToCart() {
 
 
   if (existing) {
-
-
-
-    existing.qty = Math.min((existing.qty || 1) + pdpCurrentQty, p.stock || 99);
+    existing.qty = Math.min((existing.qty || 1) + pdpCurrentQty, p.isPreorder ? 99 : (p.stock || 99));
 
 
 
@@ -14219,45 +14219,16 @@ function pdpAddToCart() {
 
 
   } else {
-
-
-
     cart.push({
-
-
-
       id: p.id,
-
-
-
       name: p.name,
-
-
-
       weight: p.weight,
-
-
-
       priceThb: p.priceThb,
-
-
-
       priceEur: p.priceEur,
-
-
-
       image: p.image,
-
-
-
       emoji: p.emoji,
-
-
-
-      qty: pdpCurrentQty
-
-
-
+      qty: pdpCurrentQty,
+      isPreorder: p.isPreorder
     });
 
 
