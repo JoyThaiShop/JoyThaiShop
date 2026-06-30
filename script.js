@@ -4703,13 +4703,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
 
-    }
 
   });
 
+
+
 });
 
+
+
 // ── Language Toggle & Translation Engine ──
+
+
 
 function toggleLangDropdown(e) {
 
@@ -4925,7 +4930,7 @@ function initScrollReveal() {
 
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-
+}
 
 // ── Get Translation field ──
 
@@ -5380,85 +5385,7 @@ function renderProducts(filter = 'all', query = '') {
 
 
     const matchPriceMin = filterPriceMin === null || (p.priceThb || 0) >= filterPriceMin;
-
-
-
-  const isPreorder = !!p.isPreorder;
-
-
-
-  const localizedBtnText = isPreorder
-
-
-
-    ? (currentLang === 'de' ? 'Vorbestellen' : currentLang === 'en' ? 'Pre-order' : 'สั่งซื้อพรีออเดอร์')
-
-
-
-    : (currentLang === 'de' ? 'In den Korb' : currentLang === 'en' ? 'Add to Cart' : 'ใส่ตะกร้า');
-
-
-
-  const isOutOfStock = !isPreorder && (p.stock === 0 || p.stock === undefined);
-
-
-
-  const stockText = isPreorder
-
-
-
-    ? (currentLang === 'de' ? 'Vorbestellung' : currentLang === 'en' ? 'Pre-order' : 'พรีออเดอร์')
-
-
-
-    : (isOutOfStock
-
-
-
-      ? TRANSLATIONS[currentLang].outOfStock
-
-
-
-      : TRANSLATIONS[currentLang].stockCount.replace('{num}', p.stock));
-
-
-
-  const stockColor = isPreorder ? '#8b5cf6' : (isOutOfStock ? '#ef4444' : '#2b9348');
-
-
-
-  const disabledAttr = isOutOfStock ? 'disabled' : '';
-
-
-
-  const isBestseller = bestsellerIds.includes(Number(p.id));
-
-
-
-  let badgeHtml = '';
-
-
-
-  if (isPreorder) {
-
-
-
-    const preorderText = currentLang === 'de' ? '⏳ Vorbestellung' : currentLang === 'en' ? '⏳ Pre-order' : '⏳ พรีออเดอร์';
-
-
-
-    badgeHtml = `<div class="product-badge preorder">${preorderText}</div>`;
-
-
-
-  } else if (p.badge) {
-
-
-
-    badgeHtml = `<div class="product-badge ${p.badge}">${getVal(p.badgeText) || p.badge}</div>`;
-
-
-    const matchPriceMax = filterPriceMax === null || (p.priceThb || 0) <= filterPriceMax;
+  const matchPriceMax = filterPriceMax === null || (p.priceThb || 0) <= filterPriceMax;
 
 
 
