@@ -408,7 +408,19 @@
           </div>
           <div class="form-group">
             <label><span data-i18n="fieldPhone">เบอร์โทรศัพท์</span> <span class="req">*</span></label>
-            <input type="tel" id="phone" placeholder="+49 17x-xxx-xxxx" class="form-input">
+            <div class="phone-input-group" style="display: flex; gap: 8px; width: 100%;">
+              <select id="phoneCountryCode" class="form-input" style="width: 110px; flex-shrink: 0; padding: 8px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center; border: 1px solid var(--border2); border-radius: var(--radius-sm); background: var(--bg3);">
+                <option value="+49">🇩🇪 +49</option>
+                <option value="+66">🇹🇭 +66</option>
+                <option value="+43">🇦🇹 +43</option>
+                <option value="+41">🇨🇭 +41</option>
+                <option value="+33">🇫🇷 +33</option>
+                <option value="+31">🇳🇱 +31</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+1">🇺🇸 +1</option>
+              </select>
+              <input type="tel" id="phone" placeholder="17x-xxx-xxxx" class="form-input" style="flex: 1; margin: 0;">
+            </div>
           </div>
         </div>
 

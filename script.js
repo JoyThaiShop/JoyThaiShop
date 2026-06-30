@@ -8851,22 +8851,24 @@ function onCountryChange() {
 
 
 
-  const otherEl = document.getElementById('addrFormOTHER');
-
-
-
+    const otherEl = document.getElementById('addrFormOTHER');
   if (otherEl) {
-
-
-
     otherEl.style.display = list.includes(country) ? 'none' : 'block';
-
-
-
   }
-
-
-
+  const countryCodeMap = {
+    'DE': '+49',
+    'TH': '+66',
+    'AT': '+43',
+    'CH': '+41',
+    'FR': '+33',
+    'NL': '+31',
+    'GB': '+44',
+    'US': '+1'
+  };
+  const phoneCodeSelect = document.getElementById('phoneCountryCode');
+  if (phoneCodeSelect && countryCodeMap[country]) {
+    phoneCodeSelect.value = countryCodeMap[country];
+  }
   updateShippingCost();
 
 
@@ -8891,15 +8893,11 @@ function getAddressData() {
 
 
 
-  const fullName = document.getElementById('fullName').value.trim();
-
-
-
+    const fullName = document.getElementById('fullName').value.trim();
   const email = document.getElementById('email').value.trim();
-
-
-
-  const phone = document.getElementById('phone').value.trim();
+  const phoneVal = document.getElementById('phone').value.trim();
+  const countryCodeVal = document.getElementById('phoneCountryCode')?.value || '';
+  const phone = countryCodeVal ? `${countryCodeVal} ${phoneVal}` : phoneVal;
 
 
 
